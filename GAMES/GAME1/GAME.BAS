@@ -1,6 +1,10 @@
-SCREEN 7: COLOR 2, 15
-CLS : PRINT "Generating Map..."
+'Colors: Player, Ground, Walls, Text, Heart
+Pc = 5: Gc = 2: Wc = 8: Tc = 15: Hc = 4
+SCREEN 7: COLOR Tc, Gc: CLS
+
+Start:
 U = 0: Px = 1: Py = 1: Pxo = 1: Pyo = 1: i$ = "": h% = 0: ht% = 0: Bq% = 3
+GOSUB Welcome
 GOSUB CreateMap
 GOSUB DrawMap
 GOSUB UpdateScreen
@@ -10,7 +14,10 @@ DO
   'Update Player
   i$ = INKEY$
   IF i$ <> "q" THEN
-   IF h% = ht% THEN GOTO YouWin
+   IF h% = ht% THEN
+    LOCATE 12, 16: PRINT "You Win!"
+    GOTO PlayAgain
+   END IF
   
    GOSUB Shoot
    GOSUB MovePlayer
@@ -20,17 +27,23 @@ DO
     GOSUB UpdateScreen
    END IF
   ELSE
-   CLS : LOCATE 12, 15: PRINT "Game Over"
+   CLS : LOCATE 12, 16: PRINT "Game Over"
   END IF
 LOOP WHILE i$ <> "q"
+
+GOTO PlayAgain
 END
 
-YouWin:
-LOCATE 12, 16: PRINT "You Win!"
+PlayAgain:
+LOCATE 24, 2: INPUT ; "Play again (Y/N)"; YN$
+IF YN$ = "y" OR YN$ = "Y" THEN
+ CLS
+ GOTO Start
+END IF
 END
 
 CreateMap:
-DIM map(22, 40) AS STRING
+DIM map(23, 40) AS STRING
 FOR R = 1 TO 22
  FOR C = 1 TO 40
   RANDOMIZE TIMER
@@ -47,6 +60,10 @@ FOR R = 1 TO 22
   END IF
  NEXT C
 NEXT R
+'Game bottom
+FOR X = 1 TO 40
+ map(23, X) = CHR$(223)
+NEXT X
 
 'Player
 IF map(1, 1) = CHR$(3) THEN ht% = ht% - 1
@@ -55,18 +72,11 @@ RETURN
 
 DrawMap:
 CLS
-FOR R = 1 TO 22
+FOR R = 1 TO 23
  FOR C = 1 TO 40
   t$ = map(R, C)
- 
-  COLOR 2
- 
-  IF t$ = CHR$(3) THEN
-   COLOR 4
-  ELSEIF t$ = CHR$(219) THEN
-   COLOR 8
-  END IF
-
+  COLOR Wc
+  IF t$ = CHR$(3) THEN COLOR Hc
   LOCATE R, C
   PRINT t$
  NEXT C
@@ -123,17 +133,19 @@ MovePlayer:
 RETURN
 
 UpdateScreen:
-COLOR 2
-
+'Player
 LOCATE Pyo, Pxo
 PRINT " "
 LOCATE Py, Px
+COLOR Pc
 PRINT CHR$(1)
 
-LOCATE 23, 3
-PRINT "Hearts"; ":"; h%; "/"; ht%
-LOCATE 23, 30
-PRINT "Shots:"; Bq%
+'Stats
+COLOR Tc
+LOCATE 24, 3
+PRINT "Hearts"; ":"; h%; "/"; ht%;
+LOCATE 24, 30
+PRINT "Shots:"; Bq%;
 RETURN
 
 Shoot:
@@ -181,5 +193,49 @@ ELSE
  PLAY "L16O5DL8O4F"
 END IF
 
+RETURN
+
+Welcome:
+LOCATE 2, 20: PRINT "Collect the hearts!";
+LOCATE 6, 20: PRINT "Move: W A S D";
+LOCATE 8, 20: PRINT "Shoot: Arrow Keys";
+LOCATE 11, 20: PRINT "Q to quit."
+LOCATE 15, 20: PRINT "About Shooting:"
+LOCATE 16, 20: PRINT "Destroys the block"
+LOCATE 17, 20: PRINT "directly beside you."
+
+'Pick player color
+LOCATE 2, 1
+COLOR 15
+PRINT "Pick "; CHR$(1); " Color:"
+COLOR 1: PRINT "1 - Blue"
+COLOR 4: PRINT "4 - Red"
+COLOR 5: PRINT "5 - Magenta"
+COLOR 6: PRINT "6 - Brown"
+COLOR 10: PRINT "10 - Light Green"
+COLOR 11: PRINT "11 - Light Cyan"
+COLOR 14: PRINT "14 - Yellow"
+COLOR 15: PRINT "________________"
+
+COLOR Tc
+INPUT Pc
+
+IF Pc > 15 THEN Pc = 1
+IF Pc < 1 THEN Pc = 1
+
+PRINT " "
+PRINT "Choose Mode:"
+PRINT "1 - Normal"
+PRINT "2 - Easy"
+PRINT "3 - Hard"
+PRINT "________________"
+INPUT mo%
+
+'Bullet quantity
+Bq% = 9
+IF mo% > 2 THEN Bq% = 1
+IF mo% < 2 THEN Bq% = 3
+
+CLS : LOCATE 12, 12: PRINT "Generating Map ..."
 RETURN
 
