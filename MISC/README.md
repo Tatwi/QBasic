@@ -14,5 +14,8 @@ A bouncy circle that makes use of screen memory page flipping to smooth out the 
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
+**/SPRITE1**
+A demonstration on how to create and use a sprite that is loaded from a comma separated data file.
+
 **THEBEST.BAS**  
 Flickering "stars" I made to test the speed of QBasic on my Compaq Deskpro 4000 running DOS 7 (Windows 98SE) on a Pentium 233MMX. This program runs so fast on the real Pentium CPU that I can't quite match it using DOSBox using the 2GHz Intel Celeron 3450 in my laptop, even with it set to 200,000 cycles per second. Normally I run DOSBox at 5,000 cycles, so that's quite the difference speed and it still comes up short.
