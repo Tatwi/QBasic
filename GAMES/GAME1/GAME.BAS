@@ -3,7 +3,17 @@ Pc = 5: Gc = 2: Wc = 8: Tc = 15: Hc = 4
 SCREEN 7: COLOR Tc, Gc: CLS
 
 Start:
-U = 0: Px = 1: Py = 1: Pxo = 1: Pyo = 1: i$ = "": h% = 0: ht% = 0: Bq% = 3
+U = 0: Px = 1: Py = 1: Pxo = 1: Pyo = 1: i$ = "": h% = 0: ht% = 0
+
+'Fr is how quickly to fill in the map (Normal, Easy, Hard, Counter)
+Fr% = 180: Fe% = 320: Fh% = 96: Fi% = 0
+
+'Initial density of obstructions (Normal, Easy, Hard)
+Md% = 70: Mde% = 78: Mdh% = 65
+
+'Bullet quantity (Normal, Easy, Hard)
+Bq% = 12: Bqe% = 20: Bqh% = 8
+
 GOSUB Welcome
 GOSUB CreateMap
 GOSUB DrawMap
@@ -13,7 +23,7 @@ GOSUB UpdateScreen
 DO
   'Update Player
   i$ = INKEY$
-  IF i$ <> "q" THEN
+  IF i$ <> CHR$(27) THEN
    IF h% = ht% THEN
     LOCATE 12, 16: PRINT "You Win!"
     GOTO PlayAgain
@@ -29,7 +39,13 @@ DO
   ELSE
    CLS : LOCATE 12, 16: PRINT "Game Over"
   END IF
-LOOP WHILE i$ <> "q"
+
+  'Fill in map over time
+  IF Fi% > Fr% THEN
+   GOSUB FillMap
+  END IF
+  Fi% = Fi% + 1
+LOOP WHILE i$ <> CHR$(27)
 
 GOTO PlayAgain
 END
@@ -53,7 +69,7 @@ FOR R = 1 TO 22
   IF X% > 98 THEN
    map(R, C) = CHR$(3)
    ht% = ht% + 1
-  ELSEIF X% > 70 THEN
+  ELSEIF X% > Md% THEN
    map(R, C) = CHR$(219)
   ELSE
    map(R, C) = " "
@@ -199,7 +215,7 @@ Welcome:
 LOCATE 2, 20: PRINT "Collect the hearts!";
 LOCATE 6, 20: PRINT "Move: W A S D";
 LOCATE 8, 20: PRINT "Shoot: Arrow Keys";
-LOCATE 11, 20: PRINT "Q to quit."
+LOCATE 11, 20: PRINT "ESC to quit."
 LOCATE 15, 20: PRINT "About Shooting:"
 LOCATE 16, 20: PRINT "Destroys the block"
 LOCATE 17, 20: PRINT "directly beside you."
@@ -231,11 +247,33 @@ PRINT "3 - Hard"
 PRINT "________________"
 INPUT mo%
 
-'Bullet quantity
-Bq% = 9
-IF mo% > 2 THEN Bq% = 1
-IF mo% < 2 THEN Bq% = 3
+mo$ = "Normal"
 
-CLS : LOCATE 12, 12: PRINT "Generating Map ..."
+IF mo% = 3 THEN
+ Bq% = Bqh%
+ Fr% = Fh%
+ Md% = Mdh%
+ mo$ = "Hard"
+ELSEIF mo% = 2 THEN
+ Bq% = Bqe%
+ Fr% = Fe%
+ Md% = Mde%
+ mo$ = "Easy"
+END IF
+
+CLS : LOCATE 12, 7: PRINT "Generating "; mo$; " Map ..."
+RETURN
+
+FillMap:
+Fi% = 0
+X% = INT(RND * 100) + 1
+IF X% > 40 THEN RETURN
+
+Y% = INT(RND * 22) + 1
+
+IF map(Y%, X%) = " " THEN
+ map(Y%, X%) = CHR$(219)
+ LOCATE Y%, X%: PRINT CHR$(219)
+END IF
 RETURN
 
