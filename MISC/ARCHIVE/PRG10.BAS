@@ -1,0 +1,29 @@
+REM ROB BASSETT
+REM PRG10
+
+CLS
+
+INPUT "MONTH"; M$
+INPUT "DAYS"; D
+INPUT "START ON DAY"; S
+CLS
+PRINT TAB(10); M$
+COLOR (23)
+PRINT " SUN  MON  TUE  WED  THU  FRI  SAT "
+COLOR (3)
+FOR X = 1 TO S - 1
+  PRINT "     ";
+  C = C + 1
+NEXT X
+FOR X = 1 TO D
+  IF X < 10 THEN PRINT X; "  ";  ELSE PRINT X; " ";
+  C = C + 1
+  IF C = 7 THEN
+  PRINT
+  C = 0
+  END IF
+NEXT X
+
+
+
+

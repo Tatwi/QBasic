@@ -1,0 +1,53 @@
+REM ROB BASSETT
+REM PROGDEM2//DEMONSTRATION TWO
+
+GOSUB ENTER
+GOSUB PRINTDATA
+GOSUB ENTER
+GOSUB SORT
+GOSUB PRINTDATA
+END
+
+
+PRINTDATA:
+  CLS
+  PRINT "NAMES", "AGE"
+  FOR X = 1 TO NR
+     PRINT N$(X), N(X)
+  NEXT X
+RETURN
+
+
+ENTER:
+  CLS
+  COLOR (3): PRINT "EOF IS XXX AND 0": COLOR (7)
+  PRINT
+  DO
+    NR = NR + 1
+    INPUT "ENTER NAME"; N$(NR)
+    INPUT "ENTER AGE"; N(NR)
+    IF N$(NR) = "XXX" THEN EXIT DO
+    IF N(NR) = 0 THEN EXIT DO
+  LOOP
+  NR = NR - 1
+RETURN
+
+
+SORT:
+  CLS
+  PRINT "ONE MOMENT PLEASE.    SORTING": SLEEP 2
+  FOR Y = 1 TO NR - 1
+     F = 0
+     FOR X = 1 TO NR - Y
+        IF N$(X) > N$(X + 1) THEN
+          SWAP N$(X), N$(X + 1)
+          SWAP N(X), N(X)
+          F = 1
+        END IF
+     NEXT X
+     IF F = 0 THEN EXIT FOR
+  NEXT Y
+F = 0
+RETURN
+
+

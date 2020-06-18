@@ -1,0 +1,31 @@
+REM MONTHS
+
+DIM MO$(12)
+
+FOR X = 1 TO 12
+   READ MO$(X)
+NEXT X
+DATA JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
+
+CLS
+
+INPUT " WHAT YEAR"; Y
+INPUT " START MONTH\\(NUMBER)\\"; M
+INPUT " NUMBER OF MONTHS"; C
+
+PRINT "MONTH", "YEAR"
+PRINT MO$(M), Y
+
+FOR X = 1 TO C
+   M = M + 1
+   IF M > 12 THEN
+    M = 1
+    Y = Y + 1
+   END IF
+   PRINT MO$(M), Y
+NEXT X
+
+
+
+
+
