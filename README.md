@@ -12,7 +12,7 @@ As far as hobbies go, programming is inexpensive and accessible, but it isn't al
 - May do some green-only Commodore PET style games.
 - Screen 0, 80x25 / 40x25 text only with page flipping.
 - Screen 7, 320x200px / 40x25 with page flipping.
-- Designed to run well in DOSBox that has been tuned to perform about the same as the Intel 386SX 33HMz based systems we had in school.
+- Designed to run well in DOSBox at 5000 cycles. This is probably close to a real Intel 386DX/33 CPU.
 
 
 ## Project Files
