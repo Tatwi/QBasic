@@ -11,6 +11,9 @@ A bouncing circle, animated by drawing red circles from left to right and drawin
 **BNCYCRC2.BAS**  
 A bouncy circle that makes use of screen memory page flipping to smooth out the animation.
 
+**/COMMON**  
+The Screen Mode 7 framework I am creating as the basis for my text mode games. It's designed to enhance the chunky 40x25 ASCII characters using 16 color sprites that are loaded from pain text CSV files.
+
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
