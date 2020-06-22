@@ -12,7 +12,6 @@ H = 4: W = 4 'Min image size
 
 GOSUB StartSession
 GOSUB DrawScreen
-GOSUB DrawActiveColor
 GOSUB MainLoop
 CLS
 END
@@ -60,6 +59,7 @@ IF a = 1 THEN
   NEXT Y
 ELSEIF a = 2 THEN
   'Load image from file
+  LOCATE 14, 25: PRINT "(without file extention)"
   LOCATE 10, 30: INPUT ; "File Name"; f$
   file$ = f$ + ".CSV"
 
@@ -125,14 +125,22 @@ FOR X = 10 TO 15
   READ name$
   PRINT name$; " "; : COLOR X: PRINT STRING$(3, CHR$(219));
 NEXT X
+RESTORE
 
 'Bottom stuff
 LOCATE 35, 2: PRINT "File: "; f$; ".CSV"
+GOSUB DrawActiveColor
 RETURN
 
 DrawActiveColor:
-LOCATE 35, 60: PRINT "Active Color"
-LOCATE 37, 60: COLOR AC: PRINT STRING$(3, CHR$(219));
+COLOR 15
+LOCATE 35, 67: PRINT "Active Color";
+LOCATE 37, 68: PRINT CHR$(201); STRING$(7, CHR$(205)); CHR$(187);
+LOCATE 38, 68:
+  PRINT CHR$(186);
+  COLOR AC: PRINT STRING$(7, CHR$(219));
+  COLOR 15: PRINT CHR$(186);
+LOCATE 39, 68: PRINT CHR$(200); STRING$(7, CHR$(205)); CHR$(188);
 RETURN
 
 MoveCursor:
@@ -161,9 +169,47 @@ RETURN
 
 
 UpdateActiveColor:
+SELECT CASE i$
+  CASE IS = "0"
+    AC = 0
+  CASE IS = "1"
+    AC = 1
+  CASE IS = "2"
+    AC = 2
+  CASE IS = "3"
+    AC = 3
+  CASE IS = "4"
+    AC = 4
+  CASE IS = "5"
+    AC = 5
+  CASE IS = "6"
+    AC = 6
+  CASE IS = "7"
+    AC = 7
+  CASE IS = "8"
+    AC = 8
+  CASE IS = "9"
+    AC = 9
+  CASE IS = "q"
+    AC = 10
+  CASE IS = "w"
+    AC = 11
+  CASE IS = "e"
+    AC = 12
+  CASE IS = "r"
+    AC = 13
+  CASE IS = "t"
+    AC = 14
+  CASE IS = "y"
+    AC = 15
+END SELECT
+GOSUB DrawActiveColor
 RETURN
 
 DrawPixel:
-
+  IF i$ = " " THEN
+    image(CY, CX) = AC
+    GOSUB DrawScreen
+  END IF
 RETURN
 
