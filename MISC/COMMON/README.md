@@ -6,7 +6,8 @@ This is the Screen Mode 7 framework I am creating as the basis for my text mode 
 **COMMON.BAS**  
 This is the main file.   When I am ready to use it in a game, I'll copy the file and modify it to be the new game.
 
-
 **NAME.CSV Files**  
 These are 16 color sprites in comma separated value format.   
 
+**CSVMAKER.BAS**  
+A text mode tool for creating, loading, saving, 16 color sprites in CSV format. Max size 64x32.
