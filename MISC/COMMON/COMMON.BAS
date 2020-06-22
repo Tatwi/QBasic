@@ -102,13 +102,13 @@ LOOP
 'W  3   40
 SUB DrawBorder (SY, SX, H, W)
   LOCATE SY, SX
-  PRINT CHR$(201); : FOR C = 1 TO W - 2: PRINT CHR$(205); : NEXT C: PRINT CHR$(187);
+  PRINT CHR$(201); STRING$(W - 2, CHR$(205)); CHR$(187);
   FOR C = 1 TO H - 2
     LOCATE SY + C, SX: PRINT CHR$(186);
     LOCATE SY + C, SX + W - 1: PRINT CHR$(186);
   NEXT C
   LOCATE SY + H - 1, SX
-  PRINT CHR$(200); : FOR C = 1 TO W - 2: PRINT CHR$(205); : NEXT C: PRINT CHR$(188);
+  PRINT CHR$(200); STRING$(W - 2, CHR$(205)); CHR$(188);
 END SUB
 
 'Load sprite from CSV file
