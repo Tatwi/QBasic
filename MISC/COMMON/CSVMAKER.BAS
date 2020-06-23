@@ -264,7 +264,7 @@ RETURN
 DrawPixel:
   IF i$ = " " THEN
     image(CY, CX) = AC
-    GOSUB DrawScreen
+    COLOR AC: LOCATE CY, CX: PRINT CHR$(219)
   END IF
 RETURN
 
