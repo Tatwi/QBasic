@@ -66,9 +66,18 @@ ELSEIF a = 2 THEN
   OPEN file$ FOR INPUT AS #1
   LINE INPUT #1, ln$
  
-  'Get width
-  W = INT(LEN(ln$) / 2 + 1)
- 
+  'Determine width
+  W = LEN(ln$)
+  COMMAS = 0
+  FOR X = 1 TO W
+    P = INSTR(X, ln$, ",")
+    IF P <> 0 THEN
+      X = P
+      COMMAS = COMMAS + 1
+    END IF
+  NEXT X
+  W = COMMAS + 1
+
   'Get height
   H = 0
   SEEK #1, 1
@@ -118,13 +127,22 @@ FOR X = 0 TO 9
   PRINT X; : COLOR X: PRINT STRING$(3, CHR$(219));
 NEXT X
 
-DATA "q","w","e","r","t","y","u","i"
+DATA "q","w","e","r","t","y"
+DATA ")","!","@","#","$","%","^","&","*","(","Q","W","E","R","T","Y"
 FOR X = 10 TO 15
   COLOR 15
   LOCATE 2 + X * 2, 67
   READ name$
   PRINT name$; " "; : COLOR X: PRINT STRING$(3, CHR$(219));
 NEXT X
+LOCATE 1, 74: PRINT "Blink";
+FOR X = 0 TO 15
+  LOCATE X * 2 + 2, 76
+  READ name$
+  PRINT name$;
+NEXT X
+
+
 RESTORE
 
 'Bottom stuff
@@ -202,6 +220,38 @@ SELECT CASE i$
     AC = 14
   CASE IS = "y"
     AC = 15
+  CASE IS = ")"
+    AC = 16
+  CASE IS = "!"
+    AC = 17
+  CASE IS = "@"
+    AC = 18
+  CASE IS = "#"
+    AC = 19
+  CASE IS = "$"
+    AC = 20
+  CASE IS = "%"
+    AC = 21
+  CASE IS = "^"
+    AC = 22
+  CASE IS = "&"
+    AC = 23
+  CASE IS = "*"
+    AC = 24
+  CASE IS = "("
+    AC = 25
+  CASE IS = "Q"
+    AC = 26
+  CASE IS = "W"
+    AC = 27
+  CASE IS = "E"
+    AC = 28
+  CASE IS = "R"
+    AC = 29
+  CASE IS = "T"
+    AC = 30
+  CASE IS = "Y"
+    AC = 31
 END SELECT
 GOSUB DrawActiveColor
 RETURN
