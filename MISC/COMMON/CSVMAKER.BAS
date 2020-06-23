@@ -9,6 +9,7 @@ CLS
 AC = 3 'Active color
 CX = 1: CY = 1: CXO = 1: CYO = 1 'Cursor position
 H = 4: W = 4 'Min image size
+file$ = ""
 
 GOSUB StartSession
 GOSUB DrawScreen
@@ -25,9 +26,11 @@ DO
     GOSUB MoveCursor
     GOSUB UpdateActiveColor
     GOSUB DrawPixel
+    GOSUB Commands
   END IF
 LOOP WHILE i$ <> CHR$(27)
 RETURN
+
 
 StartSession:
 'New file or load file
@@ -40,7 +43,7 @@ IF a = 1 THEN
   'Set new image size
   LOCATE 10, 30: INPUT ; "Height (4 - 32)"; H
   LOCATE 11, 30: INPUT ; "Width (4 - 64)"; W
-  LOCATE 12, 30: INPUT ; "File Name (8 max)"; f$
+  LOCATE 12, 30: INPUT ; "File Name (8 max, no extention)"; f$
 
   IF H > 32 THEN H = 32
   IF H < 4 THEN H = 4
@@ -48,8 +51,9 @@ IF a = 1 THEN
   IF W < 4 THEN W = 4
 
   IF f$ = "" THEN f$ = "TEST"
-  IF LEN(f$) > 8 THEN f$ = LEFT$(f$, 8)
+  f$ = LEFT$(f$, 8)
   f$ = UCASE$(f$)
+  file$ = f$ + ".CSV"
 
   DIM image(H, W)
   FOR Y = 1 TO H
@@ -141,12 +145,12 @@ FOR X = 0 TO 15
   READ name$
   PRINT name$;
 NEXT X
-
-
 RESTORE
 
 'Bottom stuff
-LOCATE 35, 2: PRINT "File: "; f$; ".CSV"
+LOCATE 35, 2: PRINT "File: "; file$
+LOCATE 37, 2: PRINT "[s]Save [S]Rename [ESC]Exit";
+
 GOSUB DrawActiveColor
 RETURN
 
@@ -159,6 +163,7 @@ LOCATE 38, 68:
   COLOR AC: PRINT STRING$(7, CHR$(219));
   COLOR 15: PRINT CHR$(186);
 LOCATE 39, 68: PRINT CHR$(200); STRING$(7, CHR$(205)); CHR$(188);
+LOCATE 41, 69: PRINT "[space]"
 RETURN
 
 MoveCursor:
@@ -261,5 +266,52 @@ DrawPixel:
     image(CY, CX) = AC
     GOSUB DrawScreen
   END IF
+RETURN
+
+
+Commands:
+SELECT CASE i$
+  CASE IS = "s"
+    GOSUB SaveFile
+  CASE IS = "S"
+    GOSUB NameFile
+END SELECT
+RETURN
+
+
+NameFile:
+LOCATE 41, 1: INPUT ; "New File Name"; f$
+f$ = LEFT$(f$, 8)
+file$ = UCASE$(f$) + ".CSV"
+LOCATE 41, 1: PRINT "File name changed                         ";
+SLEEP 2
+GOSUB DrawScreen
+RETURN
+
+SaveFile:
+LOCATE 41, 1: INPUT "Really save file (Y/N)"; a$
+
+IF UCASE$(a$) <> "Y" THEN
+  LOCATE 41, 1: PRINT "                                 ";
+  RETURN
+END IF
+
+ln$ = ""
+OPEN file$ FOR OUTPUT AS #1
+  FOR Y = 1 TO H
+    FOR X = 1 TO W
+      'Create line
+      ln$ = ln$ + LTRIM$(STR$(image(Y, X)))
+      IF X <> W THEN ln$ = ln$ + ","
+    NEXT X
+  'Print line to file
+  PRINT #1, ln$
+  ln$ = ""
+  NEXT Y
+CLOSE #1
+
+LOCATE 41, 1: PRINT "File saved!                         ";
+SLEEP 2
+LOCATE 41, 1: PRINT "                         ";
 RETURN
 
