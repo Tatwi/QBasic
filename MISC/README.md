@@ -17,6 +17,9 @@ The Screen Mode 7 framework I am creating as the basis for my text mode games. I
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
+**/RUNMAN**  
+Testing sprite animation using a 4 frame 8x8 running man. 
+
 **/SPRITE1**
 A demonstration on how to create and use a sprite that is loaded from a comma separated data file.
 
