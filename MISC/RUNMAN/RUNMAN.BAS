@@ -23,7 +23,7 @@ DECLARE SUB DoInput ()
 DECLARE SUB Pause ()
 
 ' Declare Variables
-IC = 1000: R = 1: i$ = "": DIM frm1%(64): DIM frm2%(64): DIM frm3%(64): DIM frm4%(64): F = 3: L = 1
+IC = 1000: R = 1: i$ = "": DIM frm1%(64): DIM frm2%(64): DIM frm3%(64): DIM frm4%(64): F = 3: L = 148
 
 ' Load Sprites
 LoadSprite frm1%(), "MAN1.CSV", 8, 8
@@ -55,7 +55,7 @@ DO
       F = 3
       CLS
       PCOPY 3, 1
-      PUT (120, L), frm3%
+      PUT (L, 100), frm3%
       PCOPY 1, 0
     END IF
   END IF
@@ -113,7 +113,7 @@ OPEN file$ FOR INPUT AS #1
 FOR X = 1 TO H
   FOR Y = 1 TO W
     INPUT #1, i
-    PSET (X, Y), i
+    PSET (Y, X), i
   NEXT Y
 NEXT X
 CLOSE #1
@@ -130,7 +130,7 @@ DO
   i$ = INKEY$
   IF UCASE$(i$) = "Q" THEN
     R = 0
-    CLS : LOCATE 12, 12: PRINT "Game Over": PCOPY 1, 0
+    CLS : LOCATE 12, 16: PRINT "Game Over": PCOPY 1, 0
     EXIT SUB
   END IF
 LOOP WHILE i$ <> CHR$(27)
@@ -146,20 +146,20 @@ CLS
 PCOPY 3, 1
 
 ' Location
-L = L + 1: IF L > 192 THEN L = 1
+L = L + 1: IF L > 305 THEN L = 7
 
 ' Frame limit
 IF L MOD 5 = 1 THEN F = F + 1: IF F = 5 THEN F = 1
 
 SELECT CASE F
   CASE IS = 1
-    PUT (120, L), frm1%
+    PUT (L, 100), frm1%
   CASE IS = 2
-    PUT (120, L), frm2%
+    PUT (L, 100), frm2%
   CASE IS = 3
-    PUT (120, L), frm3%
+    PUT (L, 100), frm3%
   CASE IS = 4
-    PUT (120, L), frm4%
+    PUT (L, 100), frm4%
 END SELECT
 
 PCOPY 1, 0
