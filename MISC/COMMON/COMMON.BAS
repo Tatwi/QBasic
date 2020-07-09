@@ -154,7 +154,7 @@ OPEN file$ FOR INPUT AS #1
 FOR X = 1 TO H
   FOR Y = 1 TO W
     INPUT #1, I
-    PSET (X, Y), I
+    PSET (Y, X), I
   NEXT Y
 NEXT X
 CLOSE #1
