@@ -16,3 +16,6 @@ A text mode tool for creating, loading, saving, image data in CSV format. The da
 
 **NAME.CSV Files**  
 These are color images saved in comma separated value format.   
+
+**SAVE.DAT**  
+An example of a data file that is saved in CSV format. It is loaded into 3 arrays of 10 length each, two string arrays and an integer array. There are many ways to manipulate data, but I found this way made it easier to sort the data and it's also consistent with how I am handing plain text sprite data.
