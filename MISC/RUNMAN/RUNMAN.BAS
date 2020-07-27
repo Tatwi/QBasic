@@ -21,15 +21,21 @@ DECLARE SUB LoadData ()
 DECLARE SUB LoadSprite (sprite%(), file$, H, W)
 DECLARE SUB DoInput ()
 DECLARE SUB Pause ()
+DECLARE SUB Background ()
 
 ' Declare Variables
 IC = 1000: R = 1: i$ = "": DIM frm1%(64): DIM frm2%(64): DIM frm3%(64): DIM frm4%(64): F = 3: L = 148
+BGX = 296: DIM tree1%(128): DIM tree2%(128): DIM trees%(10)
+trees(1) = 20: trees(2) = 40: trees(3) = 57: trees(4) = 77: trees(5) = 114: trees(6) = 155: trees(7) = 190: trees(8) = 231: trees(9) = 260: trees(10) = 282:
+ground$ = "C2 BM8,108 R304 D1 L304 D1 C10 R304 D1 L304 D1 R304 D1 L304"
 
 ' Load Sprites
 LoadSprite frm1%(), "MAN1.CSV", 8, 8
 LoadSprite frm2%(), "MAN2.CSV", 8, 8
 LoadSprite frm3%(), "MAN3.CSV", 8, 8
 LoadSprite frm4%(), "MAN4.CSV", 8, 8
+LoadSprite tree1%(), "TREE1.CSV", 16, 8
+LoadSprite tree2%(), "TREE2.CSV", 16, 8
 
 SCREEN 7, 0, 1, 0
 LOCATE 12, 16: PRINT "Loading ...": PCOPY 1, 0
@@ -38,6 +44,7 @@ DrawHelp
 
 'Show start screen
 Running
+Background
 
 'Main Loop
 DO
@@ -55,11 +62,32 @@ DO
       F = 3
       CLS
       PCOPY 3, 1
+      Background
       PUT (L, 100), frm3%
       PCOPY 1, 0
     END IF
   END IF
 LOOP WHILE R
+
+SUB Background
+SHARED tree1%(), tree2%(), BGX, trees%()
+
+' Draw trees
+FOR X = 1 TO 10
+  trees(X) = trees(X) - 1
+  IF trees(X) < 8 THEN trees(X) = 304
+ 
+  IF X MOD 2 = 0 THEN
+    PUT (trees(X), 92), tree1%
+  ELSE
+   PUT (trees(X), 92), tree2%
+  END IF
+NEXT X
+
+BGX = BGX - 1
+IF BGX < 8 THEN BGX = 296
+
+END SUB
 
 SUB DoInput
 SHARED i$
@@ -88,10 +116,12 @@ SUB DrawBorder (SY, SX, H, W)
 END SUB
 
 SUB DrawHelp
+SHARED ground$
 SCREEN 7, 0, 3, 0
 COLOR 5: DrawBorder 1, 1, 25, 40
 LOCATE 2, 18: PRINT "HELP";
 COLOR 7
+DRAW ground$
 'To do: Put this in a character window for automatic overflow
 LOCATE 4, 2: PRINT "Press the R key to move the man!"
 LOCATE 23, 14: PRINT "[ESC to exit]"
@@ -118,7 +148,7 @@ FOR X = 1 TO H
 NEXT X
 CLOSE #1
 
-GET (1, 1)-(H, W), sprite%
+GET (1, 1)-(W, H), sprite%
 
 CLS 'Leave the back buffer clean
 END SUB
@@ -144,6 +174,8 @@ CLS
 
 ' Test speed of writing over a screen
 PCOPY 3, 1
+
+Background
 
 ' Location
 L = L + 1: IF L > 305 THEN L = 7
