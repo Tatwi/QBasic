@@ -9,10 +9,8 @@ As far as hobbies go, programming is inexpensive and accessible, but it isn't al
 
 - Intentionally only using the Micosoft QBasic 1.1 IDE, because this is a nostalgia driven retro computing project!
 - Primarily making ASCII character and simple graphical games.
-- May do some green-only Commodore PET style games.
-- Screen 0, 80x25 / 40x25 text only with page flipping.
-- Screen 7, 320x200px / 40x25 with page flipping.
 - Designed to run well in DOSBox at 5000 cycles. This is probably close to a real Intel 386DX/33 CPU.
+- After much testing, I decided that I like the look of the tv2x DOSBox filter when using my 24" 1080p LCD desktop monitor (BenQ GW2470). It doesn't look exactly the same as the 15" CRT I used in the 1990s, but I think it looks better than not using a screen filter at 2x resolution (which really is required on this size of screen, else the window is just too small). So that's the "look and feel" I am seeing on my end when creating/using these programs.  
 
 
 ## Project Files
@@ -40,22 +38,17 @@ The only real "retro PC" I have to test these programs with is my Pentium 233MMX
 If you have some old machines and you feel like testing some things for me, please see the [BENCHES](/BENCHES) directory. Your contributions, both documentation and benchmark programs, are welcome!
 
 
-## My System Setup
+## DOSBox Config
 
-While I do have a way more powerful desktop computer, I prefer using my low power laptop for pretty much everything that isn't playing 3D games. Hence the modest specs you will see below. The laptop is fast enough to emulate an Intel 486DX/66 system, but doing so causes high CPU usage even in a minimal Linux environment. However, emulating an Intel 386SX/33 system keeps the CPU usage between 20-35% on a single core and 8-15% on the remaining 3 cores. With this in mind, the min specs to run QBasic as 386SX/33 in DOSBox probably fall in the range of a Raspberry Pi 3B or a PC using a dual core AMD Athlon 64 CPU or better.  
-
-- Lenovo Ideapad 100e 81CY
-- Celeron N3450 1.1-2.1GHz Quad Core CPU, 4GB LPDD4 2133MHz RAM
-- DOSBox 0.74-2 in Devuan 3 64 Bit
-
-**DOSBox Config:**  
-- Need to use OpenGL in Linux to maintain the original aspect ratio and zoom in full screen.
-- Only my changes to the default config file are listed below.  
+These are the changes I made to the default dosbox-0.74-3.conf file.  
 
 [sdl]<br>
 fullresolution=desktop<br>
-windowresolution=original<br>
+windowresolution=1280x800<br>
 output=opengl<br>
+
+[render]<br>
+scaler=tv2x forced<br>
 
 [cpu]<br>
 core=normal<br>
