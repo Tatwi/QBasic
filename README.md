@@ -10,7 +10,7 @@ As far as hobbies go, programming is inexpensive and accessible, but it isn't al
 - Intentionally only using the Micosoft QBasic 1.1 IDE, because this is a nostalgia driven retro computing project!
 - Primarily making ASCII character and simple graphical games.
 - Designed to run well in DOSBox at 5000 cycles. This is probably close to a real Intel 386DX/33 CPU.
-- After much testing, I decided that I like the look of the tv2x DOSBox filter when using my 24" 1080p LCD desktop monitor (BenQ GW2470). It doesn't look exactly the same as the 15" CRT I used in the 1990s, but I think it looks better than not using a screen filter at 2x resolution (which really is required on this size of screen, else the window is just too small). So that's the "look and feel" I am seeing on my end when creating/using these programs.  
+- After much testing, I decided that I like the look of the tv2x DOSBox filter when using my 24" 1080p LCD desktop monitor (BenQ GW2470). It doesn't look exactly the same as the 15" CRT I used in the 1990s, but I think it looks better than not using a screen filter at 2x resolution (which really is required on this size of screen, else the window is just too small). So that's the <href="#images">"look and feel"</a> I am seeing on my end when creating/using these programs.  
 
 
 ## Project Files
@@ -63,3 +63,11 @@ C:<br>
 ## Copyright
 
 Creative Commons CC0 1.0 Universal. See the LICENSE file for more details.
+
+<span id="images"></span>
+## Images
+Here are some screen shots.  
+
+<a href="IMG/qbasic_default.png"><img src="IMG/qbasic_default.png" width="640" height="400" title="QBasic in a normal sized window"/></a>  
+
+<a href="IMG/qbasic_default.png"><img src="IMG/qbasic_default.png" width="640" height="400" title="QBasic as I use it on my desktop (click to enlarge)"/></a>
