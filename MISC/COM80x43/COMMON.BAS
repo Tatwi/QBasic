@@ -16,31 +16,28 @@ WIDTH 80, 43
 ' Text printing is limited at this time.
 
 ' Define the arrays used to track what is printed on the screen
-DIM SHARED canvas(x) AS INTEGER
-DIM SHARED colours(x) AS INTEGER
-REDIM canvas(3440) AS INTEGER, colours(3440) AS INTEGER
+DIM SHARED canvas(X) AS INTEGER
+REDIM canvas(3440) AS INTEGER
 
 ' Fill both arrays with some test junk
 PRINT "Generating screen data..."
 character = 1
-FOR x = 1 TO 3440
-  IF x > 2050 THEN
+FOR X = 1 TO 3440
+  IF X > 2050 THEN
     character = 2
-  ELSEIF x = 2048 THEN
+  ELSEIF X = 2048 THEN
     character = 219
-  ELSEIF x = 2049 THEN
+  ELSEIF X = 2049 THEN
     character = 4
   ELSE
     character = 1
   END IF
 
-  canvas(x) = character
-  colours(x) = INT(RND * 15) + 1
-NEXT x
+  canvas(X) = ((INT(RND * 15) + 1) * 1000) + character
+NEXT X
 
 PRINT "Loading Sprite..."
-DIM sp1(8, 8)
-LoadSprite sp1(), "SP1.CSV", 8, 8
+DIM sp1(8, 8): LoadSprite sp1(), "SP1.IMG", 8, 8
 
 PRINT "Adding sprites to canvas..."
 AddSprite sp1(), 8, 8, 20, 20
@@ -48,21 +45,22 @@ AddSprite sp1(), 8, 8, 5, 60
 AddSprite sp1(), 8, 8, 35, 40
 AddSprite sp1(), 8, 8, 1, 10
 
+PRINT "Printing the screen..."
+TIMER ON
 PrintScreen
 
-i$ = ""
-DO WHILE i$ <> CHR$(27)
-  i$ = INKEY$
+I$ = ""
+DO WHILE I$ <> CHR$(27)
+  I$ = INKEY$
  
-  IF i$ = CHR$(32) THEN
-    'REDIM canvas(3440), colours(3440)
+  IF I$ = CHR$(32) THEN
     AddSprite sp1(), 8, 8, INT(RND * 35), INT(RND * 72)
     PrintScreen
   END IF
 LOOP
 
 ' Clear the screen
-REDIM canvas(3440) AS INTEGER, colours(3440) AS INTEGER
+REDIM canvas(3440) AS INTEGER
 PrintScreen
 
 ' Print something on the screen
@@ -79,8 +77,7 @@ RS = RS * 80: P = 1
 FOR R = 1 TO H
   FOR C = 1 TO W
     P = RS + CS + C
-    colours(P) = sprite(R, C)
-    canvas(P) = 219
+    canvas(P) = sprite(R, C)
   NEXT C
   RS = RS + 80
 NEXT R
@@ -112,31 +109,32 @@ END SUB
 SUB LoadSprite (sprite(), file$, H, W)
 
 OPEN file$ FOR INPUT AS #1
-FOR x = 1 TO H
+FOR X = 1 TO H
   FOR Y = 1 TO W
-    INPUT #1, i
-    sprite(Y, x) = i
+    INPUT #1, I%: sprite(X, Y) = I%
   NEXT Y
-NEXT x
+NEXT X
 CLOSE #1
-
 END SUB
 
 SUB PrintScreen
-
+TS = TIMER
 'Top of screen
 SCREEN 0, , 2, 0
 LOCATE 1, 1
-FOR x = 1 TO 2048
-  COLOR colours(x): PRINT CHR$(canvas(x));
-NEXT x
+FOR X = 1 TO 2048
+  C = canvas(X) / 1000: A = canvas(X) - C * 1000: COLOR C: PRINT CHR$(A);
+NEXT X
 
 'Bottom of screen
 SCREEN 0, , 3, 0
 LOCATE 1, 1
-FOR x = 1 TO 1392
-  COLOR colours(x + 2048): PRINT CHR$(canvas(x + 2048));
-NEXT x
+FOR X = 1 TO 1392
+  C = canvas(X + 2048) / 1000: A = canvas(X + 2048) - C * 1000: COLOR C: PRINT CHR$(A);
+NEXT X
+
+' Display time required to draw the screen
+LOCATE 17, 32: PRINT TIMER - TS
 
 'Display screen to user
 PCOPY 2, 0
