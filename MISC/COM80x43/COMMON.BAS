@@ -1,6 +1,6 @@
 DEFINT A-Z
-DECLARE SUB LoadSprite (sprite(), file$, H, W)
-DECLARE SUB AddSprite (sprite(), H, W, RS, CS)
+DECLARE SUB LoadSprite (sprite(), file$)
+DECLARE SUB AddSprite (sprite(), RS, CS)
 DECLARE SUB AddText (txt$, colour, RS, CS)
 DECLARE SUB PrintScreen ()
 DECLARE SUB HappyFaces ()
@@ -23,7 +23,7 @@ WIDTH 80, 43
 
 ' Declare variables:
 DIM SHARED PKEY AS STRING   ' Keyboard input, as using INKEY$ directly doesn't always register in DOSBox
-DIM SHARED sp1(8, 8)
+DIM SHARED sp1(X) AS INTEGER
 ' Define the array used to track what is printed on the screen
 DIM SHARED canvas(X) AS INTEGER: REDIM canvas(3440) AS INTEGER
 
@@ -35,17 +35,19 @@ PRINT "Printing the initial screen..."; : PrintScreen
 MainLoop
 EndGame
 
-SUB AddSprite (sprite(), H, W, RS, CS)
-' Adds an image to the canvas using 1 character squares as pixels
-RS = RS * 80: P = 1
+SUB AddSprite (sprite(), RS, CS)
+' Adds an image to the canvas
+RS = RS * 80: P = 1: C = 1: H = sprite(1): W = sprite(2)
 
-FOR R = 1 TO H
-  FOR C = 1 TO W
-    P = RS + CS + C
-    canvas(P) = sprite(R, C)
-  NEXT C
-  RS = RS + 80
-NEXT R
+FOR X = 1 TO H * W
+  P = RS + CS + C
+  canvas(P) = sprite(X + 2)
+  C = C + 1
+  IF C > W THEN
+    C = 1
+    RS = RS + 80
+  END IF
+NEXT X
 
 END SUB
 
@@ -77,7 +79,7 @@ PKEY = INKEY$
 SELECT CASE UCASE$(PKEY)
   CASE IS = CHR$(32)
     RANDOMIZE TIMER
-    AddSprite sp1(), 8, 8, INT(RND * 35), INT(RND * 72)
+    AddSprite sp1(), INT(RND * 35), INT(RND * 72)
     PrintScreen
 END SELECT
 END SUB
@@ -115,26 +117,30 @@ NEXT X
 
 END SUB
 
-SUB LoadSprite (sprite(), file$, H, W)
-
+SUB LoadSprite (sprite() AS INTEGER, file$)
 OPEN file$ FOR INPUT AS #1
-FOR X = 1 TO H
-  FOR Y = 1 TO W
-    INPUT #1, I%: sprite(X, Y) = I%
-  NEXT Y
-NEXT X
+  ' Get the height and width of the sprite
+  INPUT #1, I%: H = I%
+  INPUT #1, I%: W = I%
+
+  REDIM sprite(H * W + 2) AS INTEGER
+  sprite(1) = H: sprite(2) = W
+
+  FOR X = 1 TO (H * W)
+    INPUT #1, I%: sprite(X + 2) = I%
+  NEXT X
 CLOSE #1
 END SUB
 
 SUB LotsOfSprites
 PRINT "Loading a sprite from file..."
-LoadSprite sp1(), "SP1.IMG", 8, 8
+LoadSprite sp1(), "SP1.IMG"
 
 PRINT "Adding several sprites to the canvas..."
-AddSprite sp1(), 8, 8, 20, 20
-AddSprite sp1(), 8, 8, 5, 60
-AddSprite sp1(), 8, 8, 35, 40
-AddSprite sp1(), 8, 8, 1, 10
+AddSprite sp1(), 20, 20
+AddSprite sp1(), 5, 60
+AddSprite sp1(), 35, 40
+AddSprite sp1(), 1, 10
 END SUB
 
 SUB MainLoop
