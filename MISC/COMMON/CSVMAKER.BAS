@@ -1,38 +1,195 @@
+DECLARE SUB SaveFile ()
 'CSV Sprite Maker
 'R. Bassett Jr. (Tatwi)
 'June 2020
 
 DEFINT A-Z
+DECLARE SUB StartSession ()
+DECLARE SUB MainLoop ()
+DECLARE SUB DrawScreen ()
+DECLARE SUB MoveCursor ()
+DECLARE SUB DrawActiveColor ()
+DECLARE SUB UpdateActiveColor ()
+DECLARE SUB DrawPixel ()
+DECLARE SUB Commands ()
+DECLARE SUB NameFile ()
+
 SCREEN 0: WIDTH 80, 43
 CLS
+
+'Declare global variables
+DIM SHARED AC AS INTEGER
+DIM SHARED CX AS INTEGER
+DIM SHARED CY AS INTEGER
+DIM SHARED CXO AS INTEGER
+DIM SHARED CXY AS INTEGER
+DIM SHARED H AS INTEGER
+DIM SHARED W AS INTEGER
+DIM SHARED file AS STRING
+DIM SHARED image(X, X) AS INTEGER
+DIM SHARED i$
 
 AC = 3 'Active color
 CX = 1: CY = 1: CXO = 1: CYO = 1 'Cursor position
 H = 4: W = 4 'Min image size
-file$ = ""
 
-GOSUB StartSession
-GOSUB DrawScreen
-GOSUB MainLoop
+StartSession
+DrawScreen
+MainLoop
 CLS
 END
 
+DATA "q","w","e","r","t","y"
+DATA ")","!","@","#","$","%","^","&","*","(","Q","W","E","R","T","Y"
 
-MainLoop:
-GOSUB MoveCursor
+SUB Commands
+SELECT CASE i$
+  CASE IS = "s"
+    SaveFile
+  CASE IS = "S"
+    NameFile
+END SELECT
+END SUB
+
+SUB DrawActiveColor
+COLOR 15
+LOCATE 35, 67: PRINT "Active Color";
+LOCATE 37, 68: PRINT CHR$(201); STRING$(7, CHR$(205)); CHR$(187);
+LOCATE 38, 68:
+  PRINT CHR$(186);
+  COLOR AC: PRINT STRING$(7, CHR$(219));
+  COLOR 15: PRINT CHR$(186);
+LOCATE 39, 68: PRINT CHR$(200); STRING$(7, CHR$(205)); CHR$(188);
+LOCATE 41, 69: PRINT "[space]"
+END SUB
+
+SUB DrawPixel
+  IF i$ = " " THEN
+    image(CY, CX) = AC
+    COLOR AC: LOCATE CY, CX: PRINT CHR$(219)
+  END IF
+END SUB
+
+SUB DrawScreen
+CLS
+'Draw image
+FOR Y = 1 TO H
+  FOR X = 1 TO W
+    COLOR image(Y, X)
+    LOCATE Y, X: PRINT CHR$(219)
+  NEXT X
+NEXT Y
+
+'Draw border
+COLOR 8
+FOR X = 1 TO H
+  LOCATE X, W + 1: PRINT CHR$(176)
+NEXT X
+b$ = CHR$(176)
+LOCATE H + 1, 1: PRINT STRING$(W + 1, CHR$(176))
+
+'Right side legend
+FOR X = 0 TO 9
+  COLOR 15
+  LOCATE 2 + X * 2, 66
+  PRINT X; : COLOR X: PRINT STRING$(3, CHR$(219));
+NEXT X
+
+FOR X = 10 TO 15
+  COLOR 15
+  LOCATE 2 + X * 2, 67
+  READ name$
+  PRINT name$; " "; : COLOR X: PRINT STRING$(3, CHR$(219));
+NEXT X
+LOCATE 1, 74: PRINT "Blink";
+FOR X = 0 TO 15
+  LOCATE X * 2 + 2, 76
+  READ name$
+  PRINT name$;
+NEXT X
+RESTORE
+
+'Bottom stuff
+LOCATE 35, 2: PRINT "File: "; file$
+LOCATE 37, 2: PRINT "[s]Save [S]Rename [ESC]Exit";
+
+DrawActiveColor
+END SUB
+
+SUB MainLoop
+MoveCursor
 DO
   i$ = INKEY$
   IF i$ <> "" THEN
-    GOSUB MoveCursor
-    GOSUB UpdateActiveColor
-    GOSUB DrawPixel
-    GOSUB Commands
+    MoveCursor
+    UpdateActiveColor
+    DrawPixel
+    Commands
   END IF
 LOOP WHILE i$ <> CHR$(27)
-RETURN
+END SUB
 
+SUB MoveCursor
+CXO = CX: CYO = CY
 
-StartSession:
+SELECT CASE i$
+  CASE IS = CHR$(0) + CHR$(72) 'Up
+    CY = CY - 1
+  CASE IS = CHR$(0) + CHR$(80) 'Down
+    CY = CY + 1
+  CASE IS = CHR$(0) + CHR$(75) 'Left
+    CX = CX - 1
+  CASE IS = CHR$(0) + CHR$(77) 'Right
+      CX = CX + 1
+END SELECT
+
+IF CX < 1 THEN CX = 1
+IF CX > W THEN CX = W
+IF CY < 1 THEN CY = 1
+IF CY > H THEN CY = H
+
+COLOR image%(CYO, CXO): LOCATE CYO, CXO: PRINT CHR$(219)
+COLOR 0, 15: LOCATE CY, CX: PRINT CHR$(4);
+COLOR 15, 0
+END SUB
+
+SUB NameFile
+LOCATE 41, 1: INPUT ; "New File Name"; f$
+f$ = LEFT$(f$, 8)
+file$ = UCASE$(f$) + ".CSV"
+LOCATE 41, 1: PRINT "File name changed                         ";
+SLEEP 2
+DrawScreen
+END SUB
+
+SUB SaveFile
+LOCATE 41, 1: INPUT "Really save file (Y/N)"; a$
+
+IF UCASE$(a$) <> "Y" THEN
+  LOCATE 41, 1: PRINT "                                 ";
+  EXIT SUB
+END IF
+
+ln$ = ""
+OPEN file$ FOR OUTPUT AS #1
+  FOR Y = 1 TO H
+    FOR X = 1 TO W
+      'Create line
+      ln$ = ln$ + LTRIM$(STR$(image(Y, X)))
+      IF X <> W THEN ln$ = ln$ + ","
+    NEXT X
+  'Print line to file
+  PRINT #1, ln$
+  ln$ = ""
+  NEXT Y
+CLOSE #1
+
+LOCATE 41, 1: PRINT "File saved!                         ";
+SLEEP 2
+LOCATE 41, 1: PRINT "                         ";
+END SUB
+
+SUB StartSession
 'New file or load file
 LOCATE 10, 30: PRINT "1. New Image"
 LOCATE 11, 30: PRINT "2. Load Image"
@@ -55,7 +212,7 @@ IF a = 1 THEN
   f$ = UCASE$(f$)
   file$ = f$ + ".CSV"
 
-  DIM image(H, W)
+  REDIM image(H, W)
   FOR Y = 1 TO H
     FOR X = 1 TO W
         image%(Y, X) = 0
@@ -92,106 +249,20 @@ ELSEIF a = 2 THEN
 
   'Load data
   SEEK #1, 1
-  DIM image%(H, W)
+  REDIM image(H, W)
   FOR Y = 1 TO H
     FOR X = 1 TO W
         INPUT #1, i
-        image%(Y, X) = i
+        image(Y, X) = i
     NEXT X
   NEXT Y
   CLOSE #1
 ELSE
-  CLS : GOTO StartSession
+  CLS : StartSession
 END IF
-RETURN
+END SUB
 
-
-DrawScreen:
-CLS
-'Draw image
-FOR Y = 1 TO H
-  FOR X = 1 TO W
-    COLOR image(Y, X)
-    LOCATE Y, X: PRINT CHR$(219)
-  NEXT X
-NEXT Y
-
-'Draw border
-COLOR 8
-FOR X = 1 TO H
-  LOCATE X, W + 1: PRINT CHR$(176)
-NEXT X
-b$ = CHR$(176)
-LOCATE H + 1, 1: PRINT STRING$(W + 1, CHR$(176))
-
-'Right side legend
-FOR X = 0 TO 9
-  COLOR 15
-  LOCATE 2 + X * 2, 66
-  PRINT X; : COLOR X: PRINT STRING$(3, CHR$(219));
-NEXT X
-
-DATA "q","w","e","r","t","y"
-DATA ")","!","@","#","$","%","^","&","*","(","Q","W","E","R","T","Y"
-FOR X = 10 TO 15
-  COLOR 15
-  LOCATE 2 + X * 2, 67
-  READ name$
-  PRINT name$; " "; : COLOR X: PRINT STRING$(3, CHR$(219));
-NEXT X
-LOCATE 1, 74: PRINT "Blink";
-FOR X = 0 TO 15
-  LOCATE X * 2 + 2, 76
-  READ name$
-  PRINT name$;
-NEXT X
-RESTORE
-
-'Bottom stuff
-LOCATE 35, 2: PRINT "File: "; file$
-LOCATE 37, 2: PRINT "[s]Save [S]Rename [ESC]Exit";
-
-GOSUB DrawActiveColor
-RETURN
-
-DrawActiveColor:
-COLOR 15
-LOCATE 35, 67: PRINT "Active Color";
-LOCATE 37, 68: PRINT CHR$(201); STRING$(7, CHR$(205)); CHR$(187);
-LOCATE 38, 68:
-  PRINT CHR$(186);
-  COLOR AC: PRINT STRING$(7, CHR$(219));
-  COLOR 15: PRINT CHR$(186);
-LOCATE 39, 68: PRINT CHR$(200); STRING$(7, CHR$(205)); CHR$(188);
-LOCATE 41, 69: PRINT "[space]"
-RETURN
-
-MoveCursor:
-CXO = CX: CYO = CY
-
-SELECT CASE i$
-  CASE IS = CHR$(0) + CHR$(72) 'Up
-    CY = CY - 1
-  CASE IS = CHR$(0) + CHR$(80) 'Down
-    CY = CY + 1
-  CASE IS = CHR$(0) + CHR$(75) 'Left
-    CX = CX - 1
-  CASE IS = CHR$(0) + CHR$(77) 'Right
-      CX = CX + 1
-END SELECT
-
-IF CX < 1 THEN CX = 1
-IF CX > W THEN CX = W
-IF CY < 1 THEN CY = 1
-IF CY > H THEN CY = H
-
-COLOR image%(CYO, CXO): LOCATE CYO, CXO: PRINT CHR$(219)
-COLOR 0, 15: LOCATE CY, CX: PRINT CHR$(4);
-COLOR 15, 0
-RETURN
-
-
-UpdateActiveColor:
+SUB UpdateActiveColor
 SELECT CASE i$
   CASE IS = "0"
     AC = 0
@@ -258,60 +329,6 @@ SELECT CASE i$
   CASE IS = "Y"
     AC = 31
 END SELECT
-GOSUB DrawActiveColor
-RETURN
-
-DrawPixel:
-  IF i$ = " " THEN
-    image(CY, CX) = AC
-    COLOR AC: LOCATE CY, CX: PRINT CHR$(219)
-  END IF
-RETURN
-
-
-Commands:
-SELECT CASE i$
-  CASE IS = "s"
-    GOSUB SaveFile
-  CASE IS = "S"
-    GOSUB NameFile
-END SELECT
-RETURN
-
-
-NameFile:
-LOCATE 41, 1: INPUT ; "New File Name"; f$
-f$ = LEFT$(f$, 8)
-file$ = UCASE$(f$) + ".CSV"
-LOCATE 41, 1: PRINT "File name changed                         ";
-SLEEP 2
-GOSUB DrawScreen
-RETURN
-
-SaveFile:
-LOCATE 41, 1: INPUT "Really save file (Y/N)"; a$
-
-IF UCASE$(a$) <> "Y" THEN
-  LOCATE 41, 1: PRINT "                                 ";
-  RETURN
-END IF
-
-ln$ = ""
-OPEN file$ FOR OUTPUT AS #1
-  FOR Y = 1 TO H
-    FOR X = 1 TO W
-      'Create line
-      ln$ = ln$ + LTRIM$(STR$(image(Y, X)))
-      IF X <> W THEN ln$ = ln$ + ","
-    NEXT X
-  'Print line to file
-  PRINT #1, ln$
-  ln$ = ""
-  NEXT Y
-CLOSE #1
-
-LOCATE 41, 1: PRINT "File saved!                         ";
-SLEEP 2
-LOCATE 41, 1: PRINT "                         ";
-RETURN
+DrawActiveColor
+END SUB
 
