@@ -41,6 +41,6 @@ These are some well regarded books specifically about QBasic 1.1.
 - Technoloy University
 - Some complex math and other useful examples.  
 
-<a href="https://en.wikibooks.org/wiki/QBasic"rel="noopener" target="_blank">WikiBooks</a>  
+<a href="https://en.wikibooks.org/wiki/QBasic" rel="noopener" target="_blank">WikiBooks</a>  
 - Fairly thorough guide of the standard functionality. 
 - Note: It randomly throws in comments like, "this only works in QB64!!!", so QBasic 1.1 users have to pay close attention when reading.  
