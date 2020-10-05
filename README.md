@@ -27,8 +27,8 @@ Each sub directory has it own README file that describes the files within in gre
 - Various BASIC programs that I created for testing/learning/fun.
 - Includes an archive of some of the stuff I did in school in the early 1990s.
 
-**/NOTES**
-- Information and observations related to my modern use of QBasic.
+**/WIKI**
+- Information and observations related to my use of QBasic.  
 
 
 ## Disclaimer
