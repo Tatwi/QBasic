@@ -58,11 +58,29 @@ cycles=5000<br>
 [autoexec]<br>
 mount C /PATH/TO/MY/DOS/STUFF/<br>
 SET PATH=Z:\;C:\EXE;<br>
-C:<br>
+C:<br>  
+
+
+## Programming Style
+As of October 2020, I have decided that I will do my best to stick the following guidelines to help make my programs easier to read.  
+
+- Comments start with a single quote and space.  
+- Indentation of 2 spaces highlight loops and conditional blocks.  
+- Subroutine names, labels, and constants in PascalCase.  
+- Arrays, custom data types, and loose long term variables (such as playerName) in camelCase.  
+- Temporary variables, counters, and system related variables (like PKEY = INKEY$) in capital letters.  
+- I will put related statements on the same line for speed, if it isn't a nightmare to read.  
+- Programs will be divided into subs as much as possible, for readability and memory optimization.  
+- I don't use LET or CALL.  
+- I do use DIM blah AS blah for global variables.  
+
+Initially when I got back into doing QBasic I was using two or three letter variable names for speed, but it turns out that unlike using BASIC on the Commodore 64, there is very little difference in QBasic 1.1 when using longer variable names. As such, the short variable names used in my newer programs are essentially temporary values, such as subroutine parameters, counters, or system related values, which should be fairly obvious (RS, CS = RowStart, ColumnStart). That said, if I find that I need to speed up a program (or save some memory - not sure if that matters with QBasic) by using shorter variable names, I will make a point of describing them in the comments.  
+
 
 ## Copyright
 
 Creative Commons CC0 1.0 Universal. See the LICENSE file for more details.
+
 
 <span id="images"></span>
 ## Images
