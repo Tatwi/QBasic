@@ -7,7 +7,7 @@ If you're not going to go whole hog creating flow charts (I never do), then it's
 - There are five different ship types, each with a particular focus and set of upgrades.  
 - Missions require fuel. In return they provide trade goods and money.  
 - Money is used to buy fuel and ships.  
-- Trade goods are utilized by missions and required to complete repairs to the fleet.  
+- Trade goods are automatically utilized by missions and are required to complete repairs to the fleet.  
 - Ships level up as they are sent on missions, gaining five positive traits when they are fully leveled. May acquire negative traits while leveling, but they will eventually be replaced by positive traits.  
 
 
@@ -19,13 +19,12 @@ If you're not going to go whole hog creating flow charts (I never do), then it's
 - Intro: An image and credits
 - Select Profile: Four blank profiles at the start. Player selects one and either moves to the New Profile or the Fleet View screen.  
 - New Profile: Get the player name, choose the difficulty level (easy, normal, hard).  
-- Fleet View (F5): A list of all the ships in the fleet, five at a time. Scrolling with the arrow keys shuffles the visible ships. Tab/Enter are used to select a ship. Selection shows the ships upgrades and allows for repairing or dismissing the ship back to the organization's main fleet (it's deleted from the game, but the player gets some money depending on the ship's condition).  
+- Fleet View (F5): A list of all the ships in the fleet, five at a time. Scrolling with the arrow keys shuffles the visible ships. Tab/Enter are used to select a ship. Selection moves to the Ship Details screen.  
+- Ship Details: Shows the ships upgrades and allows for repairing or dismissing the ship back to the organization's main fleet (it's deleted from the game, but the player gets some money depending on the ship's condition).  
 - Mission Browser (F6): A list of 5 available mission. Tab/Enter selected. Selecting a mission opens the Assignment screen.  
 - Assignment: Essentially a spreadsheet of the ships in the fleet, where the player can Tab/Enter select up to five ships per mission. The window displays the fuel cost, mission duration, and other stats as the player adds/removes ships. Esc returns to the Mission Browser window. Tab/Enter selection of the Commit button begins the mission.  
-- Debriefing (F4): A list of the ships that have completed missions and are waiting to be debriefed. Tab/Enter selecting displays the outcome of the mission, updating the fleet stats.
-- Travel (F7): A list of friendly systems the player can travel to for the purpose of purchasing fuel and new ships.  
-- Trade - Buy (F8): Fuel, trade goods, and four ships, depending on the system. Initially randomly generated, but stored in a file for later use.  
-- Trade - Sell (F9): A selection of resources in the player's possession that are valuable in the current system. Tab/Enter selection, answer quantity question (All/Half/Quarter), hopefully avoiding input overflow crashing!  
+- Debriefing (F4): A list of the ships that have completed missions and are waiting to be debriefed. Tab/Enter selecting displays the outcome of the mission, updating the fleet stats.  
+- Star Chart (F8): A list of the known star systems and the data the player has gathered about them. Numerical data is converted to descriptive words, such as "Combat 177" translating to "Conflict Level: Extreme".  
 - Help (F1): Helpful stuff, eh.  
 - Pause/Quit (Esc): Save and exit the game or just pause it.  
 
@@ -40,10 +39,12 @@ If you're not going to go whole hog creating flow charts (I never do), then it's
 ### Data Structure
 
 **Player**  
-- PROFILE1-4 Directory, PLAYER.CSV  
+PROFILE1-4 Directory, PLAYER.CSV:  
 - pName, STR  
 - pRank, INT, 1-5
 - pMoney, LONG INT, 0-2 billion  
+
+PROFILE1-4/Directory, INV.CSV:
 - pInventory, ARRAY 71, INT 0-500, Fuel + a value for each of the 70 goods.  
 
 **Ships**  
@@ -80,15 +81,44 @@ If you're not going to go whole hog creating flow charts (I never do), then it's
 - Exploration, INT, 10-200  
 - Industry, INT, 10-200  
 - Trade, INT, 10-200  
-- X,Y,Z, INT, INT, INT, 1-500, position relative to home system.  
+- X,Y,Z, INT, INT, INT, 1-100, Light Year position relative to home system.  
 - Goods1-10, INT, INT, pairs for type/value, where 1 = fuel and others are randomly selected when the system is created. Types 2-6 are for sale, while 7-10 are desired.  
+
+**Missions**  
+- mStatus, INT ARRAY 5, 0-2, for ready/away/returned  
+
+PROFILE1-4/MISSIONS/1-5 Directory, SETUP.CSV:  
+- Files generated with status=0, and no data for endTime and ships1-5. Once the player accpets the mission, the status, endTime, and ships1-5 values are updated/added.  
+- status, INT, 0-2  
+- endTime, LONG INT, 0-86400  
+- type, INT, 1-4  
+- difficulty, INT, 10-200, overall.  
+- distance, INT, 1-3200, sum of the distanced between each star system on the route.  
+- ship1-5, INT, 0-30, where 0 is no ship assigned for that slot.  
+- encounters1-16, INT, 1-5000, where 0 is no encounter, else is the star system. 
+
+PROFILE1-4/MISSIONS/1-5 Directory, INV.CSV:  
+- Mission inventory, auto selected.
+
+PROFILE1-4/MISSIONS/1-5/RESULTS Directory, 1-16.CSV:  
+- Files are the results of each encounter during the mission. There can be up to 16 files.  
+- type, INT, 1-4  
+- difficulty, INT, 10-200  
+- success, INT, -1/0  
+- shipXP1-5, INT, 0-100  
+- shipDamage1-5, INT, 0-100  
+- money, INT, -1000-32000  
+- itemUsed, INT, 0-70, where 0 is no item used.  
+- itemObtained, INT, 0-70, where 0 is no item gained.  
 
 
 ### Missions
 - The player is presented up to five missions at a time, each randomly generated based on the total stats of the player's ships.  
 - The player may reject a mission and have it replaced by another once every so often, depending on their rank and at a monetary cost.  
 - One to five ships are assigned per mission.  
-- Each mission is comprised of a number of encounters, most of which will be specific to the roll of the mission. 
+- Each mission is comprised of a number of encounters, most of which will be specific to the roll of the mission. The player is shown only roll of the mission and the star systems which will be visited. This information, combined with the star chart screen, should help the player assign the best ships for the job.  
+- Inventory items (trade goods include weaponry and other "power-up" type things) are automatically taken by ships before they depart on a mission.  
+- Missions require between 4 and 16 minutes to complete, however the results are calculated and saved immediately after they are accepted.  
 
 
 ### Ship Stats
