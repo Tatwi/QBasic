@@ -1,18 +1,17 @@
 ## GAME2 Design Document
-If you're not going to go whole hog creating flow charts (I never do), then it's a good idea to, at the very least, write some stuff down about a project before diving into it. I generally write my designs down on paper and later transpose them to the computer, but I thought for this project I'd just do here in this Markdown file from the start, as this game is just a recreation of the frigate fleet system from No Man's Sky that I am making as a way to practice data and memory management in QBasic. 
+If you're not going to go whole hog creating flow charts (I never do), then it's a good idea to, at the very least, write some stuff down about a project before diving into it. I generally write my designs down on paper and later transpose them to the computer, but I thought for this project I'd just do here in this Markdown file from the start, as this game is "just" a game similar to the frigate fleet system from No Man's Sky, which is of course, already *designed*. I am making this game as a way to practice data, memory, and file management in QBasic.  
 
 
 ### Overview
-- The player commands a group of starships, sending them out on missions according to those made available by his organization.  
+- The player commands a group of Galactic Union star ships, sending them out on missions according to those made available by his regional command.  
+- Up to five people can play the game, one at a time, using one of the five profiles. This allows the players to have an effect on each other by way of their own effects on the star systems.  
 - There are five different ship types, each with a particular focus and set of upgrades.  
 - Missions require fuel. In return they provide trade goods and money.  
 - Money is used to buy fuel and ships.  
 - Trade goods are automatically utilized by missions and are required to complete repairs to the fleet.  
 - Ships level up as they are sent on missions, gaining five positive traits when they are fully leveled. May acquire negative traits while leveling, but they will eventually be replaced by positive traits.  
-
-
-### Design Issues
-- After sending out one's fleet in No Man's Sky, presumably the player will either wander off into some other activity in the game or log out for several hours to do real life stuff. Given that in the game I am making there won't be any other activities, I will need to find an enjoyable alternative to this design.  
+- You lose the game by running out of money to pay for fuel or by destroying all of your ships, at which point the Galactic Union will fire you. To completely run out of money, you will have to sell all of your trade goods and all but your last ship back to the Galactic Union and still not have enough money in the bank to buy fuel for the easiest missions.  
+- You win the game by reaching Rank 5, but you can keep playing as long as you'd like, provided you don't end up running out of money or destroying all of your ships.  
 
 
 ### Game Screens
@@ -20,13 +19,15 @@ If you're not going to go whole hog creating flow charts (I never do), then it's
 - Select Profile: Four blank profiles at the start. Player selects one and either moves to the New Profile or the Fleet View screen.  
 - New Profile: Get the player name, choose the difficulty level (easy, normal, hard).  
 - Fleet View (F5): A list of all the ships in the fleet, five at a time. Scrolling with the arrow keys shuffles the visible ships. Tab/Enter are used to select a ship. Selection moves to the Ship Details screen.  
-- Ship Details: Shows the ships upgrades and allows for repairing or dismissing the ship back to the organization's main fleet (it's deleted from the game, but the player gets some money depending on the ship's condition).  
+- Ship Details: Shows the ships upgrades and allows for repairing or dismissing the ship back to the organization's main fleet (in exchange for money, depending on the ship's condition). Recruiting, leveling, and dismissing ships is a good way to gain reputation and earn money!
 - Mission Browser (F6): A list of 5 available mission. Tab/Enter selected. Selecting a mission opens the Assignment screen.  
 - Assignment: Essentially a spreadsheet of the ships in the fleet, where the player can Tab/Enter select up to five ships per mission. The window displays the fuel cost, mission duration, and other stats as the player adds/removes ships. Esc returns to the Mission Browser window. Tab/Enter selection of the Commit button begins the mission.  
 - Debriefing (F4): A list of the ships that have completed missions and are waiting to be debriefed. Tab/Enter selecting displays the outcome of the mission, updating the fleet stats.  
 - Star Chart (F8): A list of the known star systems and the data the player has gathered about them. Numerical data is converted to descriptive words, such as "Combat 177" translating to "Conflict Level: Extreme".  
 - Help (F1): Helpful stuff, eh.  
 - Pause/Quit (Esc): Save and exit the game or just pause it.  
+- Recruitment:  Allows the player to enable the automatic recruitment of new ships during missions.  
+- Local Trade: Allows the player to buy and sell goods in their home system. This allows the player to have a direct impact on their home system, increasing prosperity and decreasing conflict as the needs of the system are met.  
 
 
 ### Data Management
@@ -41,8 +42,10 @@ If you're not going to go whole hog creating flow charts (I never do), then it's
 **Player**  
 PROFILE1-4 Directory, PLAYER.CSV:  
 - pName, STR  
-- pRank, INT, 1-5
+- pRank, INT, 1-5, R1=0 XP, R2=5K XP, R3=10K XP, R4=18K XP, R5=32K XP.
+- pHome, INT, 1-100, The player's home star system, where all missions start/end.
 - pMoney, LONG INT, 0-2 billion  
+- pXP, INT, 1-32000
 
 PROFILE1-4/Directory, INV.CSV:
 - pInventory, ARRAY 71, INT 0-500, Fuel + a value for each of the 70 goods.  
@@ -73,7 +76,8 @@ PROFILE1-4/Directory, INV.CSV:
 - Each file contains STR, INT for item name and average value.  
 
 **Star Systems**
-- SYSTEMS Directory, read/write
+- SYSTEMS Directory, read/write  
+- Shared between player profiles, such that activity by one player effects the others.  
 - Files1-100.CSV where each file contains the following data.  
 - Economy Type, INT, 0-7, where 0 is uninhabited.  
 - Economy Quality, INT, 0-5
@@ -81,7 +85,7 @@ PROFILE1-4/Directory, INV.CSV:
 - Exploration, INT, 10-200  
 - Industry, INT, 10-200  
 - Trade, INT, 10-200  
-- X,Y,Z, INT, INT, INT, 1-100, Light Year position relative to home system.  
+- X,Y,Z, INT, INT, INT, 1-100, Light Year position relative to the Galactic Union home system.  
 - Goods1-10, INT, INT, pairs for type/value, where 1 = fuel and others are randomly selected when the system is created. Types 2-6 are for sale, while 7-10 are desired.  
 
 **Missions**  
@@ -120,15 +124,33 @@ PROFILE1-4/MISSIONS/1-5/RESULTS Directory, 1-16.CSV:
 - Inventory items (trade goods include weaponry and other "power-up" type things) are automatically taken by ships before they depart on a mission.  
 - Missions require between 4 and 16 minutes to complete, however the results are calculated and saved immediately after they are accepted.  
 
+### Ship Recruitment
+- On the Recruitment screen, the player can enable the recruitment of new vessels according to their desired criteria. If enabled, each encounter has a 50% chance to generate a candidate based upon the statistics of the system they are in. If the candidate meets the criteria, they are recruited into the fleet.  
 
-### Ship Stats
 
-### Ship Upgrades 
+### Program File Flow
+QBasic is able to seamlessly move from one program file to another and when combined with saving/loading data from text files (which is near instant on modern hardware), it allows a person to make a program that is larger than the 160KB limit of the QBasic 1.1 IDE. Here is how I intend to use this feature for the game.  
 
-### Ship Leveling
+**GAME.BAS**  
+- This is file that the player will run to start the game.  
+- Displays the intro sequence.  
+- Selects the player's profile. If this is a new profile, it generates the randomized data for a new player. Also allows for deleting profiles.  
+- Loads MAIN.BAS.  
 
-### Ship Condition
+**MAIN.BAS**  
+- This is the majority of the game, comprising all of the content the player interacts with.  
+- Reads value in AP.DAT to set active profile, 1 to 5, and loads the appropriate data.  
+- Periodically runs UPDATE.BAS.  
 
-### Star System Stats
+**UPDATE.BAS**  
+- Generates between 8 to 16 random events in random system, and 0 to 4 events in the player's home system, displaying the events to the player in the form of a news ticker.  
+- The events are weighted towards the existing stats of a system, so the player may see high conflict system become a low conflict system after a decisive battle or a colony may emerge in an uninhabited system, and so on.  
 
-### Trade Goods
+**BUILDER.BAS**  
+- This is a tool that allows the user to generate a new universe in the SYSTEMS directory, backing up the existing one before hand.  
+- By default it will generate 100 system, but it can be set to generate up to 500 systems. having too many systems means the player will likely never encounter most of them, as they are simply too far away from their home system. However, having more systems will likely reduce the impact players will have on each other, unless they happen to live very close to each other.  
+
+
+### Design Issues
+- After sending out one's fleet in No Man's Sky, presumably the player will either wander off into some other activity in the game or log out for several hours to do real life stuff. Given that in the game I am making there won't be any other activities, I will need to find an enjoyable alternative to this design. **SOLVED:** *I've decided to make the game turn based, such that each time the player assigns a mission, the game will update the universe. This update runs another program which prints out an activity log on the screen for the player, which they must allow to complete before continuing to play.*  
+
