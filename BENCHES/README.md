@@ -52,6 +52,20 @@ Cyrix 486DRx2/66|30|PCem Windows
 Intel 486DX4/100|23|PCem Windows 
 
 
+### Additional Results
+
+I have been playing with character graphics in screen mode 0 for a while, because I really like the whole early era of computing, with BASIC and character graphics. And this lead me to wonder what effect processor speed would have on the fill rate of characters using just BASIC commands.  
+
+**8050FILL.BAS**  
+I added the results for this testing as comments in the benchmark program itself. However, in summary I would say:  
+
+- PCem emulation of the Pentium CPU is way faster than the real hardware. The emulated P233MMX was almost twice as fast as my real one. Even the emulated P166 was faster than my real P233MMX. There's obviously some issue with the emulation.  
+
+- The PCem 386DX 33MHz and DOSBox at 5000 cycles with the 386 core are very close to each other, so I think that's probably pretty close to how a real 386DX 33MHz would preform.
+
+- For the purpose of emulating the feel of using a period correct PC for QBasic, which for me would have been a 386 at high school, DOSBox on my laptop is the best use my electricity and DOSBox in general is *good enough* for me. As I mentioned above, it's immensely helpful to be able to use the native file system of the computer rather than juggling disk images just to use QBasic and Git/GitHub.  
+
+
 ### System Configuration
 
 **Hardware**  
@@ -71,6 +85,7 @@ Intel 486DX4/100|23|PCem Windows
 **DOSBox-X**  
 - Devuan 3 Linux
 - Compiled 0.83.3 SDL1
+
 
 ### Bonus Notes
 
