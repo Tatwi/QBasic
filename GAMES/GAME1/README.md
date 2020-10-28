@@ -2,8 +2,9 @@
 
 Simple character graphics based game where the player must collect all the hearts before the play area fills in with obstructions. 40x25 resolution, because the characters are more square than in 80x25 mode, making it easier to tell where the player is in relation to the obstacles. 
 
-### Status
-- Playable, but I'm still working on additional functionality and polish.
+### Files
+- **GAME.BAS** The normal game.  
+- **GAME8050.BAS** A version of the game that has roughly twice the play area. I think this version is less fun than the normal version, but to each his own!  
 
 ### How to Play
 - Choose a character colour (that works for your eyes).

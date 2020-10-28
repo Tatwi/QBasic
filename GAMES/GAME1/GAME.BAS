@@ -1,3 +1,8 @@
+' GAME1
+' Collect all the hearts before the caverns cave in.
+' R. Bassett Jr.
+' Spring 2020
+
 'Colors: Player, Ground, Walls, Text, Heart
 Pc = 5: Gc = 2: Wc = 8: Tc = 15: Hc = 4
 SCREEN 7: COLOR Tc, Gc: CLS
