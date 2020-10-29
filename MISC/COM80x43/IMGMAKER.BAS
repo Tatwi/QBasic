@@ -1,4 +1,3 @@
-DECLARE SUB ChangeASCII ()
 ' ASCII Image Maker
 ' R. Bassett Jr. (Tatwi)
 ' Oct 2020
@@ -15,8 +14,11 @@ DECLARE SUB DrawPixel ()
 DECLARE SUB Commands ()
 DECLARE SUB NameFile ()
 DECLARE SUB SaveFile ()
+DECLARE SUB ChangeASCII ()
+DECLARE SUB DrawMenu ()
 
-SCREEN 0: WIDTH 80, 43
+
+SCREEN 0: WIDTH 80, 50
 CLS
 
 'Declare global variables
@@ -42,16 +44,28 @@ MainLoop
 CLS
 END
 
-DATA "q","w","e","r","t","y"
-DATA ")","!","@","#","$","%","^","&","*","(","Q","W","E","R","T","Y"
-
 SUB ChangeASCII
+'Input as string to prevent screen scrolling on bad input
+COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
+COLOR 15, 5: LOCATE 50, 1: INPUT ; "Enter ASCII Number (0-255):"; I$
 
+' Recover from bad input
+IF LEN(I$) > 3 THEN
+  COLOR 7, 0
+  DrawScreen
+  COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
+  COLOR 15, 5: LOCATE 50, 1: PRINT "Error: Invalid input";
+  SLEEP 4
+  COLOR 7, 0
+  LOCATE 50, 1: PRINT STRING$(80, " ");
+  EXIT SUB
+END IF
 
-LOCATE 41, 1: INPUT ; "Enter ASCII Number (0-255):"; I$
 I = VAL(I$)
+
+' Clamp input to valid range/value
 IF I < 0 THEN I = 0
-IF I > 255 THEN I = 255
+IF I > 254 THEN I = 0
 
 ' Don't allow codes that won't work properly
 IF I = 9 THEN
@@ -61,36 +75,89 @@ ELSEIF I = 12 THEN
 ELSEIF I = 13 THEN
 ELSEIF I = 26 THEN
 ELSEIF I = 30 THEN
+ELSEIF I = 31 THEN
 ELSEIF I = 32 THEN
 ELSE
   AA = I
 END IF
 
-LOCATE 41, 1: PRINT "                                 ";
-UpdateActiveColor
+COLOR 7, 0
+LOCATE 50, 1: PRINT STRING$(80, " ");
+DrawActiveColor
 END SUB
 
 SUB Commands
 SELECT CASE I$
-  CASE IS = "s"
+  CASE IS = CHR$(0) + CHR$(62)
     SaveFile
-  CASE IS = "S"
+  CASE IS = CHR$(0) + CHR$(63)
+    DrawScreen
+  CASE IS = CHR$(0) + CHR$(66)
     NameFile
   CASE IS = "m"
     ChangeASCII
 END SELECT
+
 END SUB
 
 SUB DrawActiveColor
-COLOR 15
-LOCATE 35, 67: PRINT "Active Color";
-LOCATE 37, 68: PRINT CHR$(201); STRING$(7, CHR$(205)); CHR$(187);
-LOCATE 38, 68:
-  PRINT CHR$(186);
-  COLOR AC: PRINT STRING$(7, CHR$(219));
-  COLOR 15: PRINT CHR$(186);
-LOCATE 39, 68: PRINT CHR$(200); STRING$(7, CHR$(205)); CHR$(188);
-LOCATE 41, 67: PRINT "[m]ASCII: "; CHR$(AA);
+COLOR 7
+LOCATE 46, 49
+  PRINT "Color ("; LTRIM$(STR$(AC)); "):";
+  COLOR AC: PRINT STRING$(3, CHR$(219)); "  ";
+LOCATE 46, 65
+  COLOR 7: PRINT "ASCII ("; LTRIM$(STR$(AA)); "):";
+  COLOR AC: PRINT CHR$(AA); "  ";
+
+COLOR 7, 0
+END SUB
+
+SUB DrawMenu
+' ASCII choice bar borders
+COLOR 7:
+LOCATE 41, 1
+  PRINT CHR$(201);
+  PRINT STRING$(39, CHR$(205));
+  PRINT CHR$(209); STRING$(3, CHR$(205)); ; CHR$(209);
+  PRINT STRING$(34, CHR$(205));
+  PRINT CHR$(187);
+LOCATE 43, 1
+  PRINT CHR$(200);
+  PRINT STRING$(39, CHR$(205));
+  PRINT CHR$(207); STRING$(3, CHR$(205)); ; CHR$(207);
+  PRINT STRING$(34, CHR$(205));
+  PRINT CHR$(188);
+LOCATE 42, 41: PRINT CHR$(179);
+LOCATE 42, 45: PRINT CHR$(179);
+' Arrows
+COLOR 0, 7
+LOCATE 42, 1: PRINT "<";
+LOCATE 42, 80: PRINT ">";
+
+
+' Color blocks
+COLOR 7, 0
+P = 10
+FOR X = 1 TO 15
+  COLOR X
+  LOCATE 44, P + X
+  PRINT CHR$(219);
+  P = P + 1
+NEXT X
+
+' Color keys
+COLOR 7
+LOCATE 46, 2: PRINT "Color: 0 1 2 3 4 5 6 7 8 9 q w e r t y";
+LOCATE 47, 2: PRINT "Blink: ) ! @ # $ % ^ & * ( Q W E R T Y";
+
+
+' Commands
+COLOR 7
+LOCATE 49, 2: PRINT "File: "; file$;
+PRINT "  [ESC]Exit [F4]Save [F8]Rename [F5]Redraw [m]ASCII";
+
+' Reset colors
+COLOR 7, 0
 END SUB
 
 SUB DrawPixel
@@ -115,37 +182,17 @@ NEXT Y
 
 'Draw border
 COLOR 8
-FOR X = 1 TO H
-  LOCATE X, W + 1: PRINT CHR$(176)
-NEXT X
-b$ = CHR$(176)
-LOCATE H + 1, 1: PRINT STRING$(W + 1, CHR$(176))
+IF W < 80 THEN
+  FOR X = 1 TO H
+    LOCATE X, W + 1: PRINT CHR$(176)
+  NEXT X
+END IF
 
-'Right side legend
-FOR X = 0 TO 9
-  COLOR 15
-  LOCATE 2 + X * 2, 66
-  PRINT X; : COLOR X: PRINT STRING$(3, CHR$(219));
-NEXT X
+IF H < 40 THEN
+  LOCATE H + 1, 1: PRINT STRING$(W + 1, CHR$(176))
+END IF
 
-FOR X = 10 TO 15
-  COLOR 15
-  LOCATE 2 + X * 2, 67
-  READ name$
-  PRINT name$; " "; : COLOR X: PRINT STRING$(3, CHR$(219));
-NEXT X
-LOCATE 1, 74: PRINT "Blink";
-FOR X = 0 TO 15
-  LOCATE X * 2 + 2, 76
-  READ name$
-  PRINT name$;
-NEXT X
-RESTORE
-
-'Bottom stuff
-LOCATE 35, 2: PRINT "File: "; file$
-LOCATE 37, 2: PRINT "[s]Save [S]Rename [ESC]Exit";
-
+DrawMenu
 DrawActiveColor
 END SUB
 
@@ -194,19 +241,22 @@ COLOR 15, 0
 END SUB
 
 SUB NameFile
-LOCATE 41, 1: INPUT ; "New File Name"; f$
+COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
+COLOR 15, 5: LOCATE 50, 1: INPUT ; "New File Name:"; f$
+
 f$ = LEFT$(f$, 8)
-file$ = UCASE$(f$) + ".CSV"
-LOCATE 41, 1: PRINT "File name changed                         ";
-SLEEP 2
+file$ = UCASE$(f$) + ".IMG"
+COLOR 7, 0
 DrawScreen
 END SUB
 
 SUB SaveFile
-LOCATE 41, 1: INPUT "Really save file (Y/N)"; A$
+COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
+COLOR 15, 5: LOCATE 50, 1: INPUT ; "Realy save file (Y/N):"; A$
 
 IF UCASE$(A$) <> "Y" THEN
-  LOCATE 41, 1: PRINT "                                 ";
+  COLOR 7, 0
+  DrawScreen
   EXIT SUB
 END IF
 
@@ -227,9 +277,12 @@ OPEN file$ FOR OUTPUT AS #1
   NEXT Y
 CLOSE #1
 
-  LOCATE 41, 1: PRINT "File saved!                         ";
-  SLEEP 2
-  LOCATE 41, 1: PRINT "                         ";
+' Let user know file was saved
+COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
+COLOR 15, 5: LOCATE 50, 1: PRINT "File saved!";
+SLEEP 2
+COLOR 7, 0
+LOCATE 50, 1: PRINT STRING$(80, " ");
 END SUB
 
 SUB StartSession
@@ -240,14 +293,15 @@ LOCATE 14, 30: INPUT A
 
 CLS
 IF A = 1 THEN
-  'Set new image size
-  LOCATE 10, 30: INPUT ; "Height (4 - 32)"; H
-  LOCATE 11, 30: INPUT ; "Width (4 - 64)"; W
+  ' Set new image size
+  LOCATE 10, 30: INPUT ; "Height (4 - 40)"; H
+  LOCATE 11, 30: INPUT ; "Width (4 - 80)"; W
   LOCATE 12, 30: INPUT ; "File Name (8 max, no extention)"; f$
 
-  IF H > 32 THEN H = 32
+  ' Clamp value
+  IF H > 32 THEN H = 40
   IF H < 4 THEN H = 4
-  IF W > 64 THEN W = 64
+  IF W > 64 THEN W = 80
   IF W < 4 THEN W = 4
 
   IF f$ = "" THEN f$ = "TEST"
@@ -287,6 +341,7 @@ END IF
 END SUB
 
 SUB UpdateActiveColor
+ACO = AC
 SELECT CASE I$
   CASE IS = "0"
     AC = 0
@@ -353,6 +408,6 @@ SELECT CASE I$
   CASE IS = "Y"
     AC = 31
 END SELECT
-DrawActiveColor
+IF AC <> ACO THEN DrawActiveColor
 END SUB
 
