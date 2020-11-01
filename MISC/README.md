@@ -6,8 +6,11 @@ Various things I puttered with. Here is a description by file name.
 **/ARCHIVE**  
 A collection of the assignments and other programs I created in high school between 1992 and 1997. They're here because, amazingly, I still had them on disk! It's kind of neat to see what we were doing back then. This was grade 10 and 11. I didn't take the grade 12 and 13 classes, where they worked with Pascal, because I was interested in other things at the time. Funny enough, I took grade 13 chemistry two semesters in a row, because I enjoyed it so much the first time. And wouldn't you know it, that left me one English credit short of graduating, so I had to take grade 13 English in summer school! Whoops! Man, that teacher sure hated the assignments I handed in typed on my Underwood manual typewriter (on green paper with white "White-Out" corrections lol...). She wouldn't accept hand written essays, but we didn't have a computer at home and we weren't able to use the computers at the school in the summer, so that was the best I could do at the time. Ah my life, so full of *weird* was it...  
 
-**/COMMON**  
-The Screen Mode 7 framework I am creating as the basis for my text mode games. It's designed to enhance the chunky 40x25 ASCII characters using 16 color sprites that are loaded from pain text CSV files.
+**/COMSCR0**  
+Tools and code that I am creating as the basis for my text mode games. Generally these will take advantage of the full 80x50 character resolution offered by QBasic.  
+
+**/COMSCR7**  
+Tools and code that I am creating as the basis for my text mode games that can use the graphical enhancements offered by Screen Mode 7. It's designed to enhance the chunky 40x25 ASCII characters using 16 color sprites that are loaded from pain text CSV files.  
 
 **/RUNMAN**  
 Testing sprite animation using a 4 frame 8x8 running man. 
