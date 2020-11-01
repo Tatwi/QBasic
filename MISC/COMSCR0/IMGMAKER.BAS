@@ -1,3 +1,4 @@
+DECLARE SUB FillSwap ()
 ' ASCII Image Maker
 ' R. Bassett Jr. (Tatwi)
 ' Oct 2020
@@ -37,7 +38,7 @@ DIM SHARED I$               ' User input
 
 ' Custom ASCII character chart
 DIM SHARED AB AS INTEGER    ' Active ASCII bar index number
-DIM SHARED chartSize AS INTEGER: chartSize = 243
+DIM SHARED chartSize AS INTEGER: chartSize = 241
 DIM SHARED aChart(1 TO chartSize) AS INTEGER
 OPEN "ASCII.CSV" FOR INPUT AS #1
   FOR X = 1 TO chartSize
@@ -126,6 +127,15 @@ SELECT CASE I$
     IF AB > chartSize THEN AB = 1
     DrawBar (AB)
     AA = aChart(AB)
+    DrawActiveColor
+  CASE IS = CHR$(0) + CHR$(67)
+    FillSwap
+  CASE IS = CHR$(0) + CHR$(134)
+    ' Set active to match what's under the cursor
+    AC = image(CY, CX) / 1000
+    AA = image(CY, CX) - AC * 1000
+    AB = FindCode(AA)
+    DrawBar (AB)
     DrawActiveColor
 END SELECT
 
@@ -260,6 +270,18 @@ END IF
 
 DrawMenu
 DrawActiveColor
+END SUB
+
+SUB FillSwap
+' Fill the image with the active color/character where it matches
+' the color/character at the cursor location.
+T = image(CY, CX)
+FOR Y = 1 TO H
+  FOR X = 1 TO W
+    IF image(Y, X) = T THEN image(Y, X) = AC * 1000 + AA
+  NEXT X
+NEXT Y
+DrawScreen
 END SUB
 
 FUNCTION FindCode (AA)
