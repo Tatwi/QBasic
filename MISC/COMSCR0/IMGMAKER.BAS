@@ -16,7 +16,8 @@ DECLARE SUB NameFile ()
 DECLARE SUB SaveFile ()
 DECLARE SUB ChangeASCII ()
 DECLARE SUB DrawMenu ()
-
+DECLARE SUB DrawBar (Start%)
+DECLARE FUNCTION FindCode (AA)
 
 SCREEN 0: WIDTH 80, 50
 CLS
@@ -34,7 +35,17 @@ DIM SHARED file AS STRING   ' Active image file
 DIM SHARED image(X, X) AS INTEGER   ' Working image data
 DIM SHARED I$               ' User input
 
-AA = 219: AC = 3
+' Custom ASCII character chart
+DIM SHARED AB AS INTEGER    ' Active ASCII bar index number
+DIM SHARED chartSize AS INTEGER: chartSize = 243
+DIM SHARED aChart(1 TO chartSize) AS INTEGER
+OPEN "ASCII.CSV" FOR INPUT AS #1
+  FOR X = 1 TO chartSize
+    INPUT #1, aChart(X)
+  NEXT X
+CLOSE #1
+
+AA = 219: AC = 3: AB = FindCode(AA)
 CX = 1: CY = 1: CXO = 1: CYO = 1 'Cursor position
 H = 4: W = 4 'Min image size
 
@@ -68,7 +79,8 @@ IF I < 0 THEN I = 0
 IF I > 254 THEN I = 0
 
 ' Don't allow codes that won't work properly
-IF I = 9 THEN
+IF I = 7 THEN
+ELSEIF I = 9 THEN
 ELSEIF I = 10 THEN
 ELSEIF I = 11 THEN
 ELSEIF I = 12 THEN
@@ -84,6 +96,13 @@ END IF
 COLOR 7, 0
 LOCATE 50, 1: PRINT STRING$(80, " ");
 DrawActiveColor
+
+' Update the scroll bar
+AB = FindCode(AA)
+DrawBar (AB)
+
+' Reset input sting to avoid triggering other commands0
+I$ = ""
 END SUB
 
 SUB Commands
@@ -96,6 +115,18 @@ SELECT CASE I$
     NameFile
   CASE IS = "m"
     ChangeASCII
+  CASE IS = ","
+    AB = AB - 1
+    IF AB = 0 THEN AB = chartSize
+    DrawBar (AB)
+    AA = aChart(AB)
+    DrawActiveColor
+  CASE IS = "."
+    AB = AB + 1
+    IF AB > chartSize THEN AB = 1
+    DrawBar (AB)
+    AA = aChart(AB)
+    DrawActiveColor
 END SELECT
 
 END SUB
@@ -110,6 +141,42 @@ LOCATE 46, 65
   COLOR AC: PRINT CHR$(AA); "  ";
 
 COLOR 7, 0
+END SUB
+
+SUB DrawBar (Start)
+LOUT$ = ""
+ROUT$ = ""
+
+' Before (left side)
+Z = 19
+FOR X = 1 TO 19
+  TP = Start - Z
+  IF TP = 0 THEN TP = chartSize
+  IF TP < 0 THEN TP = chartSize - ABS(TP)
+
+  LOUT$ = LOUT$ + CHR$(aChart(TP)) + " "
+
+  Z = Z - 1
+NEXT X
+                           
+' After (right side)
+FOR X = 1 TO 16
+  TP = Start + X
+  IF TP < 1 THEN TP = chartSize + 1 - X
+  IF TP > chartSize THEN TP = TP - chartSize
+
+  ROUT$ = ROUT$ + CHR$(aChart(TP)) + " "
+NEXT X
+
+' Print results
+LOCATE 42, 3: PRINT LOUT$;
+LOCATE 42, 41:
+  PRINT CHR$(179); " ";
+  COLOR AC
+  PRINT CHR$(aChart(Start));
+  COLOR 7
+  PRINT " "; CHR$(179);
+LOCATE 42, 47: PRINT ROUT$;
 END SUB
 
 SUB DrawMenu
@@ -127,13 +194,10 @@ LOCATE 43, 1
   PRINT CHR$(207); STRING$(3, CHR$(205)); ; CHR$(207);
   PRINT STRING$(34, CHR$(205));
   PRINT CHR$(188);
-LOCATE 42, 41: PRINT CHR$(179);
-LOCATE 42, 45: PRINT CHR$(179);
 ' Arrows
 COLOR 0, 7
 LOCATE 42, 1: PRINT "<";
 LOCATE 42, 80: PRINT ">";
-
 
 ' Color blocks
 COLOR 7, 0
@@ -150,11 +214,13 @@ COLOR 7
 LOCATE 46, 2: PRINT "Color: 0 1 2 3 4 5 6 7 8 9 q w e r t y";
 LOCATE 47, 2: PRINT "Blink: ) ! @ # $ % ^ & * ( Q W E R T Y";
 
-
 ' Commands
 COLOR 7
-LOCATE 49, 2: PRINT "File: "; file$;
-PRINT "  [ESC]Exit [F4]Save [F8]Rename [F5]Redraw [m]ASCII";
+LOCATE 49, 2: PRINT file$;
+PRINT " [ESC]Exit [F4]Save [F8]Rename [F5]Redraw [m][,][.]ASCII";
+
+' ASCII bar contents
+DrawBar (FindCode(AA))
 
 ' Reset colors
 COLOR 7, 0
@@ -195,6 +261,20 @@ END IF
 DrawMenu
 DrawActiveColor
 END SUB
+
+FUNCTION FindCode (AA)
+' Return the custom ASCII chart index value that matches the active character
+Z = 1
+FOR X = 1 TO chartSize
+  IF AA = aChart(X) THEN
+    Z = X
+    GOSUB Break
+  END IF
+NEXT X
+
+Break:
+FindCode = Z
+END FUNCTION
 
 SUB MainLoop
 MoveCursor
@@ -408,6 +488,9 @@ SELECT CASE I$
   CASE IS = "Y"
     AC = 31
 END SELECT
-IF AC <> ACO THEN DrawActiveColor
+IF AC <> ACO THEN
+  DrawActiveColor
+  DrawBar (AB)
+END IF
 END SUB
 
