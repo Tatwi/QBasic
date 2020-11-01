@@ -34,3 +34,6 @@ Playing with the movement of an object and redrawing the screen.
 
 **THEBEST.BAS**  
 Flickering "stars" I made to test the speed of QBasic on my Compaq Deskpro 4000 running DOS 7 (Windows 98SE) on a Pentium 233MMX. This program runs so fast on the real Pentium CPU that I can't quite match it using DOSBox using the 2GHz Intel Celeron 3450 in my laptop, even with it set to 200,000 cycles per second. Normally I run DOSBox at 5,000 cycles, so that's quite the difference speed and it still comes up short.
+
+**WRPARRY.BAS**  
+I was having a hard time printing out the values of an array starting at an arbitrary point, where I printed X before and X after the starting point. So I made this program to break the problem down to its essence. QBasic's array indexes starting at 1 rather 0 makes this a little harder than in other languages. But I'm no math genius, so perhaps a PEBKAC. :)  
