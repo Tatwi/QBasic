@@ -6,19 +6,20 @@ DEFINT A-Z
 SCREEN 0: WIDTH 80, 50
 CLS
 
-DIM aChart(1 TO 245) AS LONG
+chartSize = 244
+DIM aChart(1 TO chartSize) AS LONG
 
 OPEN "ASCII.CSV" FOR INPUT AS #1
-  FOR X = 1 TO 245
+  FOR X = 1 TO chartSize
     INPUT #1, aChart(X)
   NEXT X
 CLOSE #1
 
-FOR X = 1 TO 245
+FOR X = 1 TO chartSize
   PRINT aChart(X); ",";
 NEXT X
 
-Start = 4
+Start = 16
 AC = 4
 GOSUB PrintBorder
 GOSUB UpdateBar
@@ -28,11 +29,11 @@ DO WHILE I$ <> CHR$(27)
   I$ = INKEY$
   IF I$ = "," THEN
     Start = Start - 1
-    IF Start < 1 THEN Start = 245
+    IF Start < 1 THEN Start = chartSize
     GOSUB UpdateBar
   ELSEIF I$ = "." THEN
     Start = Start + 1
-    IF Start > 245 THEN Start = 1
+    IF Start > chartSize THEN Start = 1
     GOSUB UpdateBar
   END IF
 LOOP
@@ -45,64 +46,28 @@ LOCATE 42, 2: PRINT STRING$(78, " ")
 LOUT$ = ""
 ROUT$ = ""
 
-IF Start < 20 THEN
-  LOCATE 50, 40: PRINT "IF START < 19 ";
-  ' Close to the start
+' Before (left side)
+Z = 19
+FOR X = 1 TO 19
+  TP = Start - Z
+  IF TP = 0 THEN TP = chartSize
+  IF TP < 0 THEN TP = chartSize - ABS(TP)
 
-  R = Start - 19
-  FOR X = 245 + R TO 245
-    ' #s that would be less than 0
-    LOUT$ = LOUT$ + CHR$(aChart(X)) + " "
-  NEXT X
+  LOUT$ = LOUT$ + CHR$(aChart(TP)) + " "
 
-  FOR X = 1 TO 19 + R - 1
-   ' #s between 1 and one before Start
-   LOUT$ = LOUT$ + CHR$(aChart(X)) + " "
-  NEXT X
+  Z = Z - 1
+NEXT X
 
-  FOR X = Start + 1 TO Start + 16
-    ' 15 # to the right of Start
-    ROUT$ = ROUT$ + CHR$(aChart(X)) + " "
-  NEXT X
-ELSEIF Start > 226 THEN
-  LOCATE 50, 40: PRINT "IF START > 226";
-  ' Close to the end
+' After (right side)
+FOR X = 1 TO 16
+  TP = Start + X
+  IF TP < 1 THEN TP = chartSize + 1 - X
+  IF TP > chartSize THEN TP = TP - chartSize
 
-  FOR X = Start - 19 TO Start
-    ' Before the starting point
-    LOUT$ = LOUT$ + CHR$(aChart(X)) + " "
-  NEXT X
+  ROUT$ = ROUT$ + CHR$(aChart(TP)) + " "
+NEXT X
 
-  FOR X = Start + 1 TO 245
-    ' Right side upto 245
-    ROUT$ = ROUT$ + CHR$(aChart(X)) + " "
-  NEXT X
-
-  ' How many digits beyond 245?
-  B = 245 - Start
-  LOCATE 50, 1: PRINT B;
-
-  FOR X = 1 TO 16 - B
-    ' Right side beyond 245
-    ROUT$ = ROUT$ + CHR$(aChart(X)) + " "
-  NEXT X
-ELSE
-  LOCATE 50, 40: PRINT "ELSE CLAUSE       ";
-  ' Far enough in the middle
-
-  FOR X = Start - 19 TO Start
-    ' Before the starting point
-    LOUT$ = LOUT$ + CHR$(aChart(X)) + " "
-  NEXT X
-
-  FOR X = Start + 1 TO Start + 16
-    ' Before the starting point
-    ROUT$ = ROUT$ + CHR$(aChart(X)) + " "
-  NEXT X
-
-
-END IF
-
+' Print results
 LOCATE 42, 3: PRINT LOUT$;
 LOCATE 42, 41:
   PRINT CHR$(179); " ";
