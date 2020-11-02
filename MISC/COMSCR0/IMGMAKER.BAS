@@ -1,4 +1,3 @@
-DECLARE SUB FillSwap ()
 ' ASCII Image Maker
 ' R. Bassett Jr. (Tatwi)
 ' Oct 2020
@@ -18,6 +17,7 @@ DECLARE SUB SaveFile ()
 DECLARE SUB ChangeASCII ()
 DECLARE SUB DrawMenu ()
 DECLARE SUB DrawBar (Start%)
+DECLARE SUB FillSwap ()
 DECLARE FUNCTION FindCode (AA)
 
 SCREEN 0: WIDTH 80, 50
@@ -102,7 +102,7 @@ DrawActiveColor
 AB = FindCode(AA)
 DrawBar (AB)
 
-' Reset input sting to avoid triggering other commands0
+' Reset input string to avoid triggering other commands
 I$ = ""
 END SUB
 
@@ -117,12 +117,14 @@ SELECT CASE I$
   CASE IS = "m"
     ChangeASCII
   CASE IS = ","
+    ' ASCII scroll bar <<
     AB = AB - 1
     IF AB = 0 THEN AB = chartSize
     DrawBar (AB)
     AA = aChart(AB)
     DrawActiveColor
   CASE IS = "."
+    ' ASCII scroll bar >>
     AB = AB + 1
     IF AB > chartSize THEN AB = 1
     DrawBar (AB)
