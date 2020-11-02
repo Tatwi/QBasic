@@ -137,6 +137,14 @@ SELECT CASE I$
     AB = FindCode(AA)
     DrawBar (AB)
     DrawActiveColor
+  CASE IS = CHR$(6)
+    ' CTL+F Memory status message
+    COLOR 5: LOCATE 50, 1: PRINT STRING$(80, 219);
+    COLOR 15, 5: LOCATE 50, 1
+    PRINT "Free Memory:"; FRE(0); "Array:"; FRE(-1); "Stack:"; FRE(-2);
+    SLEEP 10
+    COLOR 7, 0
+    LOCATE 50, 1: PRINT STRING$(80, " ");
 END SELECT
 
 END SUB
