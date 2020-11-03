@@ -1,3 +1,5 @@
+DECLARE SUB Help ()
+DECLARE SUB InsertString ()
 ' ASCII Image Maker
 ' R. Bassett Jr. (Tatwi)
 ' Oct 2020
@@ -53,6 +55,7 @@ H = 4: W = 4 'Min image size
 StartSession
 DrawScreen
 MainLoop
+SaveFile
 CLS
 END
 
@@ -112,18 +115,18 @@ SELECT CASE I$
     SaveFile
   CASE IS = CHR$(0) + CHR$(63)
     DrawScreen
-  CASE IS = CHR$(0) + CHR$(66)
+  CASE IS = CHR$(0) + CHR$(61)
     NameFile
   CASE IS = "m"
     ChangeASCII
-  CASE IS = ","
+  CASE IS = CHR$(0) + CHR$(115)
     ' ASCII scroll bar <<
     AB = AB - 1
     IF AB = 0 THEN AB = chartSize
     DrawBar (AB)
     AA = aChart(AB)
     DrawActiveColor
-  CASE IS = "."
+  CASE IS = CHR$(0) + CHR$(116)
     ' ASCII scroll bar >>
     AB = AB + 1
     IF AB > chartSize THEN AB = 1
@@ -147,6 +150,10 @@ SELECT CASE I$
     SLEEP 10
     COLOR 7, 0
     LOCATE 50, 1: PRINT STRING$(80, " ");
+  CASE IS = CHR$(0) + CHR$(59)
+    Help
+  CASE IS = CHR$(0) + CHR$(66)
+    InsertString
 END SELECT
 
 END SUB
@@ -237,7 +244,7 @@ LOCATE 47, 2: PRINT "Blink: ) ! @ # $ % ^ & * ( Q W E R T Y";
 ' Commands
 COLOR 7
 LOCATE 49, 2: PRINT file$;
-PRINT " [ESC]Exit [F4]Save [F8]Rename [F5]Redraw [m][,][.]ASCII";
+PRINT " [ESC]Exit [F1]Help [F3]Rename [F4]Save [F5]Redraw [m]ASCII";
 
 ' ASCII bar contents
 DrawBar (FindCode(AA))
@@ -247,11 +254,18 @@ COLOR 7, 0
 END SUB
 
 SUB DrawPixel
-  IF I$ = " " THEN
+SELECT CASE I$
+  CASE IS = " "
     ' Store color in thousands position, ASCII code in hundreds position
     image(CY, CX) = AC * 1000 + AA
     COLOR AC: LOCATE CY, CX: PRINT CHR$(AA)
-  END IF
+  CASE IS = "c"
+    ' Change only the color at cursor postion
+    C = image(CY, CX) / 1000
+    A = image(CY, CX) - C * 1000
+    image(CY, CX) = AC * 1000 + A
+    COLOR AC: LOCATE CY, CX: PRINT CHR$(AA)
+END SELECT
 END SUB
 
 SUB DrawScreen
@@ -307,6 +321,59 @@ NEXT X
 Break:
 FindCode = Z
 END FUNCTION
+
+SUB Help
+CLS
+LOCATE 1, 33: PRINT "--== Help ==--"
+LOCATE 50, 30: PRINT "Press F1 to return";
+
+LOCATE 3, 2: PRINT "[ARROW KEYS] Move the cursor"
+LOCATE 5, 2: PRINT "[SPACE] Draw character at cursor"
+LOCATE 7, 2: PRINT "[C] Change only color at cursor"
+LOCATE 9, 2: PRINT "[1 - 0] and [Q - Y] Select color"
+LOCATE 11, 2: PRINT "[CTL + L/R ARROW] Scroll the character selection bar"
+LOCATE 13, 2: PRINT "[m] Manually set the ASCII character"
+LOCATE 15, 2: PRINT "[F8] Insert a sting of text starting at the cursor location"
+LOCATE 17, 2: PRINT "[F9] Replace same to what's at cursor with selected char/color"
+LOCATE 19, 2: PRINT "[F12] Set selected char/color to match what's at cursor"
+
+
+I$ = ""
+DO WHILE I$ <> CHR$(0) + CHR$(59)
+  I$ = INKEY$
+LOOP
+DrawScreen
+END SUB
+
+SUB InsertString
+' Type some letters from the cursor position.
+' Truncates string at the right side of the image.
+
+COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, 219);
+COLOR 15, 5: LOCATE 50, 1
+  PRINT "Enter your line of text here and press ENTER.";
+  SLEEP 3
+COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, 219);
+COLOR 15, 5: LOCATE 50, 1: INPUT ; ""; UINP$
+COLOR 7, 0: LOCATE 50, 1: PRINT STRING$(80, " ");
+
+' Truncate
+UINP$ = LEFT$(UINP$, W - CX + 1)
+
+Z = LEN(UINP$)
+
+' Save the active character
+OLDAA = AA
+
+FOR X = 1 TO Z
+  AA = ASC(MID$(UINP$, X, 1))
+  image(CY, CX + X - 1) = AC * 1000 + AA
+  COLOR AC:   LOCATE CY, CX + X - 1: PRINT CHR$(AA)
+NEXT X
+
+' Restore the active character
+AA = OLDAA
+END SUB
 
 SUB MainLoop
 MoveCursor
@@ -364,7 +431,7 @@ END SUB
 
 SUB SaveFile
 COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
-COLOR 15, 5: LOCATE 50, 1: INPUT ; "Realy save file (Y/N):"; A$
+COLOR 15, 5: LOCATE 50, 1: INPUT ; "Save file (Y/N):"; A$
 
 IF UCASE$(A$) <> "Y" THEN
   COLOR 7, 0
