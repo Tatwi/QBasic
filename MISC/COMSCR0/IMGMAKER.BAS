@@ -36,7 +36,8 @@ DIM SHARED H AS INTEGER     ' Image height, in characters
 DIM SHARED W AS INTEGER     ' Image width, in characters
 DIM SHARED file AS STRING   ' Active image file
 DIM SHARED image(X, X) AS INTEGER   ' Working image data
-DIM SHARED I$               ' User input
+DIM SHARED I AS STRING      ' User input
+DIM SHARED DWM AS INTEGER   ' Draw when moving bool
 
 ' Custom ASCII character chart
 DIM SHARED AB AS INTEGER    ' Active ASCII bar index number
@@ -62,10 +63,10 @@ END
 SUB ChangeASCII
 'Input as string to prevent screen scrolling on bad input
 COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
-COLOR 15, 5: LOCATE 50, 1: INPUT ; "Enter ASCII Number (0-255):"; I$
+COLOR 15, 5: LOCATE 50, 1: INPUT ; "Enter ASCII Number (0-255):"; UIN$
 
 ' Recover from bad input
-IF LEN(I$) > 3 THEN
+IF LEN(UIN$) > 3 THEN
   COLOR 7, 0
   DrawScreen
   COLOR 5, 0: LOCATE 50, 1: PRINT STRING$(80, CHR$(219));
@@ -76,25 +77,25 @@ IF LEN(I$) > 3 THEN
   EXIT SUB
 END IF
 
-I = VAL(I$)
+UC = VAL(UIN$)
 
 ' Clamp input to valid range/value
-IF I < 0 THEN I = 0
-IF I > 254 THEN I = 0
+IF UC < 0 THEN UC = 0
+IF UC > 254 THEN UC = 0
 
 ' Don't allow codes that won't work properly
-IF I = 7 THEN
-ELSEIF I = 9 THEN
-ELSEIF I = 10 THEN
-ELSEIF I = 11 THEN
-ELSEIF I = 12 THEN
-ELSEIF I = 13 THEN
-ELSEIF I = 26 THEN
-ELSEIF I = 30 THEN
-ELSEIF I = 31 THEN
-ELSEIF I = 32 THEN
+IF UC = 7 THEN
+ELSEIF UC = 9 THEN
+ELSEIF UC = 10 THEN
+ELSEIF UC = 11 THEN
+ELSEIF UC = 12 THEN
+ELSEIF UC = 13 THEN
+ELSEIF UC = 26 THEN
+ELSEIF UC = 30 THEN
+ELSEIF UC = 31 THEN
+ELSEIF UC = 32 THEN
 ELSE
-  AA = I
+  AA = UC
 END IF
 
 COLOR 7, 0
@@ -154,6 +155,15 @@ SELECT CASE I$
     Help
   CASE IS = CHR$(0) + CHR$(66)
     InsertString
+  CASE IS = CHR$(0) + CHR$(79)
+    ' Toggle draw when moving
+    IF DWM THEN
+      DWM = 0
+      COLOR 2: LOCATE 45, 52: PRINT STRING$(20, " ")
+    ELSE
+      DWM = -1
+      COLOR 2: LOCATE 45, 52: PRINT "Draw On Move Enabled"; : COLOR 7
+    END IF
 END SELECT
 
 END SUB
@@ -196,6 +206,7 @@ FOR X = 1 TO 16
 NEXT X
 
 ' Print results
+COLOR 7
 LOCATE 42, 3: PRINT LOUT$;
 LOCATE 42, 41:
   PRINT CHR$(179); " ";
@@ -266,6 +277,9 @@ SELECT CASE I$
     image(CY, CX) = AC * 1000 + A
     COLOR AC: LOCATE CY, CX: PRINT CHR$(AA)
 END SELECT
+
+' Draw the cursor
+COLOR 0, 15: LOCATE CY, CX: PRINT CHR$(4); : COLOR 7, 0
 END SUB
 
 SUB DrawScreen
@@ -336,13 +350,14 @@ LOCATE 13, 2: PRINT "[m] Manually set the ASCII character"
 LOCATE 15, 2: PRINT "[F8] Insert a sting of text starting at the cursor location"
 LOCATE 17, 2: PRINT "[F9] Replace same to what's at cursor with selected char/color"
 LOCATE 19, 2: PRINT "[F12] Set selected char/color to match what's at cursor"
-
+LOCATE 21, 2: PRINT "[END] Toggle Draw on Move (snake) mode on/off"
 
 I$ = ""
 DO WHILE I$ <> CHR$(0) + CHR$(59)
   I$ = INKEY$
 LOOP
 DrawScreen
+DrawPixel
 END SUB
 
 SUB InsertString
@@ -376,7 +391,7 @@ AA = OLDAA
 END SUB
 
 SUB MainLoop
-MoveCursor
+DrawPixel
 DO
   I$ = INKEY$
   IF I$ <> "" THEN
@@ -400,6 +415,8 @@ SELECT CASE I$
     CX = CX - 1
   CASE IS = CHR$(0) + CHR$(77) 'Right
       CX = CX + 1
+  CASE ELSE
+    EXIT SUB
 END SELECT
 
 IF CX < 1 THEN CX = 1
@@ -413,10 +430,11 @@ A = image(CYO, CXO) - C * 1000
 ' Print what was previously under the cursor
 COLOR C: LOCATE CYO, CXO: PRINT CHR$(A);
 
-' Print the cursor
-COLOR 0, 15: LOCATE CY, CX: PRINT CHR$(4);
+' Print the cursor in DrawPixel function
 
-COLOR 15, 0
+' Draw when moving the cursor
+' Sets up DrawPixel function as though user also pressed the space bar
+IF DWM THEN I$ = " "
 END SUB
 
 SUB NameFile
@@ -435,7 +453,6 @@ COLOR 15, 5: LOCATE 50, 1: INPUT ; "Save file (Y/N):"; A$
 
 IF UCASE$(A$) <> "Y" THEN
   COLOR 7, 0
-  DrawScreen
   EXIT SUB
 END IF
 
@@ -502,15 +519,15 @@ ELSEIF A = 2 THEN
 
   OPEN file$ FOR INPUT AS #1
   ' Get image size from first two data points
-  INPUT #1, I: H = I
-  INPUT #1, I: W = I
+  INPUT #1, D: H = D
+  INPUT #1, D: W = D
 
   'Load data
   REDIM image(H, W)
   FOR Y = 1 TO H
     FOR X = 1 TO W
-        INPUT #1, I
-        image(Y, X) = I
+        INPUT #1, D
+        image(Y, X) = D
     NEXT X
   NEXT Y
   CLOSE #1
