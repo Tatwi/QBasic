@@ -35,6 +35,9 @@ Dsiplays the 16 colours used by QBasic in screen modes 0 and 7.
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
+**TARRSZ.BAS**  
+A program for testing the memory usage of 1 and 2 dimensional arrays of different variable types.  
+
 **THEBEST.BAS**  
 Flickering "stars" I made to test the speed of QBasic on my Compaq Deskpro 4000 running DOS 7 (Windows 98SE) on a Pentium 233MMX. This program runs so fast on the real Pentium CPU that I can't quite match it using DOSBox using the 2GHz Intel Celeron 3450 in my laptop, even with it set to 200,000 cycles per second. Normally I run DOSBox at 5,000 cycles, so that's quite the difference speed and it still comes up short.
 
