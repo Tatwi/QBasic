@@ -10,7 +10,7 @@ As far as hobbies go, programming is inexpensive and accessible, but it isn't al
 - Intentionally only using the Micosoft QBasic 1.1 IDE, because this is a nostalgia driven retro computing project!
 - Primarily making ASCII character and simple graphical games.
 - Designed to run well in DOSBox at 5000 cycles. This is probably close to a real Intel 386DX/33 CPU.
-- After much testing, I decided that I like the look of the tv2x DOSBox filter when using my 24" 1080p LCD desktop monitor (BenQ GW2470). It doesn't look exactly the same as the 15" CRT I used in the 1990s, but I think it looks better than not using a screen filter at 2x resolution (which really is required on this size of screen, else the window is just too small). So that's the <a href="#images">"look and feel"</a> I am seeing on my end when creating/using these programs.  
+- After much testing, I decided that I like the look of the tv2x DOSBox filter when using my 24" 1080p LCD desktop monitor (BenQ GW2470). It doesn't look exactly the same as the 15" CRT I used in the 1990s, but I think it looks better than not using a screen filter at 2x resolution (which really is required on this size of screen, else the window is just too small). So that's the <a href="#images">"look and feel"</a> I am seeing on my end when creating/using these programs. That said, on my laptop I used the normal2x filter, because the scan lines don't scale properly on its 1366x768 LCD (also, the font is blurry without the normal2x filter).  
 
 
 ## Project Files
@@ -18,10 +18,10 @@ As far as hobbies go, programming is inexpensive and accessible, but it isn't al
 Each sub directory has it own README file that describes the files within in greater detail. I figured that was handy way to organize things... :)
 
 **/GAMES**  
-- **GAME1:** Collect all the hearts and escape the caves before the tunnels collapse and you run out of bombs. This game is effectively my own general purpose character graphics "game engine", a foundation I can build upon in future projects.
+- **GAME1:** Collect all the hearts and escape the caves before the tunnels collapse and you run out of bombs.  
 
 **/BENCHES**  
-- My attempt to help people run QBasic 1.1 at the same speed on different hardware, real and emulated.
+- My attempt to help people run QBasic 1.1 at the same speed on different hardware, real and emulated. 
 
 **/MISC**  
 - Various BASIC programs that I created for testing/learning/fun.
@@ -31,9 +31,9 @@ Each sub directory has it own README file that describes the files within in gre
 - Information and observations related to my use of QBasic.  
 
 
-## Disclaimer
+## Performance Disclaimer
 
-The only real "retro PC" I have to test these programs with is my Pentium 233MMX based Compaq Deskpro 4000, which is actually *too fast* for QBasic. Consequently, I am uncertain how well these programs will run using real 386 and 486 computers. That said, I have done a considerable amount of testing using PCem and I am confident my QBasic software will perform acceptably on 386 and slower 486 compatible PCs.
+The only real "retro PC" I have to test these programs with is my Pentium 233MMX based Compaq Deskpro 4000, which is actually *too fast* for QBasic. Consequently, I am uncertain how well these programs will run using real 386 and 486 computers. That said, I have done a considerable amount of testing and I am confident my QBasic software will perform acceptably on a real PC running the equivalent of a 386SX 25MHz to a 386DX 33MHz CPU.  
 
 If you have some old machines and you feel like testing some things for me, please see the [BENCHES](/BENCHES) directory. Your contributions, both documentation and benchmark programs, are welcome!
 
