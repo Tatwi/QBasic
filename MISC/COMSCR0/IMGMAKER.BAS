@@ -547,7 +547,7 @@ IF A = 1 THEN
   f$ = UCASE$(f$)
   file$ = f$ + ".IMG"
 
-  REDIM image(H, W)
+  REDIM image(H, W) AS LONG
   FOR Y = 1 TO H
     FOR X = 1 TO W
         image(Y, X) = 0
@@ -565,7 +565,7 @@ ELSEIF A = 2 THEN
   INPUT #1, D&: W = D&
 
   'Load data
-  REDIM image(H, W)
+  REDIM image(H, W) AS LONG
   FOR Y = 1 TO H
     FOR X = 1 TO W
         INPUT #1, D&
