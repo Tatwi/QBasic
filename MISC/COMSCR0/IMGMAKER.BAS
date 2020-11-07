@@ -1,9 +1,8 @@
-DECLARE SUB Help ()
-DECLARE SUB InsertString ()
 ' ASCII Image Maker
 ' R. Bassett Jr. (Tatwi)
 ' Oct 2020
-' For creating 16 color ASCII images.
+' For creating ASCII images up to 80x40 characters, with 16 foreground colors
+' and 8 background colors.
 
 DEFINT A-Z
 DECLARE SUB StartSession ()
@@ -21,21 +20,27 @@ DECLARE SUB DrawMenu ()
 DECLARE SUB DrawBar (Start%)
 DECLARE SUB FillSwap ()
 DECLARE FUNCTION FindCode (AA)
+DECLARE SUB Help ()
+DECLARE SUB InsertString ()
+
 
 SCREEN 0: WIDTH 80, 50
 CLS
 
 'Declare global variables
+CONST TRUE = -1
+CONST FALSE = 0
 DIM SHARED AA AS INTEGER    ' Active ASCII character
 DIM SHARED AC AS INTEGER    ' Active color
+DIM SHARED BC AS INTEGER    ' Background color
 DIM SHARED CX AS INTEGER    ' Current X position
 DIM SHARED CY AS INTEGER    ' Current Y position
 DIM SHARED CXO AS INTEGER   ' Previous X position
-DIM SHARED CXY AS INTEGER   ' Previous Y postion
+DIM SHARED CYO AS INTEGER   ' Previous Y postion
 DIM SHARED H AS INTEGER     ' Image height, in characters
 DIM SHARED W AS INTEGER     ' Image width, in characters
 DIM SHARED file AS STRING   ' Active image file
-DIM SHARED image(X, X) AS INTEGER   ' Working image data
+DIM SHARED image(X, X) AS LONG   ' Working image data
 DIM SHARED I AS STRING      ' User input
 DIM SHARED DWM AS INTEGER   ' Draw when moving bool
 
@@ -49,7 +54,7 @@ OPEN "ASCII.CSV" FOR INPUT AS #1
   NEXT X
 CLOSE #1
 
-AA = 219: AC = 3: AB = FindCode(AA)
+AA = 219: AC = 3: BC = 0: AB = FindCode(AA)
 CX = 1: CY = 1: CXO = 1: CYO = 1 'Cursor position
 H = 4: W = 4 'Min image size
 
@@ -138,8 +143,9 @@ SELECT CASE I$
     FillSwap
   CASE IS = CHR$(0) + CHR$(134)
     ' Set active to match what's under the cursor
-    AC = image(CY, CX) / 1000
-    AA = image(CY, CX) - AC * 1000
+    BC = image(CY, CX) / 100000
+    AC = (image(CY, CX) - BC * 100000) / 1000
+    AA = VAL(RIGHT$(STR$(image(CY, CX)), 3))
     AB = FindCode(AA)
     DrawBar (AB)
     DrawActiveColor
@@ -169,15 +175,16 @@ END SELECT
 END SUB
 
 SUB DrawActiveColor
-COLOR 7
-LOCATE 46, 49
-  PRINT "Color ("; LTRIM$(STR$(AC)); "):";
-  COLOR AC: PRINT STRING$(3, 219); "  ";
+COLOR 7, 0
+LOCATE 46, 44
+  PRINT "Colors ("; LTRIM$(STR$(AC)); ","; LTRIM$(STR$(BC)); "):";
+  COLOR AC, 0: PRINT STRING$(2, 219);
+  COLOR BC, 0: PRINT STRING$(2, 219);
+  COLOR 7, 0: PRINT "    "
 LOCATE 46, 65
   COLOR 7: PRINT "ASCII ("; LTRIM$(STR$(AA)); "):";
-  COLOR AC: PRINT CHR$(AA); "  ";
-
-COLOR 7, 0
+  COLOR AC, BC: PRINT CHR$(AA);
+  COLOR 7, 0: PRINT "  ";
 END SUB
 
 SUB DrawBar (Start)
@@ -206,20 +213,20 @@ FOR X = 1 TO 16
 NEXT X
 
 ' Print results
-COLOR 7
+COLOR 7, 0
 LOCATE 42, 3: PRINT LOUT$;
 LOCATE 42, 41:
   PRINT CHR$(179); " ";
-  COLOR AC
+  COLOR AC, BC
   PRINT CHR$(aChart(Start));
-  COLOR 7
+  COLOR 7, 0
   PRINT " "; CHR$(179);
 LOCATE 42, 47: PRINT ROUT$;
 END SUB
 
 SUB DrawMenu
 ' ASCII choice bar borders
-COLOR 7:
+COLOR 7, 0:
 LOCATE 41, 1
   PRINT CHR$(201);
   PRINT STRING$(39, 205);
@@ -248,12 +255,12 @@ FOR X = 1 TO 15
 NEXT X
 
 ' Color keys
-COLOR 7
+COLOR 7, 0
 LOCATE 46, 2: PRINT "Color: 0 1 2 3 4 5 6 7 8 9 q w e r t y";
 LOCATE 47, 2: PRINT "Blink: ) ! @ # $ % ^ & * ( Q W E R T Y";
 
 ' Commands
-COLOR 7
+COLOR 7, 0
 LOCATE 49, 2: PRINT file$;
 PRINT " [ESC]Exit [F1]Help [F3]Rename [F4]Save [F5]Redraw [m]ASCII";
 
@@ -265,21 +272,32 @@ COLOR 7, 0
 END SUB
 
 SUB DrawPixel
+
 SELECT CASE I$
   CASE IS = " "
     ' Store color in thousands position, ASCII code in hundreds position
-    image(CY, CX) = AC * 1000 + AA
-    COLOR AC: LOCATE CY, CX: PRINT CHR$(AA)
+    image(CY, CX) = BC * 100000 + AC * 1000 + AA
+    COLOR AC, BC: LOCATE CY, CX: PRINT CHR$(AA)
   CASE IS = "c"
-    ' Change only the color at cursor postion
-    C = image(CY, CX) / 1000
-    A = image(CY, CX) - C * 1000
-    image(CY, CX) = AC * 1000 + A
+    ' Change only the colors at cursor postion
+    A = image(CY, CX) - (image(CY, CX) / 1000) * 1000
+    image(CY, CX) = BC * 100000 + AC * 1000 + A
     COLOR AC: LOCATE CY, CX: PRINT CHR$(AA)
 END SELECT
 
+' Draw what was previously under the cursor
+B = image(CYO, CXO) / 100000
+C = (image(CYO, CXO) - B * 100000) / 1000
+A = VAL(RIGHT$(STR$(image(CYO, CXO)), 3))
+COLOR C, B
+LOCATE CYO, CXO: PRINT CHR$(A)
+
+
 ' Draw the cursor
-COLOR 0, 15: LOCATE CY, CX: PRINT CHR$(4); : COLOR 7, 0
+COLOR 0, 15: LOCATE CY, CX: PRINT CHR$(4);
+
+' Reset to the default color
+COLOR 7, 0
 END SUB
 
 SUB DrawScreen
@@ -287,15 +305,19 @@ CLS
 'Draw image
 FOR Y = 1 TO H
   FOR X = 1 TO W
-    C = image(Y, X) / 1000
-    A = image(Y, X) - C * 1000
-    COLOR C
+    ' Extract color and ASCII values
+    B = image(Y, X) / 100000
+    C = (image(Y, X) - B * 100000) / 1000
+    A = VAL(RIGHT$(STR$(image(Y, X)), 3))
+
+    ' Print image on the screen
+    COLOR C, B
     LOCATE Y, X: PRINT CHR$(A)
   NEXT X
 NEXT Y
 
 'Draw border
-COLOR 8
+COLOR 8, 0
 IF W < 80 THEN
   FOR X = 1 TO H
     LOCATE X, W + 1: PRINT CHR$(176)
@@ -313,10 +335,10 @@ END SUB
 SUB FillSwap
 ' Fill the image with the active color/character where it matches
 ' the color/character at the cursor location.
-T = image(CY, CX)
+T& = image(CY, CX)
 FOR Y = 1 TO H
   FOR X = 1 TO W
-    IF image(Y, X) = T THEN image(Y, X) = AC * 1000 + AA
+    IF image(Y, X) = T& THEN image(Y, X) = BC * 100000 + AC * 1000 + AA
   NEXT X
 NEXT Y
 DrawScreen
@@ -344,13 +366,14 @@ LOCATE 50, 30: PRINT "Press F1 to return";
 LOCATE 3, 2: PRINT "[ARROW KEYS] Move the cursor"
 LOCATE 5, 2: PRINT "[SPACE] Draw character at cursor"
 LOCATE 7, 2: PRINT "[C] Change only color at cursor"
-LOCATE 9, 2: PRINT "[1 - 0] and [Q - Y] Select color"
-LOCATE 11, 2: PRINT "[CTL + L/R ARROW] Scroll the character selection bar"
-LOCATE 13, 2: PRINT "[m] Manually set the ASCII character"
-LOCATE 15, 2: PRINT "[F8] Insert a sting of text starting at the cursor location"
-LOCATE 17, 2: PRINT "[F9] Replace same to what's at cursor with selected char/color"
-LOCATE 19, 2: PRINT "[F12] Set selected char/color to match what's at cursor"
-LOCATE 21, 2: PRINT "[END] Toggle Draw on Move (snake) mode on/off"
+LOCATE 9, 2: PRINT "[1 - 0] and [Q - Y] Select foreground color"
+LOCATE 11, 2: PRINT "[-] [=] Select background color by scrolling through them"
+LOCATE 13, 2: PRINT "[CTL + L/R ARROW] Scroll the character selection bar"
+LOCATE 15, 2: PRINT "[m] Manually set the ASCII character"
+LOCATE 17, 2: PRINT "[F8] Insert a sting of text starting at the cursor location"
+LOCATE 19, 2: PRINT "[F9] Replace same to what's at cursor with selected char/color"
+LOCATE 21, 2: PRINT "[F12] Set selected char/color to match what's at cursor"
+LOCATE 23, 2: PRINT "[END] Toggle Draw on Move (snake) mode on/off"
 
 I$ = ""
 DO WHILE I$ <> CHR$(0) + CHR$(59)
@@ -382,8 +405,8 @@ OLDAA = AA
 
 FOR X = 1 TO Z
   AA = ASC(MID$(UINP$, X, 1))
-  image(CY, CX + X - 1) = AC * 1000 + AA
-  COLOR AC:   LOCATE CY, CX + X - 1: PRINT CHR$(AA)
+  image(CY, CX + X - 1) = BC * 100000 + AC * 1000 + AA
+  COLOR AC, BC: LOCATE CY, CX + X - 1: PRINT CHR$(AA)
 NEXT X
 
 ' Restore the active character
@@ -424,17 +447,11 @@ IF CX > W THEN CX = W
 IF CY < 1 THEN CY = 1
 IF CY > H THEN CY = H
 
-C = image(CYO, CXO) / 1000
-A = image(CYO, CXO) - C * 1000
-
-' Print what was previously under the cursor
-COLOR C: LOCATE CYO, CXO: PRINT CHR$(A);
-
-' Print the cursor in DrawPixel function
-
 ' Draw when moving the cursor
-' Sets up DrawPixel function as though user also pressed the space bar
+' Sets up DrawPixel routine as though user also pressed the space bar
 IF DWM THEN I$ = " "
+
+' Drawing the cursor happens next in the DrawPixel routine
 END SUB
 
 SUB NameFile
@@ -456,20 +473,45 @@ IF UCASE$(A$) <> "Y" THEN
   EXIT SUB
 END IF
 
-ln$ = ""
+ln1$ = ""
+ln2$ = ""
+ln3$ = ""
 OPEN file$ FOR OUTPUT AS #1
   ' First line is the height and width, for human readability.
   WRITE #1, H, W
 
   FOR Y = 1 TO H
     FOR X = 1 TO W
-      'Create line
-      ln$ = ln$ + LTRIM$(STR$(image(Y, X)))
-      IF X <> W THEN ln$ = ln$ + ","
+      ' Each 80 col line = 2.5 lines of data file
+      IF X < 33 THEN
+        ln1$ = ln1$ + LTRIM$(STR$(image(Y, X)))
+        IF X <> 32 THEN
+          IF X <> W THEN
+            ln1$ = ln1$ + ","
+          END IF
+        END IF
+      ELSEIF X < 65 THEN
+        ln2$ = ln2$ + LTRIM$(STR$(image(Y, X)))
+        IF X <> 64 THEN
+          IF X <> W THEN
+            ln2$ = ln2$ + ","
+          END IF
+        END IF
+      ELSE
+        ln3$ = ln3$ + LTRIM$(STR$(image(Y, X)))
+        IF X <> W THEN ln3$ = ln3$ + ","
+      END IF
+
     NEXT X
-  'Print line to file
-  PRINT #1, ln$
-  ln$ = ""
+    ' Print lines to file
+    PRINT #1, ln1$
+    IF W > 31 THEN PRINT #1, ln2$
+    IF W > 63 THEN PRINT #1, ln3$
+
+    ' Reset for next loop
+    ln1$ = ""
+    ln2$ = ""
+    ln3$ = ""
   NEXT Y
 CLOSE #1
 
@@ -508,26 +550,26 @@ IF A = 1 THEN
   REDIM image(H, W)
   FOR Y = 1 TO H
     FOR X = 1 TO W
-        image%(Y, X) = 0
+        image(Y, X) = 0
     NEXT X
   NEXT Y
 ELSEIF A = 2 THEN
   'Load image from file
   LOCATE 14, 25: PRINT "(without file extention)"
   LOCATE 10, 30: INPUT ; "File Name"; f$
-  file$ = f$ + ".IMG"
+  file$ = UCASE$(f$) + ".IMG"
 
   OPEN file$ FOR INPUT AS #1
   ' Get image size from first two data points
-  INPUT #1, D: H = D
-  INPUT #1, D: W = D
+  INPUT #1, D&: H = D&
+  INPUT #1, D&: W = D&
 
   'Load data
   REDIM image(H, W)
   FOR Y = 1 TO H
     FOR X = 1 TO W
-        INPUT #1, D
-        image(Y, X) = D
+        INPUT #1, D&
+        image(Y, X) = D&
     NEXT X
   NEXT Y
   CLOSE #1
@@ -538,6 +580,7 @@ END SUB
 
 SUB UpdateActiveColor
 ACO = AC
+BC0 = BC
 SELECT CASE I$
   CASE IS = "0"
     AC = 0
@@ -603,8 +646,16 @@ SELECT CASE I$
     AC = 30
   CASE IS = "Y"
     AC = 31
+  CASE IS = "-"
+    BC = BC - 1
+    IF BC < 0 THEN BC = 7
+  CASE IS = "="
+    BC = BC + 1
+    IF BC > 7 THEN BC = 0
 END SELECT
-IF AC <> ACO THEN
+
+' Only update if changed
+IF AC <> ACO OR BC <> BC0 THEN
   DrawActiveColor
   DrawBar (AB)
 END IF

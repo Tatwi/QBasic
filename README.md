@@ -84,8 +84,13 @@ Creative Commons CC0 1.0 Universal. See the LICENSE file for more details.
 
 <span id="images"></span>
 ## Images
-Here are some screen shots.  
+Here are some screen shots!  
 
+**Default QBasic 1.1 in DOSBox**  
 <a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/qbasic_default.png"><img src="IMG/qbasic_default.png" width="640" height="400" title="QBasic in a normal sized window"/></a>  
 
+**QBasic 1.1 in DOSBox with the TV scan line filter**  
 <a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/qbasic_my_desktop.png"><img src="IMG/qbasic_my_desktop.png" width="640" height="400" title="QBasic as I use it on my desktop (click to enlarge)"/></a>
+
+**My ASCII Image Maker Program**  
+<a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/imgmaker.png"><img src="IMG/imgmaker.png" width="640" height="400" title="ASCII Image Maker"/></a>

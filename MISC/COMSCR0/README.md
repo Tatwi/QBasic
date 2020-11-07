@@ -12,13 +12,17 @@ So, I will be filling this directory up with all the parts I need to make that g
 This is a tech demo that appears to only work in the QBasic 1.1 IDE when running in DOSBox. I worked out a novel way to a back buffer to (relatively) quickly draw the whole 80x43 screen, using only BASIC command. QBasic strangely splits the output over two screen pages (3440 total characters split at 2048 + 1392). See the PrintScreen subroutine for more details.  
 
 **IMGMAKER.BAS**  
-A simple ASCII art creation program that I made by converting my sprite editor to use my ASCII image file format. It saves its images as plain text in CSV format files, which is easy to read and works well with Git/GitHub.  
+An ASCII art creation program that I made by converting and upgrading my simple sprite editor. It saves its images as plain text in CSV format files. The data format is simple: 731255 = (7) (31) (255) = (BG Color) (FG Color) (ASCII Code). I decided to use plain text files primarily because they work better with Git, but also because disk storage space isn't a problem for files of this size (25KB max) in today's world. Images can be as small as 4x4 characters and as large as 80x40 characters.  
 
 **ASCII.CSV**  
 Data file for the scrolling characters in the IMGMAKER.BAS program. I organized the ASCII characters a little better for drawing and removed the invalid characters.  
 
 **ASCITEST.BAS**  
 This is a test program where I worked out the logic for the scrolling toolbar. I often break out parts of programs in to separate files in the TMP directory so I can focus on just that one problem. I thought maybe it would be helpful to put this one here for reference.  
+
+**BIGTEST.IMG**  
+An 80x40 character ASCII image that I created to test using both the foreground and background colors.  
+<img src="../../IMG/imgmaker.png" width="640" height="400" title="ASCII Image Maker"/>  
 
 **SP1.IMG**  
 Data for an ASCII image used for testing.
