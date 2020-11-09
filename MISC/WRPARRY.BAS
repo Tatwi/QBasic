@@ -2,19 +2,21 @@
 ' R. Bassett Jr.
 ' 2020.11.01
 
-CLS
 DEFINT A-Z
 DIM blah(1 TO 20) AS STRING
+CLS
 
 FOR X = 1 TO 20
-  blah(X) = "farts" + STR$(X)
+  blah(X) = "Position" + STR$(X)
 NEXT X
 
+Go:
+CLS
 RANDOMIZE TIMER
-' S = INT(RND * 19) + 1
-S = 18
+S = INT(RND * 19) + 1
+' S = 18
 
-' before
+PRINT "Before Selected Number:"
 Z = 5
 FOR X = 1 TO 5
   TP = S - Z
@@ -25,10 +27,11 @@ FOR X = 1 TO 5
 NEXT X
 
 PRINT ""
+PRINT "The Selected Number:"
 PRINT blah(S)
 PRINT ""
 
-' after
+PRINT "After Selected Number:"
 FOR X = 1 TO 5
   TP = S + X
 
@@ -39,6 +42,16 @@ FOR X = 1 TO 5
 
 NEXT X
 
+PRINT ""
+PRINT "Press SPACE for a new roll or ESC to exit"
 
+I$ = ""
+DO WHILE I$ <> CHR$(27)
+  I$ = INKEY$
+  IF I$ = " " THEN GOTO Go
+  SLEEP 1
+LOOP
+
+END
 
 
