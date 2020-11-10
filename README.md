@@ -92,5 +92,9 @@ Here are some screen shots!
 **QBasic 1.1 in DOSBox with the TV scan line filter**  
 <a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/qbasic_my_desktop.png"><img src="IMG/qbasic_my_desktop.png" width="640" height="400" title="QBasic as I use it on my desktop (click to enlarge)"/></a>
 
-**My ASCII Image Maker Program**  
+**ASCII Image Maker (DOSBox)**  
 <a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/imgmaker.png"><img src="IMG/imgmaker.png" width="640" height="400" title="ASCII Image Maker"/></a>
+
+
+**ASCII Image Maker (Dell 17" SVGA CRT DOS7)**  
+<a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/imgmaker_dell_17in_crt_msdos7.jpg"><img src="IMG/imgmaker_dell_17in_crt_msdos7.jpg" width="640" height="400" title="ASCII Image Maker"/></a>

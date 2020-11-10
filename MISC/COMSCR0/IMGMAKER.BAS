@@ -3,6 +3,26 @@
 ' Oct 2020
 ' For creating ASCII images up to 80x40 characters, with 16 foreground colors
 ' and 8 background colors.
+'
+' Requires ASCII.CSV
+'
+' Performance Observations (BIGTEST.IMG)
+' --------------------------------------
+' DOSBox (5000 Cycles, Desktop/Laptop LCD):
+' + Characters fill the whole distance between each other.
+' + Cursor movement and ASCII bar scrolling is fast.
+' - Redrawing the whole image is slow.
+'
+' Pentium 233MMX (MSDOS 7, DELL 17" SVGA CRT):
+' + Redrawing the whole image is super fast!
+' - Cursor movement and ASCII bar scrolling seem to be locked to a slow
+'   movement rate, perhaps 3 moves per second. It's still very usable,
+'   but I think DOSBox offers a better drawing experience in this regard.
+' - Extreme vertical banding, where the background color shows as a bar
+'   between the columns of characters. I guess this how these images really
+'   would have looked back in the 1990s, so I can't fault it and I guess
+'   it has it's own charm. I added a picture of the screen in the main IMG
+'   directory of the github.com/tatwi/qbasic for comparison.
 
 DEFINT A-Z
 DECLARE SUB StartSession ()
