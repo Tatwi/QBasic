@@ -1,0 +1,56 @@
+' Using the ON KEY function to trap user input
+' R. Bassett Jr.
+' 2020.11.11
+
+SCREEN 0: WIDTH 40, 25
+DIM UPDATE AS INTEGER: UPDATE = -1
+DIM X AS INTEGER: X = 1
+DIM Y AS INTEGER: Y = 1
+RANDOMIZE TIMER
+
+CLS
+ON KEY(11) GOSUB UpMove: KEY(11) ON
+ON KEY(12) GOSUB LeftMove: KEY(12) ON
+ON KEY(13) GOSUB RightMove: KEY(13) ON
+ON KEY(14) GOSUB DownMove: KEY(14) ON
+
+LOCATE 25, 20: PRINT "Move: NUMPAD 2468"
+
+WHILE INKEY$ <> CHR$(27)
+  IF UPDATE THEN
+    UPDATE = 0
+    LOCATE 25, 2: PRINT "Location:"; X; Y;
+    COLOR INT(RND * 14) + 1
+    LOCATE Y, X: PRINT CHR$(2);
+    COLOR 7
+  END IF
+WEND
+END
+
+UpMove:
+  IF Y = 1 THEN RETURN
+
+  Y = Y - 1
+  UPDATE = -1
+RETURN
+
+LeftMove:
+  IF X = 1 THEN RETURN
+  X = X - 1
+  UPDATE = -1
+RETURN
+
+RightMove:
+  IF X = 40 THEN RETURN
+
+  X = X + 1
+  UPDATE = -1
+RETURN
+
+DownMove:
+  IF Y = 24 THEN RETURN
+
+  Y = Y + 1
+  UPDATE = -1
+RETURN
+
