@@ -21,7 +21,7 @@ These are some well regarded books specifically about QBasic 1.1.
 <a href="http://www.petesqbsite.com/" rel="noopener" target="_blank">Pete's QBasic Site</a>  
 - Lots of information about many topics, including magazines, but you have to sift through things that aren't applicable to QBasic 1.1.
 
-<a href="https://www.garybeene.com/qbasic/index.htm" rel="noopener" target="_blank">Gary Beene’s Information Center</a>  
+<a href="http://web.archive.org/web/20190812013058/http://www.garybeene.com/qbasic" rel="noopener" target="_blank">Gary Beene’s Information Center</a>  
 - Explains the differences between QBasic and the original QuickBasic.
 - Has tutorials about lesser discussed, yet important topics.
 
