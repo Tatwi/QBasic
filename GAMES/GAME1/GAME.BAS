@@ -4,7 +4,7 @@
 ' Spring 2020
 
 'Colors: Player, Ground, Walls, Text, Heart
-Pc = 5: Gc = 2: Wc = 8: Tc = 15: Hc = 4
+Pc = 2: Gc = 0: Wc = 8: Tc = 15: Hc = 4
 SCREEN 7: COLOR Tc, Gc: CLS
 
 Start:
@@ -166,7 +166,7 @@ COLOR Tc
 LOCATE 24, 3
 PRINT "Hearts"; ":"; h%; "/"; ht%;
 LOCATE 24, 30
-PRINT "Shots:"; Bq%;
+PRINT "Bombs:"; Bq%;
 RETURN
 
 Shoot:
@@ -217,34 +217,17 @@ END IF
 RETURN
 
 Welcome:
-LOCATE 2, 20: PRINT "Collect the hearts!";
+COLOR 4
+LOCATE 2, 10: PRINT "Collect the Hearts!";
+COLOR Tc
 LOCATE 6, 20: PRINT "Move: W A S D";
-LOCATE 8, 20: PRINT "Shoot: Arrow Keys";
+LOCATE 8, 20: PRINT "Bomb: Arrow Keys";
 LOCATE 11, 20: PRINT "ESC to quit."
-LOCATE 15, 20: PRINT "About Shooting:"
+LOCATE 15, 20: PRINT "About Bombs:"
 LOCATE 16, 20: PRINT "Destroys the block"
 LOCATE 17, 20: PRINT "directly beside you."
 
-'Pick player color
-LOCATE 2, 1
-COLOR 15
-PRINT "Pick "; CHR$(1); " Color:"
-COLOR 1: PRINT "1 - Blue"
-COLOR 4: PRINT "4 - Red"
-COLOR 5: PRINT "5 - Magenta"
-COLOR 6: PRINT "6 - Brown"
-COLOR 10: PRINT "10 - Light Green"
-COLOR 11: PRINT "11 - Light Cyan"
-COLOR 14: PRINT "14 - Yellow"
-COLOR 15: PRINT "________________"
-
-COLOR Tc
-INPUT Pc
-
-IF Pc > 15 THEN Pc = 1
-IF Pc < 1 THEN Pc = 1
-
-PRINT " "
+LOCATE 6, 1
 PRINT "Choose Mode:"
 PRINT "1 - Normal"
 PRINT "2 - Easy"
@@ -278,7 +261,9 @@ Y% = INT(RND * 22) + 1
 
 IF map(Y%, X%) = " " THEN
  map(Y%, X%) = CHR$(219)
+ COLOR Wc
  LOCATE Y%, X%: PRINT CHR$(219)
+ COLOR Tc
 END IF
 RETURN
 
