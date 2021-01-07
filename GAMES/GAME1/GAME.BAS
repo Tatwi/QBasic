@@ -8,7 +8,8 @@ Pc = 2: Gc = 0: Wc = 8: Tc = 15: Hc = 4
 SCREEN 7: COLOR Tc, Gc: CLS
 
 Start:
-U = 0: Px = 1: Py = 1: Pxo = 1: Pyo = 1: i$ = "": h% = 0: ht% = 0
+TIMER ON
+U = 0: Px = 1: Py = 1: Pxo = 1: Pyo = 1: i$ = "": h% = 0: ht% = 20: mo% = 1
 
 'Fr is how quickly to fill in the map (Normal, Easy, Hard, Counter)
 Fr% = 180: Fe% = 320: Fh% = 96: Fi% = 0
@@ -16,13 +17,24 @@ Fr% = 180: Fe% = 320: Fh% = 96: Fi% = 0
 'Initial density of obstructions (Normal, Easy, Hard)
 Md% = 70: Mde% = 78: Mdh% = 65
 
-'Bullet quantity (Normal, Easy, Hard)
-Bq% = 12: Bqe% = 20: Bqh% = 8
+'Bomb quantity (Normal, Easy, Hard)
+bq% = 12: Bqe% = 20: Bqh% = 8
 
+'Score variables
+Score% = 0: Sn% = 0: Se% = 0: Sh% = 0: LevelTime% = 0: MaxLevelTime% = 120
+'Points per  hearts collected, bombs remaining, seconds remaining
+Pph% = 25: Ppb% = 52: Pps% = 2
+
+'Max high score for instant level completetion is 1000 by default
+' Hearts * PointsPerHeart + PointsPerBomb * 5 + MaxLevelTime * 2
+
+GOSUB LoadScore
 GOSUB Welcome
 GOSUB CreateMap
 GOSUB DrawMap
 GOSUB UpdateScreen
+
+StartTime = TIMER
 
 'Game Loop
 DO
@@ -31,7 +43,7 @@ DO
   IF i$ <> CHR$(27) THEN
    IF h% = ht% THEN
     LOCATE 12, 16: PRINT "You Win!"
-    GOTO PlayAgain
+    EXIT DO
    END IF
   
    GOSUB Shoot
@@ -52,17 +64,24 @@ DO
   Fi% = Fi% + 1
 LOOP WHILE i$ <> CHR$(27)
 
-GOTO PlayAgain
-END
+LevelTime% = INT(TIMER - StartTime)
 
-PlayAgain:
+GOSUB SaveScore
+
+LOCATE 25, 15: PRINT "Score:"; Score%;
+
 LOCATE 24, 2: INPUT ; "Play again (Y/N)"; YN$
 IF YN$ = "y" OR YN$ = "Y" THEN
  CLS
  GOTO Start
 END IF
-END
 
+END
+' Program exits here
+
+
+' Functions Below
+' -----------------------------------------
 CreateMap:
 DIM map(23, 40) AS STRING
 FOR R = 1 TO 22
@@ -71,10 +90,7 @@ FOR R = 1 TO 22
   X% = INT(RND * 100) + 1
 
   'Heart, Wall, or Path
-  IF X% > 98 THEN
-   map(R, C) = CHR$(3)
-   ht% = ht% + 1
-  ELSEIF X% > Md% THEN
+  IF X% > Md% THEN
    map(R, C) = CHR$(219)
   ELSE
    map(R, C) = " "
@@ -85,6 +101,15 @@ NEXT R
 FOR X = 1 TO 40
  map(23, X) = CHR$(223)
 NEXT X
+
+'Add hearts
+FOR X = 1 TO ht%
+  RANDOMIZE TIMER
+  R = INT(RND * 21) + 1
+  C = INT(RND * 39) + 1
+  map(R, C) = CHR$(3)
+NEXT X
+
 
 'Player
 IF map(1, 1) = CHR$(3) THEN ht% = ht% - 1
@@ -166,7 +191,7 @@ COLOR Tc
 LOCATE 24, 3
 PRINT "Hearts"; ":"; h%; "/"; ht%;
 LOCATE 24, 30
-PRINT "Bombs:"; Bq%;
+PRINT "Bombs:"; bq%;
 RETURN
 
 Shoot:
@@ -185,9 +210,9 @@ ELSE
  RETURN
 END IF
 
-IF Bq% < 1 THEN RETURN
+IF bq% < 1 THEN RETURN
 
-Bq% = Bq% - 1
+bq% = bq% - 1
 
 
 'Target in bounds?
@@ -223,9 +248,13 @@ COLOR Tc
 LOCATE 6, 20: PRINT "Move: W A S D";
 LOCATE 8, 20: PRINT "Bomb: Arrow Keys";
 LOCATE 11, 20: PRINT "ESC to quit."
-LOCATE 15, 20: PRINT "About Bombs:"
-LOCATE 16, 20: PRINT "Destroys the block"
-LOCATE 17, 20: PRINT "directly beside you."
+LOCATE 13, 20: PRINT "About Bombs:"
+LOCATE 14, 20: PRINT "Destroys the block"
+LOCATE 15, 20: PRINT "directly beside you."
+LOCATE 18, 20: PRINT "--== HIGH SCORES ==--"
+LOCATE 20, 20: PRINT "Normal:"; Sn%;
+LOCATE 21, 20: PRINT "Easy:  "; Se%;
+LOCATE 22, 20: PRINT "Hard:  "; Sh%;
 
 LOCATE 6, 1
 PRINT "Choose Mode:"
@@ -238,12 +267,12 @@ INPUT mo%
 mo$ = "Normal"
 
 IF mo% = 3 THEN
- Bq% = Bqh%
+ bq% = Bqh%
  Fr% = Fh%
  Md% = Mdh%
  mo$ = "Hard"
 ELSEIF mo% = 2 THEN
- Bq% = Bqe%
+ bq% = Bqe%
  Fr% = Fe%
  Md% = Mde%
  mo$ = "Easy"
@@ -265,5 +294,42 @@ IF map(Y%, X%) = " " THEN
  LOCATE Y%, X%: PRINT CHR$(219)
  COLOR Tc
 END IF
+RETURN
+
+LoadScore:
+OPEN "HS.DAT" FOR INPUT AS #1
+  INPUT #1, Sn%
+  INPUT #1, Se%
+  INPUT #1, Sh%
+CLOSE #1
+RETURN
+
+SaveScore:
+IF bq% > 5 THEN bq% = 5
+
+IF h% = 0 THEN
+  Score% = 0
+ELSEIF ht% > h% THEN
+  Score% = h% * Pph% + bq% * Ppb%
+ELSE
+  'WINNER!
+  Score% = h% * Pph% + bq% * Ppb%
+
+  IF LevelTime% < MaxLevelTime% THEN
+    Score% = Score% + (MaxLevelTime% - LevelTime%) * Pps%
+  END IF
+END IF
+
+IF mo% = 1 THEN
+  IF Score% > Sn% THEN Sn% = Score%
+ELSEIF mo% = 2 THEN
+  IF Score% > Se% THEN Se% = Score%
+ELSEIF mo% = 3 THEN
+  IF Score% > Sh% THEN Sh% = Score%
+END IF
+
+OPEN "HS.DAT" FOR OUTPUT AS #1
+  WRITE #1, Sn%, Se%, Sh%
+CLOSE #1
 RETURN
 
