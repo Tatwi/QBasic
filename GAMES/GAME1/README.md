@@ -2,6 +2,10 @@
 
 Simple character graphics based game where the player must collect all the hearts before the play area fills in with obstructions. 40x25 resolution, because the characters are more square than in 80x25 mode, making it easier to tell where the player is in relation to the obstacles. 
 
+<a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/game1_1.png"><img src="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/game1_1.png" width="320" height="200" title="Menu Screen"/></a>
+<a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/game1_2.png"><img src="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/game1_2.png" width="320" height="200" title="Game Level"/></a>
+
+
 ### Files
 - **GAME.BAS** The normal game.  
 - **GAME8050.BAS** A version of the game that has roughly twice the play area. I think this version is less fun than the normal version, but to each his own!  
