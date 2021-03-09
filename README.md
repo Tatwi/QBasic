@@ -2,15 +2,17 @@
 
 I enjoy simplicity. Of all the ways I have programmed since the late 1980s, Microsoft QBasic 1.1 is my favourite. I enjoy the inherent limitations and delightful end user experience of the IDE. Truly, it's a system that achieves its goals in a comprehensive, compact, and efficient manner.  
 
-As far as hobbies go, programming is inexpensive and accessible, but it isn't always fun to wade through the complexities of modern systems. Sometimes it's nice to just hop on the computer and complete something functional in a sitting, where the beauty is in the process rather than the graphical fidelity. So that's where my QBasic endeavours land, somewhere between puzzling through a game of Sudoku and aping a Bob Ross painting on a lazy Sunday afternoon....  
+As far as hobbies go, programming is inexpensive and accessible, because you can do it on anything from a $5 Raspberry Pi Zero to any personal computer you happen to find laying around. There are thousands of languages and an unlimited supply of problems to solve! That said, the idea of a hobby is to spend your time doing something that you find interesting and enjoyable. When it comes to programming projects, I have learned that, for me, the joy comes from the system design and implementation processes rather than the accolades from making "The Great Canadian Computer Game!" or whatever; I like "making stuff", but I don't enjoy when it requires spending thousands of hours of concentrated effort, locked away from the world at the expense of other aspects of my life.  
+
+Enter QBasic, a nostalgic programming environment from my childhood that doesn't ask too much of my time, yet is still able to provide me with enough complexity and flexibility to be entertaining. And thanks to DOSBox, QBasic works exactly the same on my laptop as it does on my desktop, which means I can have the same experience anywhere I feel comfortable at the time; sometimes I just don't feel like sitting at my desk! I really like this system - it's not perfect and nothing I make with it will be relevant to 99.99987% of humanity, but it makes me happy and that's what hobbies are all about.
 
 
 ## Project Overview
 
-- Intentionally only using the Micosoft QBasic 1.1 IDE, because this is a nostalgia driven retro computing project!
-- Primarily making ASCII character and simple graphical games.
-- Designed to run well in DOSBox at 5000 cycles. This is probably close to a real Intel 386DX/33 CPU.
-- After much testing, I decided that I like the look of the tv2x DOSBox filter when using my 24" 1080p LCD desktop monitor (BenQ GW2470). It doesn't look exactly the same as the 15" CRT I used in the 1990s, but I think it looks better than not using a screen filter at 2x resolution (which really is required on this size of screen, else the window is just too small). So that's the <a href="#images">"look and feel"</a> I am seeing on my end when creating/using these programs. That said, on my laptop I used the normal2x filter, because the scan lines don't scale properly on its 1366x768 LCD (also, the font is blurry without the normal2x filter).  
+- Using the Micosoft QBasic 1.1 IDE in DOSBox at 5000 Cycles.
+- Emulating the experience of programming on a 386/DX 33MHz PC from the early 1990s.
+- Primarily making ASCII character games and tools.
+- I may do some graphical games that need to be compiled using Quick Basic 4.5 in order to achieve the desired level of performance.
 
 
 ## Project Files
@@ -70,7 +72,7 @@ As of October 2020, I have decided that I will do my best to stick the following
 - Arrays, custom data types, and loose long term variables (such as playerName) in camelCase.  
 - Temporary variables, counters, and system related variables (like PKEY = INKEY$) in capital letters.  
 - I will put related statements on the same line for speed, if it isn't a nightmare to read.  
-- Programs will be divided into subs as much as possible, for readability and memory optimization.  
+- Programs will be divided into subs as much as possible for readability and memory optimization, but not at the expense of stack space.  
 - I don't use LET or CALL.  
 - I do use DIM blah AS blah for global variables.  
 
@@ -82,15 +84,17 @@ Initially when I got back into doing QBasic I was using two or three letter vari
 Creative Commons CC0 1.0 Universal. See the LICENSE file for more details.
 
 
-<span id="images"></span>
 ## Images
-Here are some screen shots!  
+
+After much testing, I decided that I like the look of the tv2x DOSBox filter when using my 24" 1080p LCD desktop monitor (BenQ GW2470). It doesn't look exactly the same as a real CRT monitor (I tested it on a 17" Dell cicra 2004), but the scan lines really bring out the . So that's the "look and feel"I am seeing on my end when creating/using these programs. That said, on my laptop I used the normal2x filter, because the scan lines don't scale properly on its 1366x768 LCD and the font is blurry without the normal2x filter.  
 
 **Default QBasic 1.1 in DOSBox**  
 <a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/qbasic_default.png"><img src="IMG/qbasic_default.png" width="640" height="400" title="QBasic in a normal sized window"/></a>  
 
 **QBasic 1.1 in DOSBox with the TV scan line filter**  
 <a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/qbasic_my_desktop.png"><img src="IMG/qbasic_my_desktop.png" width="640" height="400" title="QBasic as I use it on my desktop (click to enlarge)"/></a>
+
+Here is a comparison between a screenshot of my Image Maker program running on my desktop using the tv2x filter and a picture of it running in DOS 7 (Compaq Deskpro 4000 running Windows 98SE) on my 17" Dell CRT monitor. Even in person, the character graphics look better in DOSBox, because they lack the vertical lines/banding as seen on CRT. However, the lines/vertical banding do not appear on my 17" Dell LCD monitor when I plug it into the DOS 7 system; The 17" LCD in real DOS looks pretty much identical to DOSBox on my laptop, save for a slight difference in screen ratio.  
 
 **ASCII Image Maker (DOSBox)**  
 <a href="https://raw.githubusercontent.com/Tatwi/QBasic/master/IMG/imgmaker.png"><img src="IMG/imgmaker.png" width="640" height="400" title="ASCII Image Maker"/></a>
