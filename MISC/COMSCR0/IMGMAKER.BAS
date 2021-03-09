@@ -385,13 +385,13 @@ LOCATE 50, 30: PRINT "Press F1 to return";
 
 LOCATE 3, 2: PRINT "[ARROW KEYS] Move the cursor"
 LOCATE 5, 2: PRINT "[SPACE] Draw character at cursor"
-LOCATE 7, 2: PRINT "[C] Change only color at cursor"
-LOCATE 9, 2: PRINT "[1 - 0] and [Q - Y] Select foreground color"
-LOCATE 11, 2: PRINT "[-] [=] Select background color by scrolling through them"
+LOCATE 7, 2: PRINT "[C] Change color only at cursor"
+LOCATE 9, 2: PRINT "[1 - 0] and [Q - Y] Set foreground color"
+LOCATE 11, 2: PRINT "[-] [=] Set background color by scrolling through them"
 LOCATE 13, 2: PRINT "[CTL + L/R ARROW] Scroll the character selection bar"
 LOCATE 15, 2: PRINT "[m] Manually set the ASCII character"
-LOCATE 17, 2: PRINT "[F8] Insert a sting of text starting at the cursor location"
-LOCATE 19, 2: PRINT "[F9] Replace same to what's at cursor with selected char/color"
+LOCATE 17, 2: PRINT "[F8] Insert a string of text starting at the cursor location"
+LOCATE 19, 2: PRINT "[F9] Replace same as what's at cursor with selected char/color"
 LOCATE 21, 2: PRINT "[F12] Set selected char/color to match what's at cursor"
 LOCATE 23, 2: PRINT "[END] Toggle Draw on Move (snake) mode on/off"
 
