@@ -557,9 +557,9 @@ IF A = 1 THEN
   LOCATE 12, 30: INPUT ; "File Name (8 max, no extention)"; f$
 
   ' Clamp value
-  IF H > 32 THEN H = 40
+  IF H > 40 THEN H = 40
   IF H < 4 THEN H = 4
-  IF W > 64 THEN W = 80
+  IF W > 80 THEN W = 80
   IF W < 4 THEN W = 4
 
   IF f$ = "" THEN f$ = "TEST"
