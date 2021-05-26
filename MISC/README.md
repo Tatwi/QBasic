@@ -30,7 +30,10 @@ A bouncing circle, animated by drawing red circles from left to right and drawin
 A bouncy circle that makes use of screen memory page flipping to smooth out the animation.
 
 **CLRS.BAS**  
-Dsiplays the 16 colours used by QBasic in screen modes 0 and 7.
+Displays the 16 colours used by QBasic in screen modes 0 and 7.  
+
+**FWRKS1.BAS**  
+I felt like making some character graphics fireworks, so I made this. Then I got tired, but I'd like to make a better version some other time.
 
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
