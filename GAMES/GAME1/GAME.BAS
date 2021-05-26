@@ -297,11 +297,20 @@ END IF
 RETURN
 
 LoadScore:
-OPEN "HS.DAT" FOR INPUT AS #1
-  INPUT #1, Sn%
-  INPUT #1, Se%
-  INPUT #1, Sh%
-CLOSE #1
+f% = FREEFILE
+OPEN "HS.DAT" FOR APPEND AS #f%
+  IF LOF(f%) THEN
+    ' If high score file exists, reopen and read its values.
+    ' This avoids the file not found error.
+    CLOSE #f%
+    OPEN "HS.DAT" FOR INPUT AS #f%
+      INPUT #1, Sn%
+      INPUT #1, Se%
+      INPUT #1, Sh%
+  ELSE
+    Sn% = 0: Se% = 0: Sh% = 0
+  END IF
+CLOSE #f%
 RETURN
 
 SaveScore:
