@@ -35,6 +35,9 @@ Displays the 16 colours used by QBasic in screen modes 0 and 7.
 **FWRKS1.BAS**  
 I felt like making some character graphics fireworks, so I made this. Then I got tired, but I'd like to make a better version some other time.
 
+**FWRKS2.BAS**  
+An attempt at using TIMER to make multiple ASCII fireworks at the same time. Buggy, because of constant, frustrating, distractions when creating this... Perhaps I will come back to it later.
+
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
