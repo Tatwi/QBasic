@@ -38,6 +38,9 @@ I felt like making some character graphics fireworks, so I made this. Then I got
 **FWRKS2.BAS**  
 An attempt at using TIMER to make multiple ASCII fireworks at the same time. Buggy, because of constant, frustrating, distractions when creating this... Perhaps I will come back to it later.
 
+**FWRKS2.BAS**  
+This is what I wanted!! Firing and exploding multiple ASCII fireworks independently, while playing explosion sounds and trying to avoid over-writing the sparks.
+
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
