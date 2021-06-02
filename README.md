@@ -36,6 +36,9 @@ Each sub directory has it own README file that describes the files within in gre
 **/WIKI**
 - Information and observations related to my use of QBasic.  
 
+**/IMG and /VID**
+- Pictures and videos of various programs, as well as information that is best displayed as image.
+
 
 ## Performance Disclaimer
 
