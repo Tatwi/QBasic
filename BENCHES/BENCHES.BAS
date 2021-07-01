@@ -47,6 +47,13 @@ wurds$(8) = "GI Joe"
 wurds$(9) = "QBasic"
 wurds$(10) = "MS-DOS"
 
+DIM SHARED dataToSort(1 TO 40) AS INTEGER
+SortArrayData:
+DATA 24,255,70,14,190,92,51,1,88,163
+DATA 201,153,99,76,42,123,33,229,166,8
+DATA 86,9,38,238,64,144,187,109,133,171
+DATA 45,212,56,207,126,20,119,5,78,252
+
 ' Show the menu and select a test
 choice$ = Menu$
 
@@ -114,6 +121,10 @@ CLS
 CLEAR
 END
 
+SUB ExchangeSort STATIC
+
+END SUB
+
 FUNCTION Menu$
 LOCATE 2, 26: PRINT "Rob's QBasic 1.1 Benchmarks";
 LOCATE 46, 14: PRINT "Use up/down arrows and press ENTER to make a selection";
@@ -125,7 +136,7 @@ LOCATE 10, 30: PRINT "2. Integer Math";
 LOCATE 12, 30: PRINT "3. Math IF/ELSE Logic";
 LOCATE 14, 30: PRINT "4. String IF/ELSE Logic";
 LOCATE 16, 30: PRINT "5. String Select Case Logic";
-LOCATE 18, 30: PRINT "6. Array Sort";
+LOCATE 18, 30: PRINT "6. Integer Array Sort";
 LOCATE 20, 30: PRINT "7. Seq. Print Rate";
 LOCATE 22, 30: PRINT "8. Seq. Character Fill Rate";
 LOCATE 24, 30: PRINT "9. Rnd. Character Fill Rate";
@@ -376,7 +387,35 @@ resultList(5) = TIMER - T#
 END SUB
 
 SUB Test6
-' Array sort test
+' Using Exchange Sort, as seen in Microsoft's sort demo, because it was the
+' fastest and most consistent method (I commented out the sound statments
+' when I did my testing of their sort routines). Repeated 50 times to ensure
+' it takes longer than the observable time resolution to complete the test.
+PRINT "Testing integer array sorting..."
+T# = TIMER
+FOR L = 1 TO 50
+  RESTORE SortArrayData
+  FOR X = 1 TO 40
+    READ D
+    dataToSort(X) = D
+  NEXT X
+
+  FOR index = 1 TO 40
+    smallestIndex = index
+
+    FOR I = index + 1 TO 40
+      IF dataToSort(I) < dataToSort(smallestIndex) THEN
+       smallestIndex = I
+      END IF
+    NEXT I
+
+    IF smallestIndex > index THEN
+      SWAP dataToSort(index), dataToSort(smallestIndex)
+    END IF
+  NEXT index
+
+NEXT L
+resultList(6) = TIMER - T#
 END SUB
 
 SUB Test7
