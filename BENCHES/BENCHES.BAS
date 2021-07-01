@@ -185,21 +185,36 @@ CLS
 SCREEN 0
 WIDTH 80, 50
 COLOR 7
-LOCATE 1, 37: PRINT "Results"
-LOCATE 4, 5: PRINT "Test Type", , "Seconds", "Units/Second";
-LOCATE 5, 1: PRINT STRING$(80, 205)
-LOCATE 6, 1
-'PRINT "Seq Print Rate", SP#, INT(4000 / SP#)
-'PRINT "Seq Character Rate", SF#, INT(4000 / SF#)
-'PRINT "Rnd Character Rate", RF#, INT(4000 / RF#)
-'PRINT "Rnd Clr Char Rate", RFC#, INT(4000 / RFC#)
-'PRINT "Pixel Fill Rate", resultList(11), INT(76800 / resultList(11))
-'PRINT "Pixel FR Rnd Clr", PFC#, INT(76800 / PFC#)
-'PRINT "Floating Point Math", FPM#
-'PRINT "Integer Math", , IM#
-'PRINT "Math if/else Logic", mathIfResult#
-'PRINT "String if/else Logic", stringIfResult#
+LOCATE 2, 38: PRINT "Results"
+LOCATE 3, 34: PRINT STRING$(17, "-")
+LOCATE 5, 1: PRINT TAB(8); "Test Type"; TAB(39); "Seconds"; TAB(64); "Notes";
 LOCATE 48, 30: PRINT "Press ESC to continue"
+LOCATE 8, 1
+
+IF resultList(1) <> 0 THEN PRINT " Floating Point Math"; TAB(37); resultList(1)
+IF resultList(2) <> 0 THEN PRINT : PRINT " Integer Math"; TAB(37); resultList(2)
+IF resultList(3) <> 0 THEN PRINT : PRINT " Math IF/ELSE Logic"; TAB(37); resultList(3)
+IF resultList(4) <> 0 THEN PRINT : PRINT " String IF/ELSE Logic"; TAB(37); resultList(4)
+IF resultList(5) <> 0 THEN PRINT : PRINT " String Select Case Logic"; TAB(37); resultList(5)
+IF resultList(6) <> 0 THEN PRINT : PRINT " Integer Array Sort"; TAB(37); resultList(6)
+IF resultList(7) <> 0 THEN PRINT : PRINT " Seq. Print Rate"; TAB(37); resultList(7)
+IF resultList(8) <> 0 THEN PRINT : PRINT " Seq. Character Fill Rate"; TAB(37); resultList(8)
+IF resultList(9) <> 0 THEN PRINT : PRINT " Rnd. Character Fill Rate"; TAB(37); resultList(9)
+IF resultList(10) <> 0 THEN PRINT : PRINT " Rnd. Character FR, Rnd. Color"; TAB(37); resultList(10)
+IF resultList(11) <> 0 THEN PRINT : PRINT " Seq. Pixel Fill Rate"; TAB(37); resultList(11)
+IF resultList(12) <> 0 THEN PRINT : PRINT " Seq. Pixel FR, Rnd. Color"; TAB(37); resultList(12)
+
+' Draw Borders
+LOCATE 6, 1: PRINT STRING$(80, 205);
+LOCATE 6, 33: PRINT CHR$(209);
+LOCATE 6, 51: PRINT CHR$(209);
+FOR X = 1 TO 26
+  LOCATE 6 + X, 33: PRINT CHR$(179);
+  LOCATE 6 + X, 51: PRINT CHR$(179);
+NEXT X
+LOCATE 33, 1: PRINT STRING$(80, 205);
+LOCATE 33, 33: PRINT CHR$(207);
+LOCATE 33, 51: PRINT CHR$(207);
 
 DO WHILE INKEY$ <> CHR$(27)
 LOOP
