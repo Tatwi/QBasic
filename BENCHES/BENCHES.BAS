@@ -1,3 +1,27 @@
+' My QBasic 1.1 Benchmark Program
+' R. Bassett Jr.
+' 2021.06.29
+' This is a series of tasks that simulate the usage of various common aspects
+' of QBasic 1.1. The time it takes for each test to complete is recorded in
+' seconds, allowing one to compare the performance of the test on different
+' computer systems. My primary objective when creating this tool was to use
+' it to tune DOSBox so that it runs QBasic similarly to a real 386DX 33MHz to
+' 486SX 25MHz computer.
+'
+' Test Reference:
+' 1. Floating Point Math
+' 2. Integer Math
+' 3. Math IF/ELSE Logic
+' 4. String IF/ELSE Logic
+' 5. String Select Case Logic
+' 6. Integer Array Sort
+' 7. Seq. Print Rate
+' 8. Seq. Character Fill Rate
+' 9. Rnd. Character Fill Rate
+' 10. Rnd. Character FR, Rnd. Color
+' 11. Seq. Pixel Fill Rate
+' 12. Seq. Pixel Fill Rate, Rnd. Color
+'
 DECLARE FUNCTION Menu$ ()
 DECLARE SUB SaveData ()
 DECLARE SUB ShowResults ()
@@ -14,15 +38,6 @@ DECLARE SUB Test10 ()
 DECLARE SUB Test11 ()
 DECLARE SUB Test11 ()
 DECLARE SUB Test12 ()
-' My QBasic 1.1 Benchmark Program
-' R. Bassett Jr.
-' 2021.06.29
-' This is a series of tasks that simulate the usage of various common aspects
-' of QBasic 1.1. The time it takes for each test to complete is recorded in
-' seconds, allowing one to compare the performance of the test on different
-' computer systems. My primary objective when creating this tool was to use
-' it to tune DOSBox so that it runs QBasic similarly to a real 386DX 33MHz to
-' 486SX 25MHz computer.
 
 DEFINT A-Z
 SCREEN 0
@@ -61,7 +76,7 @@ choice$ = Menu$
 SELECT CASE choice$
   CASE IS = "Q"
     GOTO TheEnd
-  CASE IS = "A"
+  CASE IS = "6"
     ' Run all the tests
     Test1
     Test2
@@ -75,41 +90,29 @@ SELECT CASE choice$
     Test10
     Test11
     Test12
-  CASE IS = "1"
-    '
-    Test1
-  CASE IS = "2"
-    '
-    Test2
-  CASE IS = "3"
-    '
-    Test3
-  CASE IS = "4"
-    '
-    Test4
-  CASE IS = "5"
-    '
-    Test5
-  CASE IS = "6"
-    '
-    Test6
-  CASE IS = "7"
-    '
-    Test7
   CASE IS = "8"
-    '
+    Test1
+  CASE IS = "10"
+    Test2
+  CASE IS = "12"
+    Test3
+  CASE IS = "14"
+    Test4
+  CASE IS = "16"
+    Test5
+  CASE IS = "18"
+    Test6
+  CASE IS = "20"
+    Test7
+  CASE IS = "22"
     Test8
-  CASE IS = "9"
-    '
+  CASE IS = "24"
     Test9
-  CASE IS = "0"
-    '
+  CASE IS = "26"
     Test10
-  CASE IS = "-"
-    '
+  CASE IS = "28"
     Test11
-  CASE IS = "="
-    '
+  CASE IS = "30"
     Test12
 END SELECT
 
@@ -120,10 +123,6 @@ TheEnd:
 CLS
 CLEAR
 END
-
-SUB ExchangeSort STATIC
-
-END SUB
 
 FUNCTION Menu$
 LOCATE 2, 26: PRINT "Rob's QBasic 1.1 Benchmarks";
@@ -147,6 +146,7 @@ LOCATE 30, 30: PRINT "12. Seq. Pixel Fill Rate, Rnd. Color";
 S = 6
 PS = 4
 I$ = ""
+C$ = ""
 DO WHILE I$ <> "GO!"
   I$ = INKEY$
   IF I$ = CHR$(0) + CHR$(72) THEN
@@ -164,45 +164,14 @@ DO WHILE I$ <> "GO!"
     C$ = "Q"
     I$ = "GO!"
   ELSEIF I$ = CHR$(13) THEN
+    ' User press ENTER on a selection
     I$ = "GO!"
+    C$ = LTRIM$(STR$(S))
   END IF
 
   LOCATE PS, 28: COLOR 0: PRINT " ";
   LOCATE S, 28: COLOR 2: PRINT CHR$(175);
 LOOP
-
-IF C$ <> "Q" THEN
-  ' Set choice based on the line highlighted
-  SELECT CASE S
-    CASE IS = 6
-      C$ = "A"
-    CASE IS = 8
-      C$ = "1"
-    CASE IS = 10
-      C$ = "2"
-    CASE IS = 12
-      C$ = "3"
-    CASE IS = 14
-      C$ = "4"
-    CASE IS = 16
-      C$ = "5"
-    CASE IS = 18
-      C$ = "6"
-    CASE IS = 20
-      C$ = "7"
-    CASE IS = 22
-      C$ = "8"
-    CASE IS = 24
-      C$ = "9"
-    CASE IS = 26
-      C$ = "0"
-    CASE IS = 28
-      C$ = "-"
-    CASE IS = 30
-      C$ = "="
-  END SELECT
-END IF
-
 CLS
 COLOR 7
 Menu$ = C$
@@ -413,7 +382,6 @@ FOR L = 1 TO 50
       SWAP dataToSort(index), dataToSort(smallestIndex)
     END IF
   NEXT index
-
 NEXT L
 resultList(6) = TIMER - T#
 END SUB
