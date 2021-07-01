@@ -27,6 +27,19 @@ wurds$(8) = "GI Joe"
 wurds$(9) = "QBasic"
 wurds$(10) = "MS-DOS"
 
+' Result variables, in seconds
+SP# = 1   ' Sequential print rate
+SF# = 1   ' Sequential character fill rate
+RF# = 1   ' Random character fill rate
+RFC# = 1  ' Rnd. char. fill rate with random colors
+PF# = 1   ' Sequential pixel fill rate
+PFC# = 1  ' Seq. pixel fill rate with random colors
+FPM# = 1  ' Floating point math
+IM# = 1   ' Integer math
+mathIfResult# = 1   ' Math based if/else logic
+stringIfResult# = 1   ' String based if/else logic
+
+
 ' Sequential print rate test
 COLOR 4: LOCATE 1, 1
 T# = TIMER
@@ -186,4 +199,43 @@ PRINT "Floating Point Math", FPM#
 PRINT "Integer Math", , IM#
 PRINT "Math if/else Logic", mathIfResult#
 PRINT "String if/else Logic", stringIfResult#
+
+SUB Menu
+END SUB
+
+SUB SaveData
+END SUB
+
+SUB ShowResults
+END SUB
+
+SUB Test1
+END SUB
+
+SUB Test10
+END SUB
+
+SUB Test2
+END SUB
+
+SUB Test3
+END SUB
+
+SUB Test4
+END SUB
+
+SUB Test5
+END SUB
+
+SUB Test6
+END SUB
+
+SUB Test7
+END SUB
+
+SUB Test8
+END SUB
+
+SUB Test9
+END SUB
 
