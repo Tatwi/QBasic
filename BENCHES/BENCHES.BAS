@@ -222,10 +222,10 @@ END SUB
 
 SUB Test1
 PRINT "Testing floating point math..."
-Test# = 12000
+Test# = 25000
 T# = TIMER
 DO WHILE Test# > 0
-  Test# = Test# - 1
+  Test# = Test# - ((19.99 * 4.99 + 399.99) / 499.99)
 LOOP
 resultList(1) = TIMER - T#
 END SUB
@@ -269,17 +269,17 @@ END SUB
 
 SUB Test2
 PRINT "Testing integer math..."
-Test = 12000
+Test = 30000
 T# = TIMER
 DO WHILE Test > 0
-  Test = Test - 1
+  Test = Test - (4 * 25 / 10 + 20 - 29)
 LOOP
 resultList(2) = TIMER - T#
 END SUB
 
 SUB Test3
 PRINT "Testing math if/else logic..."
-Test = 1000
+Test = 28000
 T# = TIMER
 DO WHILE Test > 0
   X = RND * 9 + 1
@@ -310,7 +310,7 @@ END SUB
 
 SUB Test4
 PRINT "Testing string if/else logic..."
-Test = 1000
+Test = 16000
 T# = TIMER
 DO WHILE Test > 0
   wurd$ = wurds$(RND * 9 + 1)
@@ -341,7 +341,7 @@ END SUB
 
 SUB Test5
 PRINT "Testing string select case logic..."
-Test = 1000
+Test = 16000
 T# = TIMER
 DO WHILE Test > 0
   wurd$ = wurds$(RND * 9 + 1)
@@ -377,7 +377,7 @@ SUB Test6
 ' it takes longer than the observable time resolution to complete the test.
 PRINT "Testing integer array sorting..."
 T# = TIMER
-FOR L = 1 TO 50
+FOR L = 1 TO 175
   RESTORE SortArrayData
   FOR X = 1 TO 40
     READ D
@@ -405,9 +405,11 @@ SUB Test7
 ' Sequential print rate test
 COLOR 4: LOCATE 1, 1
 T# = TIMER
-FOR X = 1 TO 4000
-  PRINT CHR$(219);
-NEXT X
+FOR L = 1 TO 4
+  FOR X = 1 TO 4000
+    PRINT CHR$(219);
+  NEXT X
+NEXT L
 resultList(7) = TIMER - T#
 END SUB
 
@@ -416,11 +418,13 @@ SUB Test8
 CLS
 COLOR 2
 T# = TIMER
-FOR Y = 1 TO 50
-  FOR X = 1 TO 80
-    LOCATE Y, X: PRINT CHR$(219);
-  NEXT X
-NEXT Y
+FOR L = 1 TO 3
+  FOR Y = 1 TO 50
+    FOR X = 1 TO 80
+      LOCATE Y, X: PRINT CHR$(219);
+    NEXT X
+  NEXT Y
+NEXT L
 resultList(8) = TIMER - T#
 END SUB
 
