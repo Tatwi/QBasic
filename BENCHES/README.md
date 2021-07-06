@@ -124,7 +124,7 @@ Based on the results from PCem, DOSBox at 5000 cycles is roughly equivalent to a
 
 The PCem version 17 emulated Pentium 233MMX CPU is 30% _faster_ than my real Pentium 233MMX CPU. That's a substantial margin of error, but the emulated CPU being faster than the real one is consistent with my findings using PCem versions 15, 16, and 17. As such, in the absence of a real 386 or 486 machine, I think the tuning of DOSBox to 5000 cycles is accurate enough.  
 
-That said, looking at the the results of DOSBox and its closest performing PCem emulated CPU, while also considering the results of upgrading a PCem 386 from 33MHz to 40MHz, it's clear that DOSBox does not accurately emulate all aspects of a 386 CPU. See following points,  
+That said, looking at the the results of DOSBox and its closest performing PCem emulated CPU, while also considering the results of upgrading a PCem 386 from 33MHz to 40MHz, it's clear that DOSBox does not accurately emulate all aspects of a 386 CPU. See the following points,  
 
 **Upgrading the 386 CPU:**  
 - 33MHz to 40MHz is a 17.5% increase in clock speed.
@@ -136,11 +136,11 @@ That said, looking at the the results of DOSBox and its closest performing PCem 
 - **DOSBox was 42% faster at the Sequential Character Print Rate test!**
 - DOSBox was 17.86% faster at the Sequential Character Fill Rate test.
 - DOSBox was 10% faster at the Sequential Pixel Fill Rate, yet only 3.38 faster at the Sequential Pixel Fill Rate, Random Color test (only difference is the latter includes use of the random number function).
--The other 7 tests show consistent improvements in a small range between 4.54 and 6.19%.
+- The other 7 tests show consistent improvements in a small range between 4.54 and 6.19%.
 
 Clearly DOSBox has _significantly unusual performance_ when it comes to drawing to the screen. It is safe to assume that this is caused by intentional optimizations to DOSBox that are geared towards producing the highest frame rates in games, as DOSBox was purposely designed to run _DOS games_ rather than general DOS software. 
 
 
 # Conclusion
 
-Having played with QBasic over the last year in many configurations, it was obvious to me that something was strange when using DOSBox. However, for both myself and the general public, DOSBox is much easier and more convenient to install, configure, and use than PCem or a real 386 computer. With this in mind, I have decided that all of my programs are designed to be used in DOSBox 0.74 running at 5000 cycles. They will probably run about the same on using a real 40MHz 386 based computer.
+Having played with QBasic over the last year in many configurations, it was obvious to me that something was strange when using DOSBox. However, for both myself and the general public, DOSBox is much easier and more convenient to install, configure, and use than PCem or a real 386 computer. With this in mind, I have decided that all of my programs are designed to be used in DOSBox 0.74 running at 5000 cycles. They will probably run about the same using a real 40MHz 386 based computer.
