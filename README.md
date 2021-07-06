@@ -4,47 +4,39 @@ I enjoy simplicity. Of all the ways I have programmed since the late 1980s, Micr
 
 As far as hobbies go, programming is inexpensive and accessible, because you can do it on anything from a $5 Raspberry Pi Zero to any personal computer you happen to find laying around. There are thousands of languages and an unlimited supply of problems to solve! That said, the idea of a hobby is to spend your time doing something that you find interesting and enjoyable. When it comes to programming projects, I have learned that, for me, the joy comes from the system design and implementation processes rather than the accolades from making "The Great Canadian Computer Game!" or whatever; I like "making stuff", but I don't enjoy when it requires spending thousands of hours of concentrated effort, locked away from the world at the expense of other aspects of my life.  
 
-Enter QBasic, a nostalgic programming environment from my childhood that doesn't ask too much of my time, yet is still able to provide me with enough complexity and flexibility to be entertaining. And thanks to DOSBox, QBasic works exactly the same on my laptop as it does on my desktop, which means I can have the same experience anywhere I feel comfortable at the time; sometimes I just don't feel like sitting at my desk! I really like this system - it's not perfect and nothing I make with it will be relevant to 99.99987% of humanity, but it makes me happy and that's what hobbies are all about.
+Enter QBasic, a nostalgic programming environment from my youth that doesn't ask too much of my time, yet is still able to provide me with enough complexity and flexibility to be entertaining. And thanks to DOSBox, QBasic works exactly the same on my laptop as it does on my desktop, which means I can have the same experience anywhere I feel comfortable at the time; sometimes I just don't feel like sitting at my desk! I really like this system - it's not perfect and nothing I make with it will be relevant to 99.99987% of humanity, but it makes me happy and that's what hobbies are all about.
 
 Incidentally, QBasic actually _does_ perform as expected on a Raspberry Pi Zero, running in DOSBox under Raspbian Lite!  
 
 ## Project Overview
 
-- Using the Micosoft QBasic 1.1 IDE in DOSBox at 5000 Cycles.
-- Emulating the experience of programming on a 386/DX 33MHz PC from the early 1990s.
-- Primarily making ASCII character games and tools.
-- I may do some graphical games that need to be compiled using Quick Basic 4.5 in order to achieve the desired level of performance.
+- Unless otherwise noted, all of my programs are designed to be run inside the QBasic 1.1 IDE using DOSBox 0.74 at 5000 cycles. 
+- I am emulating the experience of programming on a 386/DX 33MHz PC from the early 1990s, in a manner that is convenient and consistent for myself and anyone else who happens to come by.
+- Primarily making ASCII character games, tools, and misc programs.
 
 
 ## Project Files
 
 Each sub directory has it own README file that describes the files within in greater detail. I figured that was handy way to organize things... :)
 
-**/GAMES**  
+**[/GAMES](/GAMES)**  
 - **GAME1:** A simple character graphics game where you must collect all the hearts before the tunnels collapse and you run out of bombs.  
 
-**/TOOLS**  
+**[/TOOLS](/TOOLS)**  
 - **IMAGEMAKER:** An ASCII art creation for QBasic that I created for use primarly with the Screen 0 80x50 text mode. It's designed to make images upto 80 characters wide and 40 characters tall.   
 
-**/BENCHES**  
-- My attempt to help people run QBasic 1.1 at the same speed on different hardware, real and emulated. 
+**[/BENCHES](/BENCHES)**  
+- My attempt to help people run QBasic 1.1 consistently on different hardware, real and emulated. 
 
-**/MISC**  
+**[/MISC](/MISC)**  
 - Various BASIC programs that I created for testing/learning/fun.
 - Includes an archive of some of the stuff I did in school in 1991-1992.
 
-**/WIKI**
+**[/WIKI](/WIKI)**
 - Information and observations related to my use of QBasic.  
 
-**/IMG and /VID**
-- Pictures and videos of various programs, as well as information that is best displayed as image.
-
-
-## Performance Disclaimer
-
-The only real "retro PC" I have to test these programs with is my Pentium 233MMX based Compaq Deskpro 4000, which is actually *too fast* for QBasic. Consequently, I am uncertain how well these programs will run using real 386 and 486 computers. That said, I have done a considerable amount of testing and I am confident my QBasic software will perform acceptably on a real PC running the equivalent of a 386SX 25MHz to a 386DX 33MHz CPU.  
-
-If you have some old machines and you feel like testing some things for me, please see the [BENCHES](/BENCHES) directory. Your contributions, both documentation and benchmark programs, are welcome!
+**[/IMG](/IMG) and [/VID](/VID)**
+- Pictures and videos of various programs, as well as information that is best displayed as an image.
 
 
 ## How To Use This Software
