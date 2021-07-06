@@ -4,9 +4,9 @@ Let's be real here, the world doesn't need more computer games and I am certainl
 
 _Consistency_  
 
-The reality is that programs written in QBasic have wildly different performance characteristics depending on the hardware they are running on and the manner in which they are run. For instance, the massive performance improvement granted by running a program in QuickBasic 4.5 rather than in QBasic 1.1 can outright break the intended functionality of a program that was designed for QBasic 1.1. Similarly, running a program that was designed for a 16MHz 386 CPU on a 66MHz 486 CPU can make the program too fast to use. Consequently, it's important for both programmer and the end user to know how the program is _supposed_ to perform.  
+The reality is that programs written in QBasic have wildly different performance characteristics depending on the hardware they are running on and the manner in which they are run. For instance, the massive performance improvement granted by running a program in QuickBasic 4.5 rather than in QBasic 1.1 can outright break the intended functionality of a program that was designed for QBasic 1.1. Similarly, running a program that was designed for a 16MHz 386 CPU on a 66MHz 486 CPU can make the program too fast to use. Consequently, it's important for both the programmer and the end user to know how the program is _supposed_ to perform.  
 
-With this in mind, I have attempted to determine the appropriate settings for DOSBox, by using benchmarks to see how fast did QBasic 1.1 really ran on the computers similar to those we used in school between 1991 and 1993.  
+Using my benchmark program, BENCHES.BAS, I was able to determine the DOSBox settings required to emulate the experience I had when using QBasic on a real computer back in the early 1990s. Also, given that DOSBox performs consistently on many computer systems, from the Raspberry Pi to an Intel Core i9 PC, I figured it was worth the effort to find a nice "set it and forget it" configuration that would work for you, me, and everyone in between.
 
 
 # Target System Specs
