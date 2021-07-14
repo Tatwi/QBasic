@@ -1,0 +1,30 @@
+                                    Results
+--------------------------------------------------------------------------------
+       Test                                Seconds
+--------------------------------------------------------------------------------
+ Floating Point Math                 13.625 
+
+ Integer Math                        15.59375 
+
+ Math IF/ELSE Logic                  15.6015625 
+
+ String IF/ELSE Logic                13.2890625 
+
+ String Select Case Logic            13.3046875 
+
+ Integer Array Sort                  14.9375 
+
+ Seq. Print Rate                     1.96875 
+
+ Seq. Character Fill Rate            2.46875 
+
+ Rnd. Character Fill Rate            3.6796875 
+
+ Rnd. Character FR, Rnd. Color       5 
+
+ Seq. Pixel Fill Rate                5.5 
+
+ Seq. Pixel FR, Rnd. Color           24.3828125 
+--------------------------------------------------------------------------------
+
+Total Time: 129.3515625 

@@ -69,6 +69,7 @@ DATA 201,153,99,76,42,123,33,229,166,8
 DATA 86,9,38,238,64,144,187,109,133,171
 DATA 45,212,56,207,126,20,119,5,78,252
 
+TheStart:
 ' Show the menu and select a test
 choice$ = Menu$
 
@@ -117,7 +118,7 @@ SELECT CASE choice$
 END SELECT
 
 ShowResults
-GOTO TheEnd
+GOTO TheStart
 
 TheEnd:
 CLS
@@ -178,6 +179,31 @@ Menu$ = C$
 END FUNCTION
 
 SUB SaveData
+totalTime# = 0
+FOR X = 1 TO 12
+  totalTime# = totalTime# + resultList(X)
+NEXT X
+
+OPEN "RESULTS.TXT" FOR OUTPUT AS #1
+  PRINT #1, TAB(37); "Results"
+  PRINT #1, STRING$(80, "-")
+  PRINT #1, TAB(8); "Test"; TAB(44); "Seconds"
+  PRINT #1, STRING$(80, "-")
+  IF resultList(1) <> 0 THEN PRINT #1, " Floating Point Math"; TAB(37); resultList(1)
+  IF resultList(2) <> 0 THEN PRINT #1, : PRINT #1, " Integer Math"; TAB(37); resultList(2)
+  IF resultList(3) <> 0 THEN PRINT #1, : PRINT #1, " Math IF/ELSE Logic"; TAB(37); resultList(3)
+  IF resultList(4) <> 0 THEN PRINT #1, : PRINT #1, " String IF/ELSE Logic"; TAB(37); resultList(4)
+  IF resultList(5) <> 0 THEN PRINT #1, : PRINT #1, " String Select Case Logic"; TAB(37); resultList(5)
+  IF resultList(6) <> 0 THEN PRINT #1, : PRINT #1, " Integer Array Sort"; TAB(37); resultList(6)
+  IF resultList(7) <> 0 THEN PRINT #1, : PRINT #1, " Seq. Print Rate"; TAB(37); resultList(7)
+  IF resultList(8) <> 0 THEN PRINT #1, : PRINT #1, " Seq. Character Fill Rate"; TAB(37); resultList(8)
+  IF resultList(9) <> 0 THEN PRINT #1, : PRINT #1, " Rnd. Character Fill Rate"; TAB(37); resultList(9)
+  IF resultList(10) <> 0 THEN PRINT #1, : PRINT #1, " Rnd. Character FR, Rnd. Color"; TAB(37); resultList(10)
+  IF resultList(11) <> 0 THEN PRINT #1, : PRINT #1, " Seq. Pixel Fill Rate"; TAB(37); resultList(11)
+  IF resultList(12) <> 0 THEN PRINT #1, : PRINT #1, " Seq. Pixel FR, Rnd. Color"; TAB(37); resultList(12)
+  PRINT #1, STRING$(80, "-")
+  PRINT #1, : PRINT #1, "Total Time:"; totalTime#
+CLOSE #1
 END SUB
 
 SUB ShowResults
@@ -188,6 +214,7 @@ COLOR 7
 LOCATE 2, 39: PRINT "Results"
 LOCATE 3, 34: PRINT STRING$(17, "-")
 LOCATE 5, 1: PRINT TAB(8); "Test Type"; TAB(53); "Seconds";
+LOCATE 46, 22: PRINT "Press S to save results to text file"
 LOCATE 48, 30: PRINT "Press ESC to continue"
 LOCATE 8, 1
 
@@ -213,8 +240,17 @@ NEXT X
 LOCATE 33, 1: PRINT STRING$(80, 205);
 LOCATE 33, 33: PRINT CHR$(207);
 
-DO WHILE INKEY$ <> CHR$(27)
+I$ = ""
+DO WHILE I$ <> CHR$(27)
+  I$ = INKEY$
+  IF UCASE$(I$) = "S" THEN
+    SaveData
+    LOCATE 50, 1: COLOR 14, 2
+    PRINT "Results saved to RESULTS.TXT!";
+    COLOR 7, 0
+  END IF
 LOOP
+CLS
 END SUB
 
 SUB Test1
