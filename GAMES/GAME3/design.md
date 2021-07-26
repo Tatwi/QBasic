@@ -1,4 +1,4 @@
-## GAME2 Design Document
+# Design Document
 If you're not going to go whole hog creating flow charts (I never do), then it's a good idea to, at the very least, write some stuff down about a project before diving into it. I generally write my designs down on paper and later transpose them to the computer, but I thought for this project I'd just do here in this Markdown file from the start, as this game is "just" a game similar to the frigate fleet system from No Man's Sky, which is of course, already *designed*. I am making this game as a way to practice data, memory, and file management in QBasic.  
 
 

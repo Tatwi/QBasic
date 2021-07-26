@@ -1,0 +1,76 @@
+## Armor:
+- Cloth Head
+- Cloth Shoulders
+- Cloth Chest
+- Cloth Legs
+- Cloth Feet
+- Cloth Wrists
+- Cloth Hands
+- Cloth Cape
+- Leather Head
+- Leather Shoulders
+- Leather Chest
+- Leather Legs
+- Leather Feet
+- Leather Wrists
+- Leather Hands
+- Leather Cape
+- Chain Head
+- Chain Shoulders
+- Chain Chest
+- Chain Legs
+- Chain Feet
+- Chain Wrists
+- Chain Hands
+- Chain Cape
+- Plate Head
+- Plate Shoulders
+- Plate Chest
+- Plate Legs
+- Plate Feet
+- Plate Wrists
+- Plate Hands
+
+
+## Weapons:
+- Club
+- Dagger
+- War Axe
+- War Hammer
+- Mace
+- Flail
+- Staff
+- Spear
+- Long Bow
+- Short Bow
+- Cross Bow
+- Short Sword
+- Great Sword
+- Simple Arrow
+- Fine Arrow
+- Cross Bow Bolt
+- Whip
+- Blowgun
+- Buckler
+- Kite Shield
+- Tower Shield
+
+
+## Tools:
+- Artisan Hammer
+- Common Hammer
+- Sledge Hammer
+- Chisel and Punch Set
+- Tongs
+- Shovel
+- Pitchfork
+- Hoe
+- Garden Trowel
+- Barrel
+- Wooden Bucket
+- Tin Pail
+- Wheelbarrow
+- Plow
+- Anvil
+- Vice
+- Forge
