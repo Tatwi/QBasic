@@ -115,8 +115,16 @@ The total time to complete all tasks (calculated by adding the individual result
 
 # Test Results
 
-See the benches_results.ods spreadsheet.
+See the benches_results.ods spreadsheet. Here is a screenshot comparing real vs. virtual CPUs.  
 
+<img src="../IMG/benches_real-vs-virtual-cpu.png" width="977" height="309" title="Real Vs. Virtual CPU"/>  
+
+Thanks to steve_v from the [Devuan Linux Forum](http://dev1galaxy.org/) for the 486DX2/66 and 486DX4/100 results!  
+
+As of 2021.07.27, I still hoping some awesome person out there will provide results from the following real hardware:  
+- Intel 486SX 25MHz
+- AMD Am386DX 40MHz
+- Intel 386DX 33Mhz
 
 # Results Summary
 
