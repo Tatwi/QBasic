@@ -117,7 +117,7 @@ The total time to complete all tasks (calculated by adding the individual result
 
 See the benches_results.ods spreadsheet. Here is a screenshot comparing real vs. virtual CPUs.  
 
-<img src="../IMG/benches_real-vs-virtual-cpu.png" width="977" height="309" title="Real Vs. Virtual CPU"/>  
+<img src="../IMG/benches_real-vs-virtual-cpu.png" width="979" height="308" title="Real Vs. Virtual CPU"/>  
 
 Thanks to steve_v from the [Devuan Linux Forum](http://dev1galaxy.org/) for the 486DX2/66 and 486DX4/100 results!  
 
