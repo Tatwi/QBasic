@@ -1,0 +1,13 @@
+Menu Title - STRING
+Number of entries in the menu - INTEGER, Max 20
+Starting Column (X) - INTEGER
+Starting Row (Y) - INTEGER
+Color of Selector - INTEGER
+Text Color of Title - INTEGER
+Color of Borders - INTEGER
+Text Color of Entries - INTEGER
+Background Color the whole menu - - INTEGER
+Entry 1 - STRING
+Entry 2 - STRING
+Entry 3 - STRING
+...
