@@ -42,6 +42,9 @@ An attempt at using TIMER to make multiple ASCII fireworks at the same time. Bug
 **This is what I wanted!!** Firing and exploding multiple ASCII fireworks independently, while playing explosion sounds and _trying_ to avoid over-writing the sparks.  
 <a href="https://github.com/Tatwi/QBasic/blob/master/VID/fwrks3.mp4?raw=true" title="Video"><img src="../IMG/fwrks3.png" alt="Click the image to play a video example." target="_blank" /></a>  
 
+**GAMETIME.BAS**  
+A clock and calendar for use in a game. It keeps track of the time of day and the day of the season, where there are four seasons in a year.  
+
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
