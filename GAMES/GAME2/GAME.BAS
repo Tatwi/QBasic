@@ -1,18 +1,24 @@
 DEFINT A-Z
 DECLARE FUNCTION Menu% (M%, DIR$, DS%)
+DECLARE SUB DrawImage (RS%, CS%, F$)
 SCREEN 0: WIDTH 80, 50
+RANDOMIZE TIMER
 
 TheStart:
 CLS
 I$ = ""
 DO WHILE I$ <> CHR$(27)
-  CLS
-  LOCATE INT(RND * 39 + 1), INT(RND * 57) + 1
-  COLOR INT(RND * 14 + 1)
-  PRINT "This is the main loop! ";
-  SLEEP 1
+	CLS
+	R = INT(RND * 39) + 1
+	C = INT(RND * 57) + 1
+	LOCATE R, C
+	COLOR INT(RND * 14 + 1)
+	PRINT "This is the main loop! ";
+	DrawImage R + 2, C + 6, "IMG\ICON1.IMG"
 
-  I$ = INKEY$
+	SLEEP 1
+
+	I$ = INKEY$
 LOOP
 
 CLS
@@ -23,6 +29,36 @@ TheEnd:
 CLS
 PRINT "": PRINT " Thanks for playing!"
 END
+
+SUB DrawImage (RS%, CS%, F$)
+' RS%/CS% row/column start. Subtract 1 each, as IMG format assumes starting at 1,1.
+RS% = RS% - 1
+CS% = CS% - 1
+H = 0: W = 0
+
+'Read image from file and print it to the screen
+OPEN F$ FOR INPUT AS #1
+	' Get image size from first two data points
+	INPUT #1, D&: H = D&
+	INPUT #1, D&: W = D&
+
+FOR Y = 1 TO H
+	FOR X = 1 TO W
+	INPUT #1, D&
+	
+		' Extract color and ASCII values
+		B = D& / 100000
+		C = (D& - B * 100000) / 1000
+		A = VAL(RIGHT$(STR$(D&), 3))
+
+		' Print image on the screen
+		COLOR C, B
+		LOCATE Y + RS%, X + CS%: PRINT CHR$(A);
+	NEXT X
+NEXT Y
+
+CLOSE #1
+END SUB
 
 FUNCTION Menu (M%, DIR$, DS%)
 name$ = ""
@@ -42,24 +78,24 @@ updateSelection = -1 ' Booleen TRUE
 ' Load data for this menu from file.
 file$ = DIR$ + STR$(M%) + ".DAT"
 OPEN file$ FOR INPUT AS #1
-  INPUT #1, name$
-  INPUT #1, entries
-  INPUT #1, startX
-  INPUT #1, startY
-  INPUT #1, tntSelect
-  INPUT #1, tntTitle
-  INPUT #1, tntBorder
-  INPUT #1, tntEntries
-  INPUT #1, tntBg
-  minWidth = LEN(name$)
-  DIM entryNames(entries) AS STRING
+	INPUT #1, name$
+	INPUT #1, entries
+	INPUT #1, startX
+	INPUT #1, startY
+	INPUT #1, tntSelect
+	INPUT #1, tntTitle
+	INPUT #1, tntBorder
+	INPUT #1, tntEntries
+	INPUT #1, tntBg
+	minWidth = LEN(name$)
+	DIM entryNames(entries) AS STRING
 
-  FOR C = 1 TO entries
-    INPUT #1, entryNames(C)
-   
-    L = LEN(entryNames(C))
-    IF L > minWidth THEN minWidth = L
-  NEXT C
+	FOR C = 1 TO entries
+		INPUT #1, entryNames(C)
+	 
+		L = LEN(entryNames(C))
+		IF L > minWidth THEN minWidth = L
+	NEXT C
 CLOSE #1
 
 ' Print the border and menu entries
@@ -71,15 +107,15 @@ LOCATE startY + 2, startX: PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(minWid
 ' Entries
 CB = 3
 FOR C = 1 TO entries
-  S = minWidth - LEN(entryNames(C))
-  LOCATE startY + 2 * C + 1, startX
-  PRINT CHR$(179); CHR$(32); CHR$(179);
-  COLOR tntEntries, tntBg: PRINT entryNames(C);
-  COLOR tntBorder, tntBg
-  PRINT STRING$(S, 32); CHR$(179)
-  LOCATE startY + 2 * C + 2, startX:
-  PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(minWidth, 196); CHR$(180)
-  CB = CB + 2
+	S = minWidth - LEN(entryNames(C))
+	LOCATE startY + 2 * C + 1, startX
+	PRINT CHR$(179); CHR$(32); CHR$(179);
+	COLOR tntEntries, tntBg: PRINT entryNames(C);
+	COLOR tntBorder, tntBg
+	PRINT STRING$(S, 32); CHR$(179)
+	LOCATE startY + 2 * C + 2, startX:
+	PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(minWidth, 196); CHR$(180)
+	CB = CB + 2
 NEXT C
 ' Redraw bottom row border
 LOCATE startY + entries * 2 + 2, startX
@@ -97,33 +133,33 @@ PRINT name$
 COLOR tntSelect
 I$ = ""
 DO WHILE I$ <> "GO!"
-  I$ = INKEY$
+	I$ = INKEY$
 
-  SELECT CASE I$
-    CASE IS = CHR$(13)
-      ' Enter key
-      I$ = "GO!"
-    CASE IS = CHR$(0) + CHR$(72)
-      ' Up arrow
-      IF userSelected > 1 THEN
-        prevSelection = userSelected
-        userSelected = userSelected - 1
-        updateSelection = -1
-      END IF
-    CASE IS = CHR$(0) + CHR$(80)
-      ' Down arrow
-      IF userSelected < entries THEN
-        prevSelection = userSelected
-        userSelected = userSelected + 1
-        updateSelection = -1
-      END IF
-  END SELECT
+	SELECT CASE I$
+		CASE IS = CHR$(13)
+			' Enter key
+			I$ = "GO!"
+		CASE IS = CHR$(0) + CHR$(72)
+			' Up arrow
+			IF userSelected > 1 THEN
+				prevSelection = userSelected
+				userSelected = userSelected - 1
+				updateSelection = -1
+			END IF
+		CASE IS = CHR$(0) + CHR$(80)
+			' Down arrow
+			IF userSelected < entries THEN
+				prevSelection = userSelected
+				userSelected = userSelected + 1
+				updateSelection = -1
+			END IF
+	END SELECT
 
-  IF updateSelection THEN
-    updateSelection = 0
-    LOCATE startY + 2 * prevSelection + 1, startX + 1: PRINT CHR$(32)
-    LOCATE startY + 2 * userSelected + 1, startX + 1: PRINT CHR$(175)
-  END IF
+	IF updateSelection THEN
+		updateSelection = 0
+		LOCATE startY + 2 * prevSelection + 1, startX + 1: PRINT CHR$(32)
+		LOCATE startY + 2 * userSelected + 1, startX + 1: PRINT CHR$(175)
+	END IF
 LOOP
 
 COLOR 7, 0
