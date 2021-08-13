@@ -1,34 +1,72 @@
+DECLARE SUB DeleteProfile ()
+DECLARE SUB EditMenu (F$, M$, E%, S$)
+DECLARE SUB NewGame (I%)
+DECLARE SUB LoadProfile (I%)
 DEFINT A-Z
 DECLARE FUNCTION Menu% (M%, DIR$, DS%)
 DECLARE SUB DrawImage (RS%, CS%, F$)
 SCREEN 0: WIDTH 80, 50
 RANDOMIZE TIMER
 
+' Global Variables
+DIM SHARED lastMenuItem AS STRING
+
+
 TheStart:
 CLS
-I$ = ""
-DO WHILE I$ <> CHR$(27)
-	CLS
-	R = INT(RND * 39) + 1
-	C = INT(RND * 57) + 1
-	LOCATE R, C
-	COLOR INT(RND * 14 + 1)
-	PRINT "This is the main loop! ";
-	DrawImage R + 2, C + 6, "IMG\ICON1.IMG"
+I = Menu(2, "MENUS\", 1)
 
-	SLEEP 1
+' Load profile 1 to 5, else exit game.
+IF I < 6 THEN
+	LoadProfile (I)
+ELSEIF I = 6 THEN
+ DeleteProfile
+ GOTO TheStart
+ELSE
+	GOTO TheEnd
+END IF
 
-	I$ = INKEY$
-LOOP
-
-CLS
-I = Menu(1, "Menus\", 1)
-IF I = 2 THEN GOTO TheEnd ELSE GOTO TheStart
 
 TheEnd:
 CLS
-PRINT "": PRINT " Thanks for playing!"
-END
+I = Menu(1, "MENUS\", 1)
+IF I = 1 THEN GOTO TheStart
+CLS
+PRINT "Thanks for playing!"
+
+SUB DeleteProfile
+P = Menu(3, "MENUS\", 1)
+profNum = VAL(LEFT$(lastMenuItem, 1))
+profName$ = RIGHT$(lastMenuItem, LEN(lastMenuItem) - 3)
+profFullName$ = lastMenuItem
+
+IF P > 1 THEN
+	C = Menu(4, "MENUS\", 1)
+
+	IF C = 2 THEN
+		' Delete stuff
+
+		' Main Menu entry
+		EditMenu "C", "MENUS\2.DAT", profNum, "(Empty)"
+	 
+		' Delete Profile Menu entry, by matching its name
+		EditMenu "R", "MENUS\3.DAT", 0, profFullName$
+	 
+		' The save files
+		KILL "SAVE\" + LTRIM$(STR$(profNum)) + "\*.DAT"
+
+		CLS
+		LOCATE 25, 30
+		PRINT profName$; " has been deleted."
+		SLEEP 5
+	ELSE
+		CLS
+		LOCATE 25, 30
+		PRINT "No action taken."
+		SLEEP 5
+	END IF
+END IF
+END SUB
 
 SUB DrawImage (RS%, CS%, F$)
 ' RS%/CS% row/column start. Subtract 1 each, as IMG format assumes starting at 1,1.
@@ -58,6 +96,113 @@ FOR Y = 1 TO H
 NEXT Y
 
 CLOSE #1
+END SUB
+
+' (Function, Menu File, Entry, New String)
+SUB EditMenu (F$, M$, E%, S$)
+OPEN M$ FOR INPUT AS #1
+	INPUT #1, name$
+	INPUT #1, entries
+	INPUT #1, startX
+	INPUT #1, startY
+	INPUT #1, tntSelect
+	INPUT #1, tntTitle
+	INPUT #1, tntBorder
+	INPUT #1, tntEntries
+	INPUT #1, tntBg
+	minWidth = LEN(name$)
+	DIM entryNames(entries) AS STRING
+ 
+	FOR C = 1 TO entries
+		INPUT #1, entryNames(C)
+	NEXT C
+CLOSE #1
+
+' Perform action: Change, Remove, Add
+SELECT CASE F$
+	CASE IS = "C"
+		entryNames(E%) = S$
+	CASE IS = "R"
+		DIM tmpNames(entries - 1) AS STRING
+	 
+		X = 1
+		IF E% = 0 THEN
+			' Match by entry value provided
+			FOR C = 1 TO entries
+				IF entryNames(C) <> S$ THEN
+					tmpNames(X) = entryNames(C)
+					X = X + 1
+				END IF
+			NEXT C
+		ELSE
+			' Match by entry number
+			FOR C = 1 TO entries
+				IF C <> E% THEN
+					tmpNames(X) = entryNames(C)
+					X = X + 1
+				END IF
+			NEXT C
+		END IF
+	 
+		entries = entries - 1
+		REDIM entryNames(entries)
+		FOR C = 1 TO entries
+			entryNames(C) = tmpNames(C)
+		NEXT C
+	CASE IS = "A"
+		DIM tmpNames(entries + 1) AS STRING
+ 
+		FOR C = 1 TO entries
+			tmpNames(C) = entryNames(C)
+		NEXT C
+	 
+		entries = entries + 1
+
+		tmpNames(entries) = S$
+	 
+		REDIM entryNames(entries)
+		
+		FOR C = 1 TO entries
+			entryNames(C) = tmpNames(C)
+		NEXT C
+END SELECT
+
+OPEN M$ FOR OUTPUT AS #1
+	PRINT #1, name$
+	PRINT #1, entries
+	PRINT #1, startX
+	PRINT #1, startY
+	PRINT #1, tntSelect
+	PRINT #1, tntTitle
+	PRINT #1, tntBorder
+	PRINT #1, tntEntries
+	PRINT #1, tntBg
+
+	FOR C = 1 TO entries
+		PRINT #1, entryNames(C)
+	NEXT C
+CLOSE #1
+END SUB
+
+SUB LoadProfile (I)
+P$ = "SAVE\" + LTRIM$(STR$(I)) + "\PLYR.DAT"
+OPEN P$ FOR APPEND AS #1
+IF LOF(1) THEN
+	CLOSE #1
+	' Save file exists, so load it.
+	OPEN P$ FOR INPUT AS #1
+	 INPUT #1, N$
+	CLOSE #1
+
+	CLS
+	PRINT "Loading game for "; N$; "..."
+	SLEEP 3
+ELSE
+	CLOSE #1
+	NewGame (I)
+END IF
+
+
 END SUB
 
 FUNCTION Menu (M%, DIR$, DS%)
@@ -164,6 +309,31 @@ LOOP
 
 COLOR 7, 0
 CLS
+
+' Save a global reference to the text in the menu item selected
+lastMenuItem = entryNames(userSelected)
+
 Menu = userSelected
 END FUNCTION
+
+SUB NewGame (I)
+CLS
+' Get data
+INPUT "Player Name"; N$
+
+'Generate data
+
+' Save data
+P$ = "SAVE\" + LTRIM$(STR$(I)) + "\PLYR.DAT"
+OPEN P$ FOR APPEND AS #1
+	PRINT #1, N$
+CLOSE #1
+
+' Update Profile Selection Menu
+EditMenu "C", "MENUS\2.DAT", I, N$
+
+' Update Delete Profile Menu
+N$ = LTRIM$(STR$(I)) + ". " + N$ ' Add profile # so it can be easily referenced later
+EditMenu "A", "MENUS\3.DAT", 0, N$
+END SUB
 
