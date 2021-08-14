@@ -13,19 +13,19 @@
 ' Confirm Selection: Enter Key
 
 DEFINT A-Z
-DECLARE FUNCTION Menu% (M%, DIR$, DS%)
+DECLARE FUNCTION Menu% (M$, DS%)
 SCREEN 0
 WIDTH 80, 50
 CLS
 
 ' Demo
 RANDOMIZE TIMER
-P = INT(RND * 5) + 1
-S = Menu(P, "MENUS\", 1)
+M$ = "MENUS\" + STR$(INT(RND * 5) + 1)
+S = Menu(M$, 1)
 LOCATE 25, 30: PRINT "You selected option"; RTRIM$(STR$(S)); "!"
 
 ' (Menu file number, Menu directory, Default selection)
-FUNCTION Menu (M%, DIR$, DS%)
+FUNCTION Menu (M$, DS%)
 name$ = ""
 entries = 1
 startX = 1
@@ -41,7 +41,7 @@ prevSelection = 1
 updateSelection = -1 ' Booleen TRUE
 
 ' Load data for this menu from file.
-file$ = DIR$ + STR$(M%) + ".DAT"
+file$ = M$ + ".DAT"
 OPEN file$ FOR INPUT AS #1
   INPUT #1, name$
   INPUT #1, entries
