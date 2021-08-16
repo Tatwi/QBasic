@@ -15,7 +15,10 @@
 ' Note: I tested using random access files/records and while some aspects
 ' were fast, it just overall wasn't as practical (and Git friendly) as using
 ' plain text files read sequentially. I made this using a solid state drive,
-' not a floppy drive from 1982, so drive speed/space wasn't an issue.
+' not a floppy drive from 1982, so drive speed/space wasn't an issue. That
+' said, testing running from a 3.5" floppy on a real Pentium 233MMX system
+' showed identical (instant!) loading/saving of the menu files. The disk was
+' even vintage 1998 or so.
 '
 ' All functions/subs that manipulate menus always load the menu in question,
 ' which over-writes the previously active menu. As such, you will need to
@@ -57,7 +60,7 @@ S = Menu("MENUS\MAIN", 1)
 SELECT CASE S
 	CASE IS = 1
 		CLS
-		M$ = "MENUS\" + STR$(INT(RND * 5) + 1)
+		M$ = "MENUS\" + LTRIM$(STR$(INT(RND * 5) + 1))
 		S = Menu(M$, 1)
 		CLS
 		LOCATE 3, 3: PRINT "You selected option"; RTRIM$(STR$(S)); "!"
