@@ -1,59 +1,85 @@
-DECLARE SUB DeleteProfile ()
-DECLARE SUB EditMenu (F$, M$, E%, S$)
+DEFINT A-Z
+DECLARE FUNCTION Menu% (M$, DS%)
+DECLARE FUNCTION MenuWhereIs% (M$, S$)
+DECLARE SUB SaveMenu (M$)
+DECLARE SUB LoadMenu (M$)
+DECLARE SUB MenuAdd (M$, S$)
+DECLARE SUB MenuRemove (M$, E%)
+DECLARE SUB MenuChange (M$, E%, S$)
+DECLARE SUB MenuSwap (M$, A%, B%)
+DECLARE SUB DrawImage (RS%, CS%, F$)
+DECLARE SUB FirstRun ()
 DECLARE SUB NewGame (I%)
 DECLARE SUB LoadProfile (I%)
-DEFINT A-Z
-DECLARE FUNCTION Menu% (M%, DIR$, DS%)
-DECLARE SUB DrawImage (RS%, CS%, F$)
+DECLARE SUB DeleteProfile ()
 SCREEN 0: WIDTH 80, 50
 RANDOMIZE TIMER
 
-' Global Variables
-DIM SHARED lastMenuItem AS STRING
+' Active Menu Global Variables
+DIM SHARED mEntries(X) AS STRING ' Allows for variable width
+DIM SHARED mTitle AS STRING       ' Allows for variable width
+TYPE menuConfig
+	entries AS INTEGER    ' Number of entries in the menu
+	X AS INTEGER          ' Start column
+	y AS INTEGER          ' Start row
+	sc AS INTEGER         ' Selector color
+	tc AS INTEGER         ' Title color
+	bc AS INTEGER         ' Border color
+	ec AS INTEGER         ' Entries color
+	bgc AS INTEGER        ' Background color
+	minWidth AS INTEGER   ' Min width of the menu (calculated, not stored)
+END TYPE
+DIM SHARED mConfig AS menuConfig
 
 
 TheStart:
 CLS
-I = Menu(2, "MENUS\", 1)
+FirstRun
+I = Menu("SAVE\PRFSEL", 1)
 
-' Load profile 1 to 5, else exit game.
+' Player profile management
 IF I < 6 THEN
+	' Create or select the active profile
 	LoadProfile (I)
 ELSEIF I = 6 THEN
+ ' Delete a profile
  DeleteProfile
  GOTO TheStart
 ELSE
+	' Exit the game
 	GOTO TheEnd
 END IF
+
+' Run the game
+CHAIN "MAIN.BAS"
 
 
 TheEnd:
 CLS
-I = Menu(1, "MENUS\", 1)
+I = Menu("MENUS\EXIT", 1)
 IF I = 1 THEN GOTO TheStart
 CLS
 PRINT "Thanks for playing!"
 
 SUB DeleteProfile
-P = Menu(3, "MENUS\", 1)
-profNum = VAL(LEFT$(lastMenuItem, 1))
-profName$ = RIGHT$(lastMenuItem, LEN(lastMenuItem) - 3)
-profFullName$ = lastMenuItem
+P = Menu("SAVE\PRFTODEL", 1)
+profName$ = mEntries(P)
+profNum% = MenuWhereIs("SAVE\PRFSEL", profName$)
 
 IF P > 1 THEN
-	C = Menu(4, "MENUS\", 1)
+	C = Menu("MENUS\PRFDELC", 1)
 
 	IF C = 2 THEN
 		' Delete stuff
 
 		' Main Menu entry
-		EditMenu "C", "MENUS\2.DAT", profNum, "(Empty)"
-	 
-		' Delete Profile Menu entry, by matching its name
-		EditMenu "R", "MENUS\3.DAT", 0, profFullName$
+		MenuChange "SAVE\PRFSEL", profNum%, "(Empty)"
+
+		' Remove Delete Profile Menu entry, by matching its name
+		MenuRemove "SAVE\PRFTODEL", P
 	 
 		' The save files
-		KILL "SAVE\" + LTRIM$(STR$(profNum)) + "\*.DAT"
+		KILL "SAVE\" + LTRIM$(STR$(profNum%)) + "\*.DAT"
 
 		CLS
 		LOCATE 25, 30
@@ -80,7 +106,7 @@ OPEN F$ FOR INPUT AS #1
 	INPUT #1, D&: H = D&
 	INPUT #1, D&: W = D&
 
-FOR Y = 1 TO H
+FOR y = 1 TO H
 	FOR X = 1 TO W
 	INPUT #1, D&
 	
@@ -91,100 +117,61 @@ FOR Y = 1 TO H
 
 		' Print image on the screen
 		COLOR C, B
-		LOCATE Y + RS%, X + CS%: PRINT CHR$(A);
+		LOCATE y + RS%, X + CS%: PRINT CHR$(A);
 	NEXT X
-NEXT Y
+NEXT y
 
 CLOSE #1
 END SUB
 
-' (Function, Menu File, Entry, New String)
-SUB EditMenu (F$, M$, E%, S$)
+SUB FirstRun
+' Setup up the save folder for the first time
+AP$ = "SAVE\AP.DAT"
+OPEN AP$ FOR APPEND AS #1
+IF LOF(1) THEN
+	' File exists already, nothing to do
+	CLOSE #1
+	EXIT SUB
+END IF
+
+' First time setup
+PRINT #1, "0": CLOSE #1
+SHELL "COPY MENUS\PRFSEL.DAT SAVE\PRFSEL.DAT"
+SHELL "COPY MENUS\PRFTODEL.DAT SAVE\PRFTODEL.DAT"
+CLS
+END SUB
+
+SUB LoadMenu (M$)
+' Load data for this menu from file.
+M$ = M$ + ".DAT"
 OPEN M$ FOR INPUT AS #1
-	INPUT #1, name$
-	INPUT #1, entries
-	INPUT #1, startX
-	INPUT #1, startY
-	INPUT #1, tntSelect
-	INPUT #1, tntTitle
-	INPUT #1, tntBorder
-	INPUT #1, tntEntries
-	INPUT #1, tntBg
-	minWidth = LEN(name$)
-	DIM entryNames(entries) AS STRING
- 
-	FOR C = 1 TO entries
-		INPUT #1, entryNames(C)
-	NEXT C
-CLOSE #1
+	INPUT #1, mTitle
+	INPUT #1, mConfig.entries
+	INPUT #1, mConfig.X
+	INPUT #1, mConfig.y
+	INPUT #1, mConfig.sc
+	INPUT #1, mConfig.tc
+	INPUT #1, mConfig.bc
+	INPUT #1, mConfig.ec
+	INPUT #1, mConfig.bgc
+	mConfig.minWidth = LEN(mTitle)
+	REDIM mEntries(mConfig.entries)
 
-' Perform action: Change, Remove, Add
-SELECT CASE F$
-	CASE IS = "C"
-		entryNames(E%) = S$
-	CASE IS = "R"
-		DIM tmpNames(entries - 1) AS STRING
-	 
-		X = 1
-		IF E% = 0 THEN
-			' Match by entry value provided
-			FOR C = 1 TO entries
-				IF entryNames(C) <> S$ THEN
-					tmpNames(X) = entryNames(C)
-					X = X + 1
-				END IF
-			NEXT C
-		ELSE
-			' Match by entry number
-			FOR C = 1 TO entries
-				IF C <> E% THEN
-					tmpNames(X) = entryNames(C)
-					X = X + 1
-				END IF
-			NEXT C
-		END IF
-	 
-		entries = entries - 1
-		REDIM entryNames(entries)
-		FOR C = 1 TO entries
-			entryNames(C) = tmpNames(C)
-		NEXT C
-	CASE IS = "A"
-		DIM tmpNames(entries + 1) AS STRING
- 
-		FOR C = 1 TO entries
-			tmpNames(C) = entryNames(C)
-		NEXT C
-	 
-		entries = entries + 1
-
-		tmpNames(entries) = S$
-	 
-		REDIM entryNames(entries)
-		
-		FOR C = 1 TO entries
-			entryNames(C) = tmpNames(C)
-		NEXT C
-END SELECT
-
-OPEN M$ FOR OUTPUT AS #1
-	PRINT #1, name$
-	PRINT #1, entries
-	PRINT #1, startX
-	PRINT #1, startY
-	PRINT #1, tntSelect
-	PRINT #1, tntTitle
-	PRINT #1, tntBorder
-	PRINT #1, tntEntries
-	PRINT #1, tntBg
-
-	FOR C = 1 TO entries
-		PRINT #1, entryNames(C)
+	FOR C = 1 TO mConfig.entries
+		INPUT #1, mEntries(C)
+	
+		L = LEN(mEntries(C))
+		IF L > mConfig.minWidth THEN mConfig.minWidth = L
 	NEXT C
 CLOSE #1
 END SUB
 
 SUB LoadProfile (I)
+' Set the active profile
+OPEN "SAVE\AP.DAT" FOR OUTPUT AS #1
+	PRINT #1, I
+CLOSE #1
+
 P$ = "SAVE\" + LTRIM$(STR$(I)) + "\PLYR.DAT"
 OPEN P$ FOR APPEND AS #1
 IF LOF(1) THEN
@@ -205,77 +192,48 @@ END IF
 
 END SUB
 
-FUNCTION Menu (M%, DIR$, DS%)
-name$ = ""
-entries = 1
-startX = 1
-startY = 1
-tntSelect = 2
-tntTitle = 7
-tntBorder = 7
-tntEntries = 7
-tntBg = 0
-minWidth = 8
+FUNCTION Menu (M$, DS%)
+' (Menu file number, Menu directory, Default selection)
+LoadMenu (M$)
+
 userSelected = DS%
 prevSelection = 1
 updateSelection = -1 ' Booleen TRUE
 
-' Load data for this menu from file.
-file$ = DIR$ + STR$(M%) + ".DAT"
-OPEN file$ FOR INPUT AS #1
-	INPUT #1, name$
-	INPUT #1, entries
-	INPUT #1, startX
-	INPUT #1, startY
-	INPUT #1, tntSelect
-	INPUT #1, tntTitle
-	INPUT #1, tntBorder
-	INPUT #1, tntEntries
-	INPUT #1, tntBg
-	minWidth = LEN(name$)
-	DIM entryNames(entries) AS STRING
 
-	FOR C = 1 TO entries
-		INPUT #1, entryNames(C)
-	 
-		L = LEN(entryNames(C))
-		IF L > minWidth THEN minWidth = L
-	NEXT C
-CLOSE #1
-
-' Print the border and menu entries
+' Print the border and menu mConfig.entries
 ' Title border
-COLOR tntBorder, tntBg
-LOCATE startY, startX: PRINT CHR$(213); CHR$(205); CHR$(209); STRING$(minWidth, 205); CHR$(184);
-LOCATE startY + 1, startX: PRINT CHR$(179); CHR$(240); CHR$(179); STRING$(minWidth, 32); CHR$(179);
-LOCATE startY + 2, startX: PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(minWidth, 205); CHR$(180)
+COLOR mConfig.bc, mConfig.bgc
+LOCATE mConfig.y, mConfig.X: PRINT CHR$(213); CHR$(205); CHR$(209); STRING$(mConfig.minWidth, 205); CHR$(184);
+LOCATE mConfig.y + 1, mConfig.X: PRINT CHR$(179); CHR$(240); CHR$(179); STRING$(mConfig.minWidth, 32); CHR$(179);
+LOCATE mConfig.y + 2, mConfig.X: PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(mConfig.minWidth, 205); CHR$(180)
 ' Entries
 CB = 3
-FOR C = 1 TO entries
-	S = minWidth - LEN(entryNames(C))
-	LOCATE startY + 2 * C + 1, startX
+FOR C = 1 TO mConfig.entries
+	S = mConfig.minWidth - LEN(mEntries(C))
+	LOCATE mConfig.y + 2 * C + 1, mConfig.X
 	PRINT CHR$(179); CHR$(32); CHR$(179);
-	COLOR tntEntries, tntBg: PRINT entryNames(C);
-	COLOR tntBorder, tntBg
+	COLOR mConfig.ec, mConfig.bgc: PRINT mEntries(C);
+	COLOR mConfig.bc, mConfig.bgc
 	PRINT STRING$(S, 32); CHR$(179)
-	LOCATE startY + 2 * C + 2, startX:
-	PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(minWidth, 196); CHR$(180)
+	LOCATE mConfig.y + 2 * C + 2, mConfig.X:
+	PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(mConfig.minWidth, 196); CHR$(180)
 	CB = CB + 2
 NEXT C
 ' Redraw bottom row border
-LOCATE startY + entries * 2 + 2, startX
-PRINT CHR$(192); CHR$(196); CHR$(193); STRING$(minWidth, 196); CHR$(217);
+LOCATE mConfig.y + mConfig.entries * 2 + 2, mConfig.X
+PRINT CHR$(192); CHR$(196); CHR$(193); STRING$(mConfig.minWidth, 196); CHR$(217);
 
 ' Center and print title text
-D = minWidth - LEN(name$)
+D = mConfig.minWidth - LEN(mTitle)
 S = 0
 IF D > 1 THEN S = D / 2
-LOCATE startY + 1, startX + 3 + S
-COLOR tntTitle, tntBg
-PRINT name$
+LOCATE mConfig.y + 1, mConfig.X + 3 + S
+COLOR mConfig.tc, mConfig.bgc
+PRINT mTitle
 
 ' Handle user input
-COLOR tntSelect
+COLOR mConfig.sc
 I$ = ""
 DO WHILE I$ <> "GO!"
 	I$ = INKEY$
@@ -293,7 +251,7 @@ DO WHILE I$ <> "GO!"
 			END IF
 		CASE IS = CHR$(0) + CHR$(80)
 			' Down arrow
-			IF userSelected < entries THEN
+			IF userSelected < mConfig.entries THEN
 				prevSelection = userSelected
 				userSelected = userSelected + 1
 				updateSelection = -1
@@ -302,18 +260,97 @@ DO WHILE I$ <> "GO!"
 
 	IF updateSelection THEN
 		updateSelection = 0
-		LOCATE startY + 2 * prevSelection + 1, startX + 1: PRINT CHR$(32)
-		LOCATE startY + 2 * userSelected + 1, startX + 1: PRINT CHR$(175)
+		LOCATE mConfig.y + 2 * prevSelection + 1, mConfig.X + 1: PRINT CHR$(32)
+		LOCATE mConfig.y + 2 * userSelected + 1, mConfig.X + 1: PRINT CHR$(175)
 	END IF
 LOOP
 
 COLOR 7, 0
 CLS
-
-' Save a global reference to the text in the menu item selected
-lastMenuItem = entryNames(userSelected)
-
 Menu = userSelected
+END FUNCTION
+
+SUB MenuAdd (M$, S$)
+LoadMenu (M$)
+
+' Bail if the menu is already full
+IF mConfig.entries > 19 THEN EXIT SUB
+
+DIM tmpNames(mConfig.entries + 1) AS STRING
+
+FOR C = 1 TO mConfig.entries
+	tmpNames(C) = mEntries(C)
+NEXT C
+
+mConfig.entries = mConfig.entries + 1
+tmpNames(mConfig.entries) = S$
+
+REDIM mEntries(mConfig.entries)
+
+FOR C = 1 TO mConfig.entries
+	mEntries(C) = tmpNames(C)
+NEXT C
+
+SaveMenu (M$)
+END SUB
+
+SUB MenuChange (M$, E%, S$)
+LoadMenu (M$)
+mEntries(E%) = S$
+SaveMenu (M$)
+END SUB
+
+SUB MenuRemove (M$, E%)
+LoadMenu (M$)
+
+' Bail if the menu only has one item left
+IF mConfig.entries < 2 THEN EXIT SUB
+
+DIM tmpNames(mConfig.entries - 1) AS STRING
+
+X = 1
+FOR C = 1 TO mConfig.entries
+	IF C <> E% THEN
+		tmpNames(X) = mEntries(C)
+		X = X + 1
+	END IF
+NEXT C
+
+mConfig.entries = mConfig.entries - 1
+REDIM mEntries(mConfig.entries)
+
+FOR C = 1 TO mConfig.entries
+	mEntries(C) = tmpNames(C)
+NEXT C
+
+SaveMenu (M$)
+END SUB
+
+SUB MenuSwap (M$, A%, B%)
+LoadMenu (M$)
+
+' Bail if no change is required
+IF A% = B% THEN EXIT SUB
+
+X$ = mEntries(A%)
+mEntries(A%) = mEntries(B%)
+mEntries(B%) = X$
+
+SaveMenu (M$)
+END SUB
+
+FUNCTION MenuWhereIs (M$, S$)
+LoadMenu (M$)
+X = 0
+
+FOR C = 1 TO mConfig.entries
+	IF mEntries(C) = S$ THEN
+		X = C
+		EXIT FOR
+	END IF
+NEXT C
+
+MenuWhereIs = X
 END FUNCTION
 
 SUB NewGame (I)
@@ -330,10 +367,28 @@ OPEN P$ FOR APPEND AS #1
 CLOSE #1
 
 ' Update Profile Selection Menu
-EditMenu "C", "MENUS\2.DAT", I, N$
+MenuChange "SAVE\PRFSEL", I, N$
 
 ' Update Delete Profile Menu
-N$ = LTRIM$(STR$(I)) + ". " + N$ ' Add profile # so it can be easily referenced later
-EditMenu "A", "MENUS\3.DAT", 0, N$
+MenuAdd "SAVE\PRFTODEL", N$
+END SUB
+
+SUB SaveMenu (M$)
+M$ = M$ + ".DAT"
+OPEN M$ FOR OUTPUT AS #1
+	PRINT #1, mTitle
+	PRINT #1, mConfig.entries
+	PRINT #1, mConfig.X
+	PRINT #1, mConfig.y
+	PRINT #1, mConfig.sc
+	PRINT #1, mConfig.tc
+	PRINT #1, mConfig.bc
+	PRINT #1, mConfig.ec
+	PRINT #1, mConfig.bgc
+ 
+	FOR C = 1 TO mConfig.entries
+		PRINT #1, mEntries(C)
+	NEXT C
+CLOSE #1
 END SUB
 
