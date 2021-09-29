@@ -357,6 +357,7 @@ SUB NewGame (I)
 CLS
 ' Get data
 INPUT "Player Name"; N$
+N$ = LEFT$(N$, 20)
 
 'Generate data
 
