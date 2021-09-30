@@ -17,7 +17,7 @@ Incidentally, QBasic actually _does_ perform as expected on a Raspberry Pi Zero,
 
 ## Project Files
 
-Each sub directory has it own README file that describes the files within in greater detail. I figured that was handy way to organize things... :)
+Each sub directory has it own README file that describes the files within in greater detail. I figured that was handy way to organize this library.  
 
 **[/GAMES](/GAMES)**  
 - **GAME1:** A simple character graphics game where you must collect all the hearts before the tunnels collapse and you run out of bombs.  
@@ -37,7 +37,7 @@ Each sub directory has it own README file that describes the files within in gre
 - Information and observations related to my use of QBasic.  
 
 **[/IMG](/IMG) and [/VID](/VID)**
-- Pictures and videos of various programs, as well as information that is best displayed as an image.
+- Pictures and videos of various programs and information, for use by modern computers rather than by QBasic.
 
 
 ## How To Use This Software
@@ -49,7 +49,16 @@ Each sub directory has it own README file that describes the files within in gre
 5. Extract QBASIC.EXE and QBASIC.HLP to C:\MYDOS\EXE.  
 6. Edit your DOSBox config file (see below).  
 7. Download this repository (as a zip file or using Git) and put it into your C:\MYDOS folder.
-8. Run DOSBox, cd into the directory of the program you're interested in and run it by typing: _qbasic /run filename_  
+8. Run DOSBox, enter the directory of the program you're interested in and run it like so,   
+
+cd qbasic  
+cd games\game1  
+qbasic /run game  
+
+Note that you don't need to type in capitals when using DOSBox and that you don't need to use the .BAS file extension when running or opening a program with QBasic.  
+
+**IMPORTANT:**  
+QBasic is a DOS program and thus expects files to use the DOS/Windows line ending (hidden) characters CRLF. My host Linux system uses the LF character instead. I have attempted to prevent files from losing their CRLF line ending, but it's possible I have missed some. Usually LF line endings cause a EOF and invalid syntax related errors, particularly when reading text-based data files. It's easily fixed by saving the file again in either QBasic or EDIT.COM.  
 
 
 ## DOSBox Config
@@ -74,11 +83,12 @@ mount C /PATH/TO/MY/DOS/STUFF/<br>
 SET PATH=Z:\;C:\EXE;<br>
 C:<br>  
 
+The tv2x in "scaler=tv2x forced" makes scan lines which look similar to those on an old CRT monitor or television. They don't always look right, depending on the size and shape of your LCD screen, so use normal2x or none if that's the case. Below is an example of how they should look (make sure to view the image at its full resolution, else the scan lines look weird).  
 
 ## Programming Style
 As of October 2020, I have decided that I will do my best to stick the following guidelines to help make my programs easier to read.  
 
-- Comments start with a single quote and space.  
+- Comments start with a single quote and space.    
 - Indentation of 2 spaces highlight loops and conditional blocks.  
 - Subroutine names, labels, and constants in PascalCase.  
 - Arrays, custom data types, and loose long term variables (such as playerName) in camelCase.  
@@ -86,9 +96,10 @@ As of October 2020, I have decided that I will do my best to stick the following
 - I will put related statements on the same line for speed, if it isn't a nightmare to read.  
 - Programs will be divided into subs as much as possible for readability and memory optimization, but not at the expense of stack space.  
 - I don't use LET or CALL.  
-- I do use DIM blah AS blah for global variables.  
+- I do use DIM blah AS blah for global variables for clarity.  
+- Most data files are intentionally just plain ASCII text files, as they work well with Git and even 1.44MB 3.5" floppy disks are fast enough to handle it.  
 
-Initially when I got back into doing QBasic I was using two or three letter variable names for speed, but it turns out that unlike using BASIC on the Commodore 64, there is very little difference in QBasic 1.1 when using longer variable names. As such, the short variable names used in my newer programs are essentially temporary values, such as subroutine parameters, counters, or system related values, which should be fairly obvious (RS, CS = RowStart, ColumnStart). That said, if I find that I need to speed up a program (or save some memory - not sure if that matters with QBasic) by using shorter variable names, I will make a point of describing them in the comments.  
+Initially when I got back into doing QBasic I was using two or three letter variable names for speed, but it turns out that unlike using BASIC on the Commodore 64, there is very little difference in QBasic 1.1 when using longer variable names. As such, the short variable names used in my newer programs are essentially temporary values, such as subroutine parameters, counters, or system related values, which should be fairly obvious (RS, CS = RowStart, ColumnStart). Short variable names are nice when there are only 80 columns of text on the screen! That said, if I find that I need to speed up a program (or save some memory - not sure if that matters with QBasic) by using shorter variable names, I will make a point of describing them in the comments.  
 
 
 ## Copyright
