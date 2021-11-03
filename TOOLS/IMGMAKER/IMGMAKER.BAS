@@ -300,9 +300,9 @@ SELECT CASE I$
     COLOR AC, BC: LOCATE CY, CX: PRINT CHR$(AA)
   CASE IS = "c"
     ' Change only the colors at cursor postion
-    A = image(CY, CX) - (image(CY, CX) / 1000) * 1000
+    A = VAL(RIGHT$(STR$(image(CY, CX)), 3))
     image(CY, CX) = BC * 100000 + AC * 1000 + A
-    COLOR AC: LOCATE CY, CX: PRINT CHR$(AA)
+    COLOR AC, BC: LOCATE CY, CX: PRINT CHR$(A)
 END SELECT
 
 ' Draw what was previously under the cursor
