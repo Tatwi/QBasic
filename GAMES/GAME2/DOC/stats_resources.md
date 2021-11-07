@@ -1,5 +1,5 @@
 # Resource Stats
-All stats have values ranging from 1 to 100, where 100 denotes perfect effectiveness or the highest possible quality/value.  
+All stats have values ranging from 0 to 100, where 100 denotes perfect effectiveness or the highest possible quality/value.  
 
 ## Physical Properties:
 - DN: Density (Thin or tightly woven? Porosity. Titanium vs. Steel)
@@ -20,7 +20,7 @@ All stats have values ranging from 1 to 100, where 100 denotes perfect effective
 
 
 # Resource Types
-Each resource has its own strengths and weaknesses. When a new game is started, five variations of each resource type are generated. See the spreadsheet resource_properties.ods for a breakdown of the min and max stats per resource type. Each type has been assigned a reference number 1 through 42 and each has 5 sub-types numbered 1 through 5.  
+Each resource has its own strengths and weaknesses. When a new game is started, five variations of each resource type are generated. See the spreadsheet resource_properties.ods for a breakdown of the min and max stats per resource type. Each type has been assigned a reference number 1 through 41 and each has 5 sub-types numbered 1 through 5.  
 
 ## Sub-Types
 1. Random stats
@@ -36,65 +36,64 @@ Each resource has its own strengths and weaknesses. When a new game is started, 
 3. Bronze
 4. Iron
 5. Steel
-6. Titanium 
-7. Aluminum
-8. Gold
+6. Titanium
+7. Gold
 
 ## Gemstone:
-9. Garnet
-10. Amethyst
-11. Aquamarine
-12. Diamond
-13. Emerald
-14. Pearl
-15. Ruby
-16. Peridot
-17. Sapphire
-18. Opal
-19. Topaz
-20. Tanzanite
+8. Garnet
+9. Amethyst
+10. Aquamarine
+11. Diamond
+12. Emerald
+13. Pearl
+14. Ruby
+15. Peridot
+16. Sapphire
+17. Opal
+18. Topaz
+19. Tanzanite
 
 ## Animal:
-21. Bone
-22. Horn
-23. Hide
-24. Sinew
+20. Bone
+21. Horn
+22. Hide
+23. Sinew
 
 ## Wood:
-25. Apple
-26. Ash
-27. Birch
-28. Elm
-29. Lilac
-30. Mahogany
-31. Maple
-32. Oak
-33. Cedar
-34. Pine
-35. Redwood
-36. Spruce
-37. Yew
+24. Apple
+25. Ash
+26. Birch
+27. Elm
+28. Lilac
+29. Mahogany
+30. Maple
+31. Oak
+32. Cedar
+33. Pine
+34. Redwood
+35. Spruce
+36. Yew
 
 ## Other:
-38. Fibre
-39. Oil
-40. Pitch
-41. Rubber
-42. Water
+37. Fibre
+38. Oil
+39. Pitch
+40. Rubber
+41. Water
 
 
 # Resource Generation
 The default values used by the game are stored in plain text data files in the GEN\RES\ directory like so,  
 
+GEN\RES\NAMER.DAT - List of prefixes(30), roots(50), and suffixes(20) to make random words  
+GEN\RES\NAMEV.DAT - Virtuous names  
+GEN\RES\NAMEC.DAT - Corrupt names  
 GEN\RES\#\MIN.DAT - Max resource values  
 GEN\RES\#\MAX.DAT - Min resource values  
-GEN\RES\#\NAMER1.DAT - 10 Random names  
-GEN\RES\#\NAMER2.DAT - 10 Different random names  
-GEN\RES\#\NAMEB.DAT - 10 name for balanced resources  
-GEN\RES\#\NAMEV.DAT - 10 name for virtuous resources  
-GEN\RES\#\NAMEC.DAT - 10 name for corrupt resources  
 
-Once generated for a new game, resource stats remain constant. The naming algorithm picks a number from 1 to 10 and then selects the name at that number in the file related to resource that is being generated at the time. This is mainly for "flavor", helping each play through be a little different than the last. The min and max values set the ranges used when generating resources. And the names of the types are stored in the MIN.DAT and MAX.DAT files and are referenced when needed.  
+I used BASH script resFileMaker.sh, rp_min.csv, and rp_max.csv to create the initial database files from the source spreadsheet, resource_properties.ods. These files are included with this documentation for reference.  
+
+Once generated for a new game, resource stats remain constant. The naming algorithm uses NAME*.DAT to generate a leading name for resources. This is mainly for "flavor", helping each play through be a little different than the last, and to make it easier for the player to see the difference between resources of the same type. The min and max values set the ranges used when generating resources. And the names of the types are stored in the MIN.DAT and MAX.DAT files and are referenced when needed.  
 
 Generated resources are stored in the RES folder of the active profile. For example, SAVE\1\RES\34\5.DAT would be a corrupt type of Pine, which might be named *Ugly Pine*.  
 
