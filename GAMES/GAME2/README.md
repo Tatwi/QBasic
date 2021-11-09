@@ -1,46 +1,50 @@
 # Ye Olde Smithy
 
-You're a crafter, a merchant, a family man, and perhaps even an adventurer in a land of magic and wonder. Source materials and use them to craft tools, weapons, and armor. Sell your wares in your storefront. Manage your employees, shop, and gerar. Spend your down time relaxing with your friends and family or partaking in other activities.  
+You're a crafter, a merchant, and perhaps even an adventurer in a land of magic and wonder. Source materials and use them to craft tools, weapons, and armor. Sell your wares in your storefront. Manage your employees, shop, and gear. Spend your down time relaxing with your friends or partaking in other activities.  
 
-**Project Status:** *In Development, Unplayable*  
+## Project Status:
+- In Development
+- Playability: You can add/remove player profiles!
+- Working On: Resource creation
+- Next steps: The crafting process, item creation, inventory system...
 
 
 ## Game Screens
 
-### F1: Storefront
+### Storefront
 - View the items you have for sale.
 - Add or remove items for sale.
 - See your recent sales.
 
-### F2: Inventory
+### Inventory
 - View your materials and the crafted items stored in your closet.
 - Dispose of materials.
 - Salvage unwanted items. 
 
-### F3: Local Market
+### Local Market
 - Buy materials from local shops.
 
-### F4: Job Board
+### Job Board
 - Post requests for materials at the Adventure's Guild.
 
-### F5: Craft Tools
+### Craft Tools
 - Craft tools, machines, and other misc items.
 
-### F6: Craft Armor
+### Craft Armor
 - Craft linen, leather, mail, and plate armor.
 
-### F7: Craft Weapons
+### Craft Weapons
 - Craft several types of weapons.
 
-### F8: Smithy Upgrades
+### Smithy Upgrades
 - Apply upgrades your shop using tools and machines you've crafted.
 
-### F9: Employee Management
+### Employee Management
 - Train, reward, and promote your employees.
 - Assign your employees to specific jobs.
 - Hire or fire an employee.
 
-### F10: Activities
+### Activities
 - Relax at home with your family.
 - Do chores and gardening at home.
 - Read the news paper.
@@ -49,13 +53,11 @@ You're a crafter, a merchant, a family man, and perhaps even an adventurer in a 
 - Join an adventuring party.
 - Take your family on a vacation.
 
-### F11: Personal Gear
+### Personal Gear
 - Manage your tools, weapons, and armor.
 
-### F12: Character Attributes
+### Character Attributes
 - View your personal attributes.
-
-### ESC: Save, Exit, Retire
 
 
 ## Controls
