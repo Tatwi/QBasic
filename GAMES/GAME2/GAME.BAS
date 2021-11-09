@@ -1,6 +1,7 @@
 DEFINT A-Z
 DECLARE FUNCTION Menu% (M$, DS%)
 DECLARE FUNCTION MenuWhereIs% (M$, S$)
+DECLARE FUNCTION MakeName$ ()
 DECLARE SUB SaveMenu (M$)
 DECLARE SUB LoadMenu (M$)
 DECLARE SUB MenuAdd (M$, S$)
@@ -52,7 +53,6 @@ END IF
 
 ' Run the game
 CHAIN "MAIN.BAS"
-
 
 TheEnd:
 CLS
@@ -191,6 +191,20 @@ END IF
 
 
 END SUB
+
+FUNCTION MakeName$
+' Returns a randomized name
+DIM P(100) AS STRING
+F$ = "GEN\RES\NAMER.DAT"
+
+OPEN F$ FOR INPUT AS #1
+	FOR X = 1 TO 100
+		INPUT #1, P(X)
+	NEXT X
+CLOSE #1
+
+MakeName$ = P(INT(RND * 30 + 1)) + P(INT(RND * 50 + 30)) + P(INT(RND * 20 + 80))
+END FUNCTION
 
 FUNCTION Menu (M$, DS%)
 ' (Menu file number, Menu directory, Default selection)
@@ -355,15 +369,18 @@ END FUNCTION
 
 SUB NewGame (I)
 CLS
+' Working with profile I of 5
+profile$ = "SAVE\" + LTRIM$(STR$(I)) + "\"
+
 ' Get data
 INPUT "Player Name"; N$
 N$ = LEFT$(N$, 20)
 
-'Generate data
+'Generate player data
 
-' Save data
-P$ = "SAVE\" + LTRIM$(STR$(I)) + "\PLYR.DAT"
-OPEN P$ FOR APPEND AS #1
+' Save player data
+F$ = profile$ + "PLYR.DAT"
+OPEN F$ FOR APPEND AS #1
 	PRINT #1, N$
 CLOSE #1
 
@@ -372,6 +389,91 @@ MenuChange "SAVE\PRFSEL", I, N$
 
 ' Update Delete Profile Menu
 MenuAdd "SAVE\PRFTODEL", N$
+
+' Generate resources
+N$ = ""
+DIM RMIN(10) AS INTEGER
+DIM RMAX(10) AS INTEGER
+DIM NEWRES(10) AS INTEGER
+
+FOR X = 1 TO 41
+	' Get min values
+	F$ = "GEN\RES\" + LTRIM$(STR$(X)) + "\MIN.DAT"
+	OPEN F$ FOR INPUT AS #1
+		INPUT #1, N$
+		FOR Z = 1 TO 10
+			INPUT #1, RMIN(Z)
+		NEXT Z
+	CLOSE #1
+ 
+	' Get max values
+	F$ = "GEN\RES\" + LTRIM$(STR$(X)) + "\MAX.DAT"
+	OPEN F$ FOR INPUT AS #1
+		INPUT #1, N$
+		FOR Z = 1 TO 10
+			INPUT #1, RMAX(Z)
+		NEXT Z
+	CLOSE #1
+
+	' Gen 2 randoms and one balanced V/C
+	FOR R = 1 TO 3
+		newName$ = N$ + " (" + MakeName$ + ")"
+		CLS : PRINT "Creating... "; newName$
+ 
+		FOR Q = 1 TO 10
+			NEWRES(Q) = INT(RND * RMAX(Q))
+			IF NEWRES(Q) < RMIN(Q) THEN NEWRES(Q) = RMIN(Q)
+		NEXT Q
+			 
+		' Convert 3rd random into a balanced V/C resource
+		IF R = 3 THEN
+			NEWRES(8) = INT(RND * 10 + 45)
+			NEWRES(9) = INT(RND * 10 + 45)
+		END IF
+		
+		' Save data to file
+	NEXT R
+
+	' Gen virtuous
+	F$ = "GEN\RES\NAMEV.DAT"
+	rndName$ = ""
+	OPEN F$ FOR INPUT AS #1
+		FOR Z = 1 TO INT(RND * 19 + 1)
+			INPUT #1, rndName$
+		NEXT Z
+	CLOSE #1
+	newName$ = N$ + " (" + rndName$ + ")"
+	CLS : PRINT "Creating... "; newName$
+ 
+	FOR Q = 1 TO 10
+		NEWRES(Q) = INT(RND * RMAX(Q))
+		IF NEWRES(Q) < RMIN(Q) THEN NEWRES(Q) = RMIN(Q)
+	NEXT Q
+	NEWRES(8) = INT(RND * 15 + 85)
+	NEWRES(9) = INT(RND * 20)
+ 
+	' Save data to file
+
+	' Gen corrupt
+	F$ = "GEN\RES\NAMEC.DAT"
+	rndName$ = ""
+	OPEN F$ FOR INPUT AS #1
+		FOR Z = 1 TO INT(RND * 19 + 1)
+			INPUT #1, rndName$
+		NEXT Z
+	CLOSE #1
+	newName$ = N$ + " (" + rndName$ + ")"
+	CLS : PRINT "Creating... "; newName$
+	
+	FOR Q = 1 TO 10
+		NEWRES(Q) = INT(RND * RMAX(Q))
+		IF NEWRES(Q) < RMIN(Q) THEN NEWRES(Q) = RMIN(Q)
+	NEXT Q
+	NEWRES(8) = INT(RND * 20)
+	NEWRES(9) = INT(RND * 15 + 85)
+
+	' Save data to file
+NEXT X
 END SUB
 
 SUB SaveMenu (M$)
