@@ -80,6 +80,7 @@ IF P > 1 THEN
 	 
 		' The save files
 		KILL "SAVE\" + LTRIM$(STR$(profNum%)) + "\*.DAT"
+		KILL "SAVE\" + LTRIM$(STR$(profNum%)) + "\RES\*.DAT"
 
 		CLS
 		LOCATE 25, 30
@@ -436,7 +437,7 @@ FOR X = 1 TO 41
 		FOR OP = 1 TO 13
 			saveData$ = saveData$ + "," + STR$(NEWRES(OP))
 		NEXT OP
-		F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "-" + LTRIM$(STR$(R)) + ".DAT"
+		F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "0" + LTRIM$(STR$(R)) + ".DAT"
 		OPEN F$ FOR OUTPUT AS #1
 			PRINT #1, saveData$
 		CLOSE #1
@@ -465,7 +466,7 @@ FOR X = 1 TO 41
 	FOR OP = 1 TO 13
 		saveData$ = saveData$ + "," + STR$(NEWRES(OP))
 	NEXT OP
-	F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "-4.DAT"
+	F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "04.DAT"
 	OPEN F$ FOR OUTPUT AS #1
 		PRINT #1, saveData$
 	CLOSE #1
@@ -493,7 +494,7 @@ FOR X = 1 TO 41
 	FOR OP = 1 TO 13
 		saveData$ = saveData$ + "," + STR$(NEWRES(OP))
 	NEXT OP
-	F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "-5.DAT"
+	F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "05.DAT"
 	OPEN F$ FOR OUTPUT AS #1
 		PRINT #1, saveData$
 	CLOSE #1
