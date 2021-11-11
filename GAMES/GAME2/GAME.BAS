@@ -392,16 +392,16 @@ MenuAdd "SAVE\PRFTODEL", N$
 
 ' Generate resources
 N$ = ""
-DIM RMIN(10) AS INTEGER
-DIM RMAX(10) AS INTEGER
-DIM NEWRES(10) AS INTEGER
+DIM RMIN(13) AS INTEGER
+DIM RMAX(13) AS INTEGER
+DIM NEWRES(13) AS INTEGER
 
 FOR X = 1 TO 41
 	' Get min values
 	F$ = "GEN\RES\" + LTRIM$(STR$(X)) + "\MIN.DAT"
 	OPEN F$ FOR INPUT AS #1
 		INPUT #1, N$
-		FOR Z = 1 TO 10
+		FOR Z = 1 TO 13
 			INPUT #1, RMIN(Z)
 		NEXT Z
 	CLOSE #1
@@ -410,7 +410,7 @@ FOR X = 1 TO 41
 	F$ = "GEN\RES\" + LTRIM$(STR$(X)) + "\MAX.DAT"
 	OPEN F$ FOR INPUT AS #1
 		INPUT #1, N$
-		FOR Z = 1 TO 10
+		FOR Z = 1 TO 13
 			INPUT #1, RMAX(Z)
 		NEXT Z
 	CLOSE #1
@@ -420,7 +420,7 @@ FOR X = 1 TO 41
 		newName$ = N$ + " (" + MakeName$ + ")"
 		CLS : PRINT "Creating... "; newName$
  
-		FOR Q = 1 TO 10
+		FOR Q = 1 TO 13
 			NEWRES(Q) = INT(RND * RMAX(Q))
 			IF NEWRES(Q) < RMIN(Q) THEN NEWRES(Q) = RMIN(Q)
 		NEXT Q
@@ -432,6 +432,14 @@ FOR X = 1 TO 41
 		END IF
 		
 		' Save data to file
+		saveData$ = newName$
+		FOR OP = 1 TO 13
+			saveData$ = saveData$ + "," + STR$(NEWRES(OP))
+		NEXT OP
+		F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "-" + LTRIM$(STR$(R)) + ".DAT"
+		OPEN F$ FOR OUTPUT AS #1
+			PRINT #1, saveData$
+		CLOSE #1
 	NEXT R
 
 	' Gen virtuous
@@ -445,7 +453,7 @@ FOR X = 1 TO 41
 	newName$ = N$ + " (" + rndName$ + ")"
 	CLS : PRINT "Creating... "; newName$
  
-	FOR Q = 1 TO 10
+	FOR Q = 1 TO 13
 		NEWRES(Q) = INT(RND * RMAX(Q))
 		IF NEWRES(Q) < RMIN(Q) THEN NEWRES(Q) = RMIN(Q)
 	NEXT Q
@@ -453,6 +461,14 @@ FOR X = 1 TO 41
 	NEWRES(9) = INT(RND * 20)
  
 	' Save data to file
+	saveData$ = newName$
+	FOR OP = 1 TO 13
+		saveData$ = saveData$ + "," + STR$(NEWRES(OP))
+	NEXT OP
+	F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "-4.DAT"
+	OPEN F$ FOR OUTPUT AS #1
+		PRINT #1, saveData$
+	CLOSE #1
 
 	' Gen corrupt
 	F$ = "GEN\RES\NAMEC.DAT"
@@ -465,7 +481,7 @@ FOR X = 1 TO 41
 	newName$ = N$ + " (" + rndName$ + ")"
 	CLS : PRINT "Creating... "; newName$
 	
-	FOR Q = 1 TO 10
+	FOR Q = 1 TO 13
 		NEWRES(Q) = INT(RND * RMAX(Q))
 		IF NEWRES(Q) < RMIN(Q) THEN NEWRES(Q) = RMIN(Q)
 	NEXT Q
@@ -473,6 +489,14 @@ FOR X = 1 TO 41
 	NEWRES(9) = INT(RND * 15 + 85)
 
 	' Save data to file
+	saveData$ = newName$
+	FOR OP = 1 TO 13
+		saveData$ = saveData$ + "," + STR$(NEWRES(OP))
+	NEXT OP
+	F$ = profile$ + "RES\" + LTRIM$(STR$(X)) + "-5.DAT"
+	OPEN F$ FOR OUTPUT AS #1
+		PRINT #1, saveData$
+	CLOSE #1
 NEXT X
 END SUB
 
