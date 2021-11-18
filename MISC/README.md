@@ -48,6 +48,9 @@ A clock and calendar for use in a game. It keeps track of the time of day and th
 **MOVE#.BAS**  
 Playing with the movement of an object and redrawing the screen.
 
+**SELECT.BAS**  
+Testing a way to highlight a section of text and show some data related to it. Reads and reprints the characters from/to the screen directly.
+
 **TARRSZ.BAS**  
 A program for testing the memory usage of 1 and 2 dimensional arrays of different variable types.  
 
