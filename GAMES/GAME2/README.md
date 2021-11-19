@@ -11,15 +11,24 @@ You're a crafter, a merchant, and perhaps even an adventurer in a land of magic 
 
 ## Game Screens
 
+### Craft Armor
+- Craft linen, leather, mail, and plate armor.
+
+### Craft Tools
+- Craft tools, machines, and other misc items.
+
+### Craft Weapons
+- Craft several types of weapons.
+
 ### Storefront
 - View the items you have for sale.
 - Add or remove items for sale.
 - See your recent sales.
+- Salvage unwanted items.
 
 ### Inventory
-- View your materials and the crafted items stored in your closet.
-- Dispose of materials.
-- Salvage unwanted items. 
+- View and compare your resources.
+- Sell or dispose of resources.
 
 ### Local Market
 - Buy materials from local shops.
@@ -27,17 +36,12 @@ You're a crafter, a merchant, and perhaps even an adventurer in a land of magic 
 ### Job Board
 - Post requests for materials at the Adventure's Guild.
 
-### Craft Tools
-- Craft tools, machines, and other misc items.
-
-### Craft Armor
-- Craft linen, leather, mail, and plate armor.
-
-### Craft Weapons
-- Craft several types of weapons.
-
 ### Smithy Upgrades
 - Apply upgrades your shop using tools and machines you've crafted.
+
+### Character Sheet
+- View your personal attributes.
+- Manage your tools, weapons, and armor.
 
 ### Employee Management
 - Train, reward, and promote your employees.
@@ -52,12 +56,6 @@ You're a crafter, a merchant, and perhaps even an adventurer in a land of magic 
 - Go shopping in the village.
 - Join an adventuring party.
 - Take your family on a vacation.
-
-### Personal Gear
-- Manage your tools, weapons, and armor.
-
-### Character Attributes
-- View your personal attributes.
 
 
 ## Controls
