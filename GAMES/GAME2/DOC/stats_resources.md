@@ -100,7 +100,9 @@ Generated resources are stored in the RES folder of the active profile. For exam
 The values inside MIN.DAT, MAX.DAT and the generated resources correspond to the stat values in this order:  
 NAME, DN, FL, LU, MA, PU, SR, DR, VU, CR, EF, EE, EW, EA  
 
-Generated resource files are the same with the exception that the name is unique (Blah Copper rather than just Copper). This standardizations helps when accessing the data.  
+Generated resource files are the same with two exceptions:  
+1. The first value is the quantity of resources the player owns.  
+2. The name is unique like so, *Copper (Wicked)* rather than just Copper.  
 
 
 # Resource Access

@@ -1,4 +1,5 @@
 DEFINT A-Z
+DECLARE FUNCTION GetSetRes% (R%, V%, OP%)
 DECLARE FUNCTION Menu% (M$, DS%)
 DECLARE FUNCTION MenuWhereIs% (M$, S$)
 DECLARE FUNCTION MakeName$ ()
@@ -22,7 +23,7 @@ DIM SHARED mTitle AS STRING       ' Allows for variable width
 TYPE menuConfig
 	entries AS INTEGER    ' Number of entries in the menu
 	X AS INTEGER          ' Start column
-	y AS INTEGER          ' Start row
+	Y AS INTEGER          ' Start row
 	sc AS INTEGER         ' Selector color
 	tc AS INTEGER         ' Title color
 	bc AS INTEGER         ' Border color
@@ -107,7 +108,7 @@ OPEN F$ FOR INPUT AS #1
 	INPUT #1, D&: H = D&
 	INPUT #1, D&: W = D&
 
-FOR y = 1 TO H
+FOR Y = 1 TO H
 	FOR X = 1 TO W
 	INPUT #1, D&
 	
@@ -118,9 +119,9 @@ FOR y = 1 TO H
 
 		' Print image on the screen
 		COLOR C, B
-		LOCATE y + RS%, X + CS%: PRINT CHR$(A);
+		LOCATE Y + RS%, X + CS%: PRINT CHR$(A);
 	NEXT X
-NEXT y
+NEXT Y
 
 CLOSE #1
 END SUB
@@ -142,6 +143,66 @@ SHELL "COPY MENUS\PRFTODEL.DAT SAVE\PRFTODEL.DAT"
 CLS
 END SUB
 
+FUNCTION GetSetRes (R, V, OP)
+' Returns resource quanity or -1 for insufficient quantity
+' R is the resouce identifier number
+' V is the value to add/subtract. Use 0 when just getting quantity.
+' OP is subtract or add. Use 1 for add and -1 for subtract.
+
+' Get active profile
+F$ = "SAVE\AP.DAT"
+OPEN F$ FOR INPUT AS #1
+	INPUT #1, AP
+CLOSE #1
+
+profile$ = "SAVE\" + LTRIM$(STR$(AP)) + "\"
+
+F$ = profile$ + "RES\" + LTRIM$(STR$(R)) + ".DAT"
+
+' Read values
+DIM VALS(13) AS INTEGER
+OPEN F$ FOR INPUT AS #1
+	INPUT #1, Q
+	INPUT #1, N$
+
+	FOR Z = 1 TO 13
+		INPUT #1, VALS(Z)
+	NEXT Z
+CLOSE #1
+
+' Store original value
+S = Q
+
+' Modify quantity
+Q = Q + (V * OP)
+
+' Bail without saving if no changes were made
+IF S = Q THEN
+	GetSetRes = Q
+	EXIT FUNCTION
+END IF
+
+' Bail if user doesn't have enough resouces to cover cost of subtraction
+IF Q < 0 THEN
+	GetSetRes = -1
+	EXIT FUNCTION
+END IF
+
+' Cap the quanity (overflow is lost)
+IF Q > 999 THEN Q = 999
+
+' Save changes
+saveData$ = LTRIM$(STR$(Q)) + ", " + N$
+FOR X = 1 TO 13
+	saveData$ = saveData$ + "," + STR$(VALS(X))
+NEXT X
+OPEN F$ FOR OUTPUT AS #1
+	PRINT #1, saveData$
+CLOSE #1
+
+GetSetRes = Q
+END FUNCTION
+
 SUB LoadMenu (M$)
 ' Load data for this menu from file.
 M$ = M$ + ".DAT"
@@ -149,7 +210,7 @@ OPEN M$ FOR INPUT AS #1
 	INPUT #1, mTitle
 	INPUT #1, mConfig.entries
 	INPUT #1, mConfig.X
-	INPUT #1, mConfig.y
+	INPUT #1, mConfig.Y
 	INPUT #1, mConfig.sc
 	INPUT #1, mConfig.tc
 	INPUT #1, mConfig.bc
@@ -219,31 +280,31 @@ updateSelection = -1 ' Booleen TRUE
 ' Print the border and menu mConfig.entries
 ' Title border
 COLOR mConfig.bc, mConfig.bgc
-LOCATE mConfig.y, mConfig.X: PRINT CHR$(213); CHR$(205); CHR$(209); STRING$(mConfig.minWidth, 205); CHR$(184);
-LOCATE mConfig.y + 1, mConfig.X: PRINT CHR$(179); CHR$(240); CHR$(179); STRING$(mConfig.minWidth, 32); CHR$(179);
-LOCATE mConfig.y + 2, mConfig.X: PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(mConfig.minWidth, 205); CHR$(180)
+LOCATE mConfig.Y, mConfig.X: PRINT CHR$(213); CHR$(205); CHR$(209); STRING$(mConfig.minWidth, 205); CHR$(184);
+LOCATE mConfig.Y + 1, mConfig.X: PRINT CHR$(179); CHR$(240); CHR$(179); STRING$(mConfig.minWidth, 32); CHR$(179);
+LOCATE mConfig.Y + 2, mConfig.X: PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(mConfig.minWidth, 205); CHR$(180)
 ' Entries
 CB = 3
 FOR C = 1 TO mConfig.entries
 	S = mConfig.minWidth - LEN(mEntries(C))
-	LOCATE mConfig.y + 2 * C + 1, mConfig.X
+	LOCATE mConfig.Y + 2 * C + 1, mConfig.X
 	PRINT CHR$(179); CHR$(32); CHR$(179);
 	COLOR mConfig.ec, mConfig.bgc: PRINT mEntries(C);
 	COLOR mConfig.bc, mConfig.bgc
 	PRINT STRING$(S, 32); CHR$(179)
-	LOCATE mConfig.y + 2 * C + 2, mConfig.X:
+	LOCATE mConfig.Y + 2 * C + 2, mConfig.X:
 	PRINT CHR$(195); CHR$(196); CHR$(197); STRING$(mConfig.minWidth, 196); CHR$(180)
 	CB = CB + 2
 NEXT C
 ' Redraw bottom row border
-LOCATE mConfig.y + mConfig.entries * 2 + 2, mConfig.X
+LOCATE mConfig.Y + mConfig.entries * 2 + 2, mConfig.X
 PRINT CHR$(192); CHR$(196); CHR$(193); STRING$(mConfig.minWidth, 196); CHR$(217);
 
 ' Center and print title text
 D = mConfig.minWidth - LEN(mTitle)
 S = 0
 IF D > 1 THEN S = D / 2
-LOCATE mConfig.y + 1, mConfig.X + 3 + S
+LOCATE mConfig.Y + 1, mConfig.X + 3 + S
 COLOR mConfig.tc, mConfig.bgc
 PRINT mTitle
 
@@ -275,8 +336,8 @@ DO WHILE I$ <> "GO!"
 
 	IF updateSelection THEN
 		updateSelection = 0
-		LOCATE mConfig.y + 2 * prevSelection + 1, mConfig.X + 1: PRINT CHR$(32)
-		LOCATE mConfig.y + 2 * userSelected + 1, mConfig.X + 1: PRINT CHR$(175)
+		LOCATE mConfig.Y + 2 * prevSelection + 1, mConfig.X + 1: PRINT CHR$(32)
+		LOCATE mConfig.Y + 2 * userSelected + 1, mConfig.X + 1: PRINT CHR$(175)
 	END IF
 LOOP
 
@@ -433,7 +494,7 @@ FOR X = 1 TO 41
 		END IF
 		
 		' Save data to file
-		saveData$ = newName$
+		saveData$ = "0, " + newName$
 		FOR OP = 1 TO 13
 			saveData$ = saveData$ + "," + STR$(NEWRES(OP))
 		NEXT OP
@@ -462,7 +523,7 @@ FOR X = 1 TO 41
 	NEWRES(9) = INT(RND * 20)
  
 	' Save data to file
-	saveData$ = newName$
+	saveData$ = "0, " + newName$
 	FOR OP = 1 TO 13
 		saveData$ = saveData$ + "," + STR$(NEWRES(OP))
 	NEXT OP
@@ -490,7 +551,7 @@ FOR X = 1 TO 41
 	NEWRES(9) = INT(RND * 15 + 85)
 
 	' Save data to file
-	saveData$ = newName$
+	saveData$ = "0, " + newName$
 	FOR OP = 1 TO 13
 		saveData$ = saveData$ + "," + STR$(NEWRES(OP))
 	NEXT OP
@@ -499,6 +560,18 @@ FOR X = 1 TO 41
 		PRINT #1, saveData$
 	CLOSE #1
 NEXT X
+
+' Give the player some resources
+TMP = GetSetRes(101, 50, 1)
+TMP = GetSetRes(201, 50, 1)
+TMP = GetSetRes(901, 5, 1)
+TMP = GetSetRes(1401, 5, 1)
+TMP = GetSetRes(2001, 50, 1)
+TMP = GetSetRes(2201, 50, 1)
+TMP = GetSetRes(2601, 50, 1)
+TMP = GetSetRes(3301, 50, 1)
+TMP = GetSetRes(3701, 50, 1)
+TMP = GetSetRes(4101, 100, 1)
 END SUB
 
 SUB SaveMenu (M$)
@@ -507,7 +580,7 @@ OPEN M$ FOR OUTPUT AS #1
 	PRINT #1, mTitle
 	PRINT #1, mConfig.entries
 	PRINT #1, mConfig.X
-	PRINT #1, mConfig.y
+	PRINT #1, mConfig.Y
 	PRINT #1, mConfig.sc
 	PRINT #1, mConfig.tc
 	PRINT #1, mConfig.bc
